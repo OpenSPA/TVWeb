@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/oauth
+END
+CHANGES.txt
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/oauth/CHANGES.txt
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/oauth/__init__.py
+END
+rsa.py
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/oauth/rsa.py
+END

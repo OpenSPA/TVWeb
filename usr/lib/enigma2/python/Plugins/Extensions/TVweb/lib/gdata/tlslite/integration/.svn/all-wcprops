@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration
+END
+TLSTwistedProtocolWrapper.py
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/TLSTwistedProtocolWrapper.py
+END
+IMAP4_TLS.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/IMAP4_TLS.py
+END
+TLSAsyncDispatcherMixIn.py
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/TLSAsyncDispatcherMixIn.py
+END
+ClientHelper.py
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/ClientHelper.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/__init__.py
+END
+XMLRPCTransport.py
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/XMLRPCTransport.py
+END
+HTTPTLSConnection.py
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/HTTPTLSConnection.py
+END
+POP3_TLS.py
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/POP3_TLS.py
+END
+IntegrationHelper.py
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/IntegrationHelper.py
+END
+AsyncStateMachine.py
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/AsyncStateMachine.py
+END
+SMTP_TLS.py
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/SMTP_TLS.py
+END
+TLSSocketServerMixIn.py
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/470/trunk/tvalacarta/lib/gdata/tlslite/integration/TLSSocketServerMixIn.py
+END

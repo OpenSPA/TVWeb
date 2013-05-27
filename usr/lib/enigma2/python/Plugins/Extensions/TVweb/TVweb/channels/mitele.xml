@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<version>
+	<name>mitele</name>
+	<tag>4</tag>
+	<date>02/03/2012</date>
+	<changes>Arreglado el bug en directos, que usa el token 2 y faltaba el gzip en el clock</changes>
+</version>
