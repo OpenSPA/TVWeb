@@ -49,32 +49,28 @@ def videosportada(item,id):
     
     # Descarga la página
     data = scrapertools.cachePage(item.url)
-    #logger.info(data)
-
-    # Extrae las entradas
-    patron = '<div id="'+id+'"(.*?)</div><!-- .visor -->'
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    #if DEBUG: scrapertools.printMatches(matches)
-    data = matches[0]
+    data = scrapertools.get_match(data, '<div id="'+id+'"(.*?)</div><!-- .visor -->')
     
     '''
     <div>
-    <a title="Vídeos de El Internado - Capítulo 8 - Temporada 7" href="/videos/el-internado/temporada-7/capitulo-8.html">
-    <img title="Vídeos de El Internado - Capítulo 8 - Temporada 7" 
-    src="/clipping/2010/07/21/00048/10.jpg"
-    alt="El último deseo"
-    href="/videos/el-internado/temporada-7/capitulo-8.html"
+    <a title="Vídeos de El Secreto de Puente Viejo - Capítulo 559 - Temporada 1-ANTENA 3 TELEVISION" href="/videos/el-secreto-de-puente-viejo/temporada-1/capitulo-559.html">
+    <img title="Vídeos de El Secreto de Puente Viejo - Capítulo 559 - Temporada 1-ANTENA 3 TELEVISION" 
+    src="/clipping/2013/05/03/00323/10.jpg"
+    alt="Capítulo 559 (7-5-2013)"
+    href="/videos/el-secreto-de-puente-viejo/temporada-1/capitulo-559.html"
     />
-    <strong>El Internado</strong>
-    <p>El último deseo</p></a>  
+    <meta itemprop="thumbnail" content="/clipping/2013/05/03/00323/10.jpg" />
+    <strong itemprop="name">El Secreto de Puente Viejo</strong>
+    <h2 itemprop="name"><p>Capítulo 559 (7-5-2013)</p></h2></a>  
     </div>
     '''
 
-    patron  = '<div>[^<]+'
-    patron += '<a title="([^"]+)" href="([^"]+)">[^<]+'
+    patron  = '<div[^<]+'
+    patron += '<a title="([^"]+)" href="([^"]+)"[^<]+'
     patron += '<img.*?src="([^"]+)"[^<]+'
-    patron += '<strong>([^<]+)</strong>[^<]+'
-    patron += '<h2><p>([^<]+)</p></h2>'
+    patron += '<meta[^<]+'
+    patron += '<stron[^>]+>([^<]+)</strong>[^<]+'
+    patron += '<h2[^<]+<p>([^<]+)</p></h2>'
     matches = re.compile(patron,re.DOTALL).findall(data)
     #if DEBUG: scrapertools.printMatches(matches)
 
@@ -153,23 +149,21 @@ def series(item):
     # Extrae las entradas (series)
     '''
     <div>
-    <a title="Vídeos de Soy tu dueña - Capítulos Completos - SERIES ANTENA 3 TELEVISION" href="/videos/soytu-duena.html">
-    <img title="Vídeos de Soy tu dueña - Capítulos Completos" href="/videos/soytu-duena.html"
-    src="/clipping/2012/10/22/00583/10.jpg"
-    alt="SERIES ANTENA 3 TELEVISION - Videos de Soy tu dueña"
+    <a title="Vídeos de Corona de lágrimas - Capítulos Completos - SERIES ANTENA 3 TELEVISION" href="/videos/corona-de-lagrimas.html">
+    <img title="Vídeos de Corona de lágrimas - Capítulos Completos" href="/videos/corona-de-lagrimas.html"
+    src="/clipping/2013/04/04/00508/10.jpg"
+    alt="SERIES ANTENA 3 TELEVISION - Videos de Corona de lágrimas"
     />
-
-
-    <h2><p>Soy tu dueña</p></h2>
-
+    <h2 itemprop="name"><p>Corona de lágrimas</p></h2>
     </a>
     </div>
     '''
     
-    patron  = '<div>[^<]+'
-    patron += '<a\W+title="[^"]+" href="([^"]+)"[^<]+'
+    patron = '<li[^<]+'
+    patron += '<div[^<]+'
+    patron += '<a\s+title="[^"]+" href="([^"]+)"[^<]+'
     patron += '<img.*?src="([^"]+)"'
-    patron += '.*?<h2><p>([^<]+)</p>'
+    patron += '.*?<h2[^<]+<p>([^<]+)</p>'
     matches = re.compile(patron,re.DOTALL).findall(data)
     #if DEBUG: scrapertools.printMatches(matches)
 
@@ -440,7 +434,7 @@ def get_rtmp_links(item,data):
     # Extrae las entradas del video y el thumbnail
     patron = '<urlVideoMp4><\!\[CDATA\[([^\]]+)\]\]>'
     matches = re.compile(patron,re.DOTALL).findall(data)
-    baseurlvideo = matches[0]
+    baseurlvideo = matches[0].replace("antena3video","antena3mediateca")
     logger.info("baseurlvideo="+baseurlvideo)
     
     patron = '<urlImg><\!\[CDATA\[([^\]]+)\]\]>'
@@ -460,6 +454,10 @@ def get_rtmp_links(item,data):
 
     itemlist = []
     i = 1
+    if len(matches)>1:
+	if "001.mp4" in matches[0]:
+        	scrapedurl = baseurlvideo+matches[0].replace("001.mp4", "000.mp4")
+    		itemlist.append( Item(channel=CHANNELNAME, title="%s (COMPLETO)" % item.title , action="play" , url=scrapedurl, thumbnail=scrapedthumbnail , plot=item.plot , server = "directo" , folder=False) )
     for match in matches:
         scrapedurl = baseurlvideo+match
         logger.info("scrapedurl="+scrapedurl)
@@ -467,3 +465,23 @@ def get_rtmp_links(item,data):
         i=i+1
 
     return itemlist
+
+# Verificación automática de canales: Esta función debe devolver "True" si todo está ok en el canal.
+def test():
+    bien = True
+    
+    # Todas las opciones tienen que tener algo
+    items = mainlist(Item())
+    for item in items:
+        exec "itemlist="+item.action+"(item)"
+    
+        if len(itemlist)==0:
+            return False
+
+    # La sección de ultimos videos devuelve enlaces
+    episodios = ultimosvideos(items[1])
+    videos = detalle(episodios[0])
+    if len(videos)==0:
+        return False
+
+    return bien
