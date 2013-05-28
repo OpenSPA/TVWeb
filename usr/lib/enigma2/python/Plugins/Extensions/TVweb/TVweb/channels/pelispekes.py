@@ -46,7 +46,7 @@ def Generico(item):
 
     for match in matches:
         patron  = '<a target="_blank" href="(.*?)">.*?'
-        patron += '<img width="145" height="199" border="0" src="(.*?)" alt="(.*?)"/>.*?'
+        patron += '<img width="145" height="199" border="0" pagespeed_high_res_src="(.*?)" alt="([^"]+)".*?'
         patron += '<strong>Sinopsis:</strong>(.*?)</div>'
         matches2 = re.compile(patron,re.DOTALL).findall(match)
         logger.info("hay %d matches2" % len(matches2))
