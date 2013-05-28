@@ -201,6 +201,10 @@ def partes(item):
     if DEBUG: scrapertools.printMatches(matches)
     logger.info("matches="+str(matches))
     i=1
+    if len(matches)>1:
+	if "001.mp4" in matches[0]:
+        	scrapedurl = "rtmp://antena3tvfs.fplive.net/antena3mediateca/"+matches[0].replace("001.mp4", "000.mp4")
+    		itemlist.append( Item(channel=CHANNELNAME, title="(COMPLETO) %s" % item.title , action="play" , url=scrapedurl, thumbnail=item.thumbnail , plot=item.plot , folder=False) )
     for url in matches:
         scrapedtitle = "("+str(i)+") "+item.title
         scrapedurl = urlparse.urljoin(prefix.replace('rtmp:','http:'),url).replace('http:','rtmp:')
