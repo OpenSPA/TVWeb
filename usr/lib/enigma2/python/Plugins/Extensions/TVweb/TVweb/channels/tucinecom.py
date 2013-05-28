@@ -85,8 +85,9 @@ def novedades(item):
     patron += '<a[^<]+<img[^<]+'
     patron += '</a[^<]+'
     patron += '<span>([^<]+)</span></div[^<]+'
-    patron += '</div[^<]+'
-    patron += '<div class="review-box-text"[^<]+'
+    patron += '</div.*?'
+    #patron += '</div[^<]+'
+    #patron += '<div class="review-box-text"[^<]+'
     patron += '<h2[^<]+<a[^<]+</a></h2[^<]+'
     patron += '<p>([^<]+)</p[^<]+'
     patron += '</div[^<]+'
@@ -95,11 +96,11 @@ def novedades(item):
     matches = re.compile(patron,re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
-    for scrapedurl,scrapedtitle,scrapedthumbnail,calidad,scrapedplot,idiomas in matches:
+    for scrapedurl,scrapedtitle,scrapedthumbnail,calidad,scrapedplot,idiomas in matches:   
         scrapedtitle = scrapedtitle.replace("Ver Online Y Descargar Gratis","").strip()
         scrapedtitle = scrapedtitle.replace("Ver Online Y Descargar gratis","").strip()
         scrapedtitle = scrapedtitle.replace("Ver Online Y Descargar","").strip()
-        title=scrapedtitle+" ("+calidad+") ("
+        title=scrapedtitle +" ("+calidad+") ("
         if "s.png" in idiomas:
             title=title+"ESP,"
         if "l.png" in idiomas:
@@ -180,7 +181,7 @@ def idiomas(item):
 
     # Descarga la página
     data = get_main_page(item.url)
-    data = scrapertools.get_match(data,'<div class="widget"><h3>Versiones</h3>(.*?)</ul>')
+    data = scrapertools.get_match(data,'<div class="widget"><h3>&Uacute;ltimos estrenos</h3>(.*?)</ul>')
 
     # Extrae las entradas
     patron  = '<li class="cat-item cat-item-\d+"><a href="([^"]+)"[^>]+>([^<]+)</a>\s+\((\d+)\)'
