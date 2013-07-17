@@ -2,6 +2,6 @@
 <version>
 	<name>rtve</name>
 	<tag>8</tag>
-	<date>24/07/2012</date>
-	<changes>Se cambia practicamente todo - morser (spaze Team)</changes>
+	<date>17/07/2013</date>
+	<changes>Arreglada extraccion de enlace del archivo png con texto ofuscado - morser</changes>
 </version>

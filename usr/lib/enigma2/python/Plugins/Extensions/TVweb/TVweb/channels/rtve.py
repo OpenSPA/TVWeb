@@ -405,14 +405,14 @@ def play(item):
     data = scrapertools.cachePage(urlimg)   ### descarga png con metadatos
     data = data.decode("base-64")        ### decodifica en base64
     patron = 'tEXt([^#]+)#'
-    matches = re.compile(patron,re.DOTALL).findall(data)   ## extre el texto ofuscado
+    matches = re.compile(patron,re.DOTALL).findall(data)   ## extrae el texto ofuscado
     try:
     	cyphertext = matches[0]
     except:
     	cyphertext = ""
     try:
     	key = data.split('#')[1]
-    	key = key[1:230]         ## extrae la clave
+    	key = key[1:270]         ## extrae la clave
 	clave = ""
 	for x in key:
 		if x.isdigit():
