@@ -29,6 +29,11 @@ def mainlist(item):
 
     itemlist = []
     itemlist.append( Item(channel=__channel__, title="Novedades", action="peliculas", url="http://www.newdivx.net"))
+    itemlist.append( Item(channel=__channel__, title="Castellano", action="peliculas", url="http://www.newdivx.net/castellano/"))
+    itemlist.append( Item(channel=__channel__, title="Latino", action="peliculas", url="http://www.newdivx.net/latino/"))
+    itemlist.append( Item(channel=__channel__, title="VOS", action="peliculas", url="http://www.newdivx.net/peliculas-vos/"))
+    itemlist.append( Item(channel=__channel__, title="English", action="peliculas", url="http://www.newdivx.net/english/"))
+    itemlist.append( Item(channel=__channel__, title="720p HD", action="peliculas", url="http://www.newdivx.net/hd/"))
     itemlist.append( Item(channel=__channel__, title="Categorías", action="categorias", url="http://www.newdivx.net"))
     itemlist.append( Item(channel=__channel__, title="Buscar...", action="search") )
     return itemlist
@@ -54,11 +59,14 @@ def peliculas(item):
         data = scrapertools.cachePage( item.url )
 
     # Patron de las entradas
-    patronvideos = '<a href="([^"]+)"[^<]+<img src="([^"]+)" alt="([^"]+)"'
+    if item.extra=="":
+    	patronvideos = '<a href="([^"]+)"[^<]+<img src="([^"]+)"[^<]+<div class="custom-text2">([^<]+)<'
+    else:
+    	patronvideos = '<div class="post-title"><a href="([^"]+)".*?<img src="([^"]+)".*?alt="([^"]+)"'
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     # Añade las entradas encontradas
-    for url,thumbnail,title in matches:
+    for url,thumbnail, title in matches:
         scrapedtitle = title
         scrapedurl = urlparse.urljoin(item.url,url)
         scrapedthumbnail = urlparse.urljoin(item.url,thumbnail)
@@ -88,11 +96,10 @@ def categorias(item):
     # Descarga la página
     data = scrapertools.cachePage(item.url)
     '''
-    <a href="#" class="fist-level-link">Category</a>
-    <div class="hidden-menu">
-    <div class="hidden-menu-block">
-    <a href="/accion/">Acci&oacute;n</a>
-    <a href="/adolescencia/">Adolescencia</a>
+    <a href="#">Category</a>
+    <ul>
+    <li><a href="/accion/">Acci&oacute;n</a></li>
+    <li><a href="/adolescencia/">Adolescencia</a></li>
     <li><a href="/animacion/">Animaci&oacute;n</a></li>
     <li><a href="/aventuras/">Aventura</a></li>
     <li><a href="/belico/">Belico</a></li>
@@ -115,7 +122,7 @@ def categorias(item):
     <li><a href="/latino/"><b>En Latino</b></a></li>
     <li> <a href="/hd/"><b>En HD</b></a></li>
     '''
-    data = scrapertools.get_match(data,'<a href="#" class="fist-level-link">Category</a>[^<]+<div class="hidden-menu">[^<]+<div class="hidden-menu-block">(.*?)</li>')
+    data = scrapertools.get_match(data,'<a href="#">Category</a>[^<]+<ul>(.*?)</ul>')
     patron = '<a href="([^"]+)">([^<]+)</a>'
     matches = re.compile(patron,re.DOTALL).findall(data)
 
