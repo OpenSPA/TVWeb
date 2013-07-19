@@ -214,22 +214,22 @@ def mirrors(item):
     <span>      <img src="http://tucinecom.com/wp-content/themes/reviewit/images/imgres15.jpg" class="servidor" alt="" />
     </span>                </p>
     '''
+    #no descarga directa
+    #bloque = scrapertools.get_match(data,"<h3>Descarga Directa</h3>(.*?)</div[^<]+</div[^<]+</div[^<]+</div")
+    #patron  = '<p[^<]+'
+    #patron += '<span><img id="([^"]+)"[^<]+</span[^<]+'
+    #patron += '<span><a href="#([^"]+)"[^>]+>([^<]+)</a></span[^<]+'
+    #patron += '<span>([^<]+)</span'
+    #matches = re.compile(patron,re.DOTALL).findall(bloque)
+    #scrapertools.printMatches(matches)
 
-    bloque = scrapertools.get_match(data,"<h3>Descarga Directa</h3>(.*?)</div[^<]+</div[^<]+</div[^<]+</div")
-    patron  = '<p[^<]+'
-    patron += '<span><img id="([^"]+)"[^<]+</span[^<]+'
-    patron += '<span><a href="#([^"]+)"[^>]+>([^<]+)</a></span[^<]+'
-    patron += '<span>([^<]+)</span'
-    matches = re.compile(patron,re.DOTALL).findall(bloque)
-    scrapertools.printMatches(matches)
-
-    for idioma,bloque,scrapedtitle,calidad in matches:
-        title="Descarga directa "+scrapedtitle.strip()+" ["+idioma+"]["+calidad+"]"
-        url=item.url
-        thumbnail=""
-        plot=""
-        if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
-        itemlist.append( Item(channel=__channel__, action="findvideos", title=title , url=url , thumbnail=thumbnail , plot=plot , extra=bloque, folder=True) )
+    #for idioma,bloque,scrapedtitle,calidad in matches:
+    #    title="Descarga directa "+scrapedtitle.strip()+" ["+idioma+"]["+calidad+"]"
+    #    url=item.url
+    #    thumbnail=""
+    #    plot=""
+    #    if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
+    #    itemlist.append( Item(channel=__channel__, action="findvideos", title=title , url=url , thumbnail=thumbnail , plot=plot , extra=bloque, folder=True) )
 
     bloque = scrapertools.get_match(data,"<h3>Ver Online</h3>(.*?)</div[^<]+</div[^<]+</div[^<]+</div")
     patron  = '<p[^<]+'
@@ -242,8 +242,8 @@ def mirrors(item):
     for idioma,bloque,scrapedtitle,calidad in matches:
         title="Ver online "+scrapedtitle.strip()+" ["+idioma+"]["+calidad+"]"
         url=item.url
-        thumbnail=""
-        plot=""
+        thumbnail=item.thumbnail
+        plot=item.plot
         if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
         itemlist.append( Item(channel=__channel__, action="findvideos", title=title , url=url , thumbnail=thumbnail , plot=plot , extra=bloque, folder=True) )
 
