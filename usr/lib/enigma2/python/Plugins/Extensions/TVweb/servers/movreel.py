@@ -36,13 +36,29 @@ def find_videos(data):
 
     #http://movreel.com/embed/l8ondvel8ynb
     data = urllib.unquote(data)
-    patronvideos  = '(movreel.com/embed/[a-z0-9]+)'
+    patronvideos  = 'movreel.com/embed/([a-z0-9]+)'
     logger.info("[movreel.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
         titulo = "[movreel]"
-        url = "http://"+match
+        url = "http://movreel.com/embed/"+match
+        if url not in encontrados:
+            logger.info("  url="+url)
+            devuelve.append( [ titulo , url , 'movreel' ] )
+            encontrados.add(url)
+        else:
+            logger.info("  url duplicada="+url)
+
+    #http%3A%2F%2Fwww.movreel.com%2Fuau47ktbg4dx
+    data = urllib.unquote(data)
+    patronvideos  = 'movreel.com/([a-z0-9]+)'
+    logger.info("[movreel.py] find_videos #"+patronvideos+"#")
+    matches = re.compile(patronvideos,re.DOTALL).findall(data)
+
+    for match in matches:
+        titulo = "[movreel]"
+        url = "http://movreel.com/embed/"+match
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'movreel' ] )

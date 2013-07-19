@@ -46,6 +46,16 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
         logger.info("location="+location)
 
+        # Averigua la redirección, para que funcione en Plex y WiiMC
+        try:
+            location2 = scrapertools.get_header_from_response(location,header_to_get="Location")
+            logger.info("location2="+location2)
+        except:
+            location2=""
+
+        if location2!="":
+            location=location2
+
         '''
         if not location.startswith("http") and page_url.endswith(".torrent"):
             # Lee el id

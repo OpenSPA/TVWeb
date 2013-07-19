@@ -34,6 +34,7 @@ FILENIUM_SERVERS.extend(['oron','downupload','allmyvideos','novamov','videoweed'
 FILENIUM_SERVERS.extend(['filebox','filefactory','netload','nowdownload','filevelocity','freakshare','userporn','divxstage','putlocker','extabit','vidxden'])
 FILENIUM_SERVERS.extend(['vimeo','dailymotion','jumbofiles','zippyshare','glumbouploads','bayfiles','twoshared', 'fourshared','crocko','fiberupload','filereactor'])
 FILENIUM_SERVERS.extend(['ifile','megashares','slingfile','uploading','vipfile','filenium','movreel','one80upload','flashx','uploaz','nowvideo','vk','moevideos'])
+FILENIUM_SERVERS.extend(['cloudzer','filecloudio','luckyshare','lumfile','magnovideo','playedto','ryushare','streamcloud','videozed','xenubox'])
 #wupload,fileserve
 
 # Lista de TODOS los servidores soportados por Real-Debrid

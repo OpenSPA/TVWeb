@@ -21,6 +21,9 @@ def test_video_exists( page_url ):
     if "This file no longer exists on our servers" in data:
         return False,"El fichero ha sido borrado de novamov"
 
+    elif "is being converted" in data:
+        return False,"El fichero está en proceso todavía"
+
     return True,""
 
 def get_video_url( page_url , premium = False , user="" , password="" , video_password="" ):
