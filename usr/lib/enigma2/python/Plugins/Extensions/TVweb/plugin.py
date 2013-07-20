@@ -66,7 +66,7 @@ config.plugins.TVweb.imagecache = ConfigEnableDisable(default=True)
 config.plugins.TVweb.showadultcontent = ConfigYesNo(default=False)
 config.plugins.TVweb.showsecretcontent = ConfigYesNo(default=False)
 config.plugins.TVweb.downloadimages = ConfigYesNo(default=True)
-config.plugins.TVweb.version = NoSave(ConfigText(default="1.0.7"))
+config.plugins.TVweb.version = NoSave(ConfigText(default="1.0.8"))
 config.plugins.TVweb.resolution = ConfigSelection(default="360p", choices = ["240p", "360p", "480p", "720p", "1080p"])
 config.plugins.TVweb.freemem = ConfigInteger(default=10, limits=(1, 60))
 
@@ -1361,8 +1361,12 @@ class TVweb2(Screen):
 			item.plot = item.plot.decode("iso-8859-1").encode("utf-8")
 		except:
 			pass
+
+	    if accion == "mirrors":   ### change title for tucinecom
+		item.title = self.feedtitle
+
             # APPEND ITEM TO LIST
-	    self.listado = itemlista
+	    self.listado.append(item)
             self.itemlist.append((index, framePos, Page, name, imgurl, url, type, "item"))
 	    self.ItemsList.append((name, item.folder, False))
 	    if imgurl != "":
@@ -1444,7 +1448,11 @@ class TVweb2(Screen):
         accion = partes[2]
         urlx = partes[3]
         serverx = partes[4]
-        item = Item(title=self.feedtitle,url=urlx,channel=canal,action=accion, server=serverx, extra=self.olditem.extra)
+	if not self.listado:
+		extra = ""
+	else:
+		extra = self.listado[self.index].extra
+        item = Item(title=self.feedtitle,url=urlx,channel=canal,action=accion, server=serverx, extra=extra)
         if accion=="findvideos": ## or (accion=="detail" and canal=="peliculaseroticas"):
             try:
                 exec "from TVweb.channels import "+canal
@@ -1500,6 +1508,7 @@ class TVweb2(Screen):
                 pass
 
 
+	    title = self.feedtitle
 	    item.server = item.server.lower()
 	    if item.server != "directo":
 	    	video_urls = []
@@ -1521,12 +1530,14 @@ class TVweb2(Screen):
 	    	if res ==-1: res=n
 	    	if len(itemlista)>0:
 			try:
-	    			self.session.open(MovieInfoScreen, itemlista[res].url, self.listado[self.index], self.thumbnails[self.index], self.itemlist[self.index][3], self.img1,self.feedtext, itemlista[res].title)
+	    			self.session.open(MovieInfoScreen, itemlista[res].url, self.listado[self.index], self.thumbnails[self.index], self.listado[self.index].title, self.img1,self.feedtext, itemlista[res].title)
+#	    			self.session.open(MovieInfoScreen, itemlista[res].url, self.listado[self.index], self.thumbnails[self.index], self.itemlist[self.index][3], self.img1,self.feedtext, itemlista[res].title)
 			except:
 				self.SelectionChanged()
 	    else:
 		try:
-			self.session.open(MovieInfoScreen, item.url, self.listado[self.index], self.thumbnails[self.index], self.itemlist[self.index][3], self.img1,self.feedtext, item.title)
+			self.session.open(MovieInfoScreen, item.url, self.listado[self.index], self.thumbnails[self.index], self.listado[self.index].title, self.img1,self.feedtext, item.title)
+#			self.session.open(MovieInfoScreen, item.url, self.listado[self.index], self.thumbnails[self.index], self.itemlist[self.index][3], self.img1,self.feedtext, item.title)
 		except:
 			pass
 
