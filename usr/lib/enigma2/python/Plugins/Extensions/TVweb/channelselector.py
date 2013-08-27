@@ -155,7 +155,10 @@ def channels_list():
     itemlist.append( Item( title="EITB (País Vasco)"          , channel="eitb"           , language="ES" , category="A" , type="generic", extra="rtmp" )) # jesus 17/12/2012
     itemlist.append( Item( title="Giralda TV (Sevilla)"       , channel="giraldatv"            , language="ES" , category="L"   , type="generic" ))  # jesus 20/01/2010
     itemlist.append( Item( title="Internautas TV"             , channel="internautastv"        , language="ES" , category="T"   , type="generic" ))
-    #itemlist.append( Item( title="RojaDirecta"             , channel="rojadirecta"        , language="ES" , category="T"   , type="generic" ))
+    itemlist.append( Item( title="MTV"             , channel="mtv"        , language="ES" , category="T"   , type="generic" ))
+    itemlist.append( Item( title="Hogar Util"             , channel="hogarutil"        , language="ES" , category="T"   , type="generic" ))
+    itemlist.append( Item( title="ADN Stream"             , channel="adnstream"        , language="ES" , category="T"   , type="generic" ))
+   #itemlist.append( Item( title="RojaDirecta"             , channel="rojadirecta"        , language="ES" , category="T"   , type="generic" ))
     itemlist.append( Item( title="Mitele"                     , channel="mitele"               , language="ES" , category="I,N" , type="generic" ))
     itemlist.append( Item( title="RTVA (Andalucia)"           , channel="rtva"                 , language="ES" , category="A"   , type="generic" ))
     itemlist.append( Item( title="RTVV (Valencia)", channel="rtvv"                 , language="ES" , category="A"   , type="generic" ))
