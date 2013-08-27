@@ -33,6 +33,7 @@ from Tools.Directories import fileExists
 from Tools.LoadPixmap import LoadPixmap
 from Tools.BoundFunction import boundFunction
 from Plugins.Plugin import PluginDescriptor
+from ServiceReference import ServiceReference
 
 from enigma import gFont, ePicLoad, eTimer, getDesktop, eConsoleAppContainer, eBackgroundFileEraser, eServiceReference, iServiceInformation, iPlayableService, eListboxPythonMultiContent, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_HALIGN_CENTER, RT_VALIGN_CENTER, RT_VALIGN_TOP, RT_HALIGN_BLOCK
 from os import stat as os_stat, listdir as os_listdir, path as os_path, readlink as os_readlink, system as os_system, remove as os_remove
@@ -45,6 +46,7 @@ from xml.sax.saxutils import unescape
 from core.item import Item
 
 import xml.etree.cElementTree
+
 
 try:
     from Plugins.Extensions.VlcPlayer.VlcPlayer import VlcPlayer
@@ -98,8 +100,75 @@ def _(txt):
 
 #############
 
+def setResumePoint(session):
+	global resumePointCacheLast, resumePointCache
+	service = session.nav.getCurrentService()
+	ref = session.nav.getCurrentlyPlayingServiceReference()
+	if (service is not None) and (ref is not None): # and (ref.type != 1):
+		# ref type 1 has its own memory...
+		seek = service.seek()
+		if seek:
+			pos = seek.getPlayPosition()
+			if not pos[0]:
+				#key = ref.toString()
+				key = service.info().getName()
+				lru = int(time())
+				l = seek.getLength()
+				if l:
+					l = l[1]
+				else:
+					l = None
+				resumePointCache[key] = [lru, pos[1], l]
+				if len(resumePointCache) > 50:
+					candidate = key
+					for k,v in resumePointCache.items():
+						if v[0] < lru:
+							candidate = k
+					del resumePointCache[candidate]
+				#if lru - resumePointCacheLast > 3600:
+				saveResumePoints(session)
 
 
+def getResumePoint(session):
+	global resumePointCache
+	resumePointCache = loadResumePoints(session)
+	service = session.nav.getCurrentService()
+	ref = session.nav.getCurrentlyPlayingServiceReference()
+	open("/tmp/prueba","w").write(str(resumePointCache))
+	#ref = session.nav.getCurrentlyPlayingServiceReference()
+	if (ref is not None) and (ref.type != 1):
+		try:
+			#entry = resumePointCache[ref.toString()]
+			entry = resumePointCache[service.info().getName()]
+			entry[0] = int(time()) # update LRU timestamp
+			return entry[1]
+		except KeyError:
+			return None
+
+def saveResumePoints(session):
+	global resumePointCacheLast, resumePointCache
+	service = session.nav.getCurrentService()
+	name = str(config.plugins.TVweb.storagepath.value)+"/TVweb/"+ASCIItranslit.legacyEncode(service.info().getName())+".cue"
+	import cPickle
+	try:
+		f = open(name, 'wb')
+		cPickle.dump(resumePointCache, f, cPickle.HIGHEST_PROTOCOL)
+	except Exception, ex:
+		print "[InfoBar] Failed to write resumepoints:", ex
+	resumePointCacheLast = int(time())
+
+def loadResumePoints(session):
+	service = session.nav.getCurrentService()
+	name = str(config.plugins.TVweb.storagepath.value)+"/TVweb/"+ASCIItranslit.legacyEncode(service.info().getName())+".cue"
+	import cPickle
+	try:
+		return cPickle.load(open(name, 'rb'))
+	except Exception, ex:
+		print "[InfoBar] Failed to load resumepoints:", ex
+		return {}
+
+resumePointCache = {}
+resumePointCacheLast = int(time())
 
 
 def limpia_texto(s):
@@ -222,6 +291,7 @@ class TVwebMoviePlayer(MoviePlayer):
         self.skinName = "MoviePlayer"
         self.movieinfo = movieinfo
 	self.end = False
+	self.started = False
 
         self.__event_tracker = ServiceEventTracker(screen=self, eventmap=
             {
@@ -229,17 +299,48 @@ class TVwebMoviePlayer(MoviePlayer):
                 iPlayableService.evUser+11: self.__evVideoDecodeError,
                 iPlayableService.evUser+12: self.__evPluginError,
 		iPlayableService.evEOF: self.__evEOF,
-		iPlayableService.evStart: self.__serviceStarted
+		iPlayableService.evStart: self.__serviceStarted,
+		iPlayableService.evBuffering: self.__serviceStarted  #for no evstart event
             })
 
+
     def __serviceStarted(self):
-	self.end = False
+	if not self.started:
+		self.started = True
+		service = self.session.nav.getCurrentService()
+		seekable = service.seek()
+		name = str(config.plugins.TVweb.storagepath.value)+"/TVweb/"+ASCIItranslit.legacyEncode(service.info().getName())+".cue"
+		if not fileExists(name):
+			open(name,"w").write("")
+		last = getResumePoint(self.session)
+		if last is None:
+			return
+		if seekable is None:
+			return # Should not happen?
+		length = seekable.getLength() or (None,0)
+		print "seekable.getLength() returns:", length
+		# Hmm, this implies we don't resume if the length is unknown...
+		if (last > 900000) and (not length[1]  or (last < length[1] - 900000)):
+			self.resume_point = last
+			l = last / 90000
+			Notifications.AddNotificationWithCallback(self.playLastCB, MessageBox, _("Do you want to resume this playback?") + "\n" + (_("Resume position at %s") % ("%d:%02d:%02d" % (l/3600, l%3600/60, l%60))), timeout=10)
+	#self.end = False
+
+
+    def playLastCB(self, answer):
+	if answer == True:
+		service = self.session.nav.getCurrentService()
+		seekable = service.seek()
+		if seekable is not None:
+			seekable.seekTo(self.resume_point)
+
 
     def __evEOF(self):
 	self.end = True
 
     def leavePlayer(self):
         print "[TVweb] TVwebMoviePlayer.leavePlayer"
+	setResumePoint(self.session)
 	list = ((_("Yes"), True), (_("No"), False),)
 	self.session.openWithCallback(self.leavePlayerConfirmed, ChoiceBox, title=_("Stop playing this movie?"), list = list)
 
@@ -987,10 +1088,15 @@ def tvlistEntry(entry):
 	res = [ (entry[1], entry[0]) ]
 	# mpiero checqueo de texto para personalizar icono
 	textoparaicono=entry[0].replace("...","").lower()
+	name = str(config.plugins.TVweb.storagepath.value)+"/TVweb/"+ASCIItranslit.legacyEncode(entry[0])+".cue"
+	if fileExists(name):
+		tn="3"
 	if textoparaicono=="search" or textoparaicono=="buscar":
 		png = LoadPixmap(cached=True, path="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/search.png")
 	elif textoparaicono.startswith(">>") or textoparaicono=="next page" or "gina siguiente" in textoparaicono:
 		png = None
+	elif fileExists(name):
+		png = LoadPixmap(cached=True, path="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/checkok.png")
 	elif entry[2]:
 		if entry[1]:
 			png = LoadPixmap(cached=True, path="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/iBookmark.png")
@@ -1102,8 +1208,14 @@ class TVweb2(Screen):
 			# mpiero icono arriba tamano
 			self.picload.setPara((79,73, sc[0], sc[1], 0, 1, "#00e0e0e0"))
 			self.picload.startDecode(img1)
+	self.onShow.append(self.relist)
 	
 
+    def relist(self):
+	#self.ItemsList = templist
+	self["listado"] = self.ItemsMenuList
+	self.ItemsMenuList.setList(map(tvlistEntry, self.ItemsList))
+	self["listado"].show()
 
 
     def paintimgs(self, picInfo=None):
@@ -1288,14 +1400,14 @@ class TVweb2(Screen):
 			text = partes[1]
 		else:
 			text = ""
-	    try:
-       	    	exec "from TVweb.channels import "+canal
-	    	if accion == "search":
+	    #try:
+       	    exec "from TVweb.channels import "+canal
+	    if accion == "search":
             		exec "itemlista = "+canal+"."+accion+"(item, text)"
-	    	else:
+	    else:
            		exec "itemlista = "+canal+"."+accion+"(item)"
-	    except:
-	    	itemlista.append(Item(title="ERROR in module "+canal))
+	    #except:
+	    #	itemlista.append(Item(title="ERROR in module "+canal))
             print "%d elementos" % len(itemlista)
 
 	self.total = len(itemlista)
@@ -1326,7 +1438,7 @@ class TVweb2(Screen):
                 	print "item normal"
                 	type = "cat"
                 imgurl = item.thumbnail
-                url = "TVweb" + "|" + canal + "|" + item.action + "|" + item.url + "|" + item.server
+                url = "TVweb" + "|" + item.channel + "|" + item.action + "|" + item.url + "|" + item.server
 
 	    ###### pasa imgurl a utf8
  	    try:
@@ -1362,7 +1474,7 @@ class TVweb2(Screen):
 		except:
 			pass
 
-	    if accion == "mirrors":   ### change title for tucinecom
+	    if accion == "mirrors" or accion == "findvideos":   ### change title for tucinecom
 		item.title = self.feedtitle
 
             # APPEND ITEM TO LIST
@@ -1453,7 +1565,7 @@ class TVweb2(Screen):
 	else:
 		extra = self.listado[self.index].extra
         item = Item(title=self.feedtitle,url=urlx,channel=canal,action=accion, server=serverx, extra=extra)
-        if accion=="findvideos": ## or (accion=="detail" and canal=="peliculaseroticas"):
+        if (accion=="findvideos" and canal!="seriesyonkis"): ## or (accion=="detail" and canal=="peliculaseroticas"):
             try:
                 exec "from TVweb.channels import "+canal
                 exec "itemlista = "+canal+"."+accion+"(item)"
@@ -1525,9 +1637,10 @@ class TVweb2(Screen):
                 	itemvideo = Item(title=video_url[0], url=video_url[1], action="__movieplay")
                 	itemlista.append(itemvideo)
 			if config.plugins.TVweb.resolution.value in video_url[0] and not "webm" in video_url[0].lower():
+			    if item.server!="youtube" or (item.server=="youtube" and not "flv" in video_url[0].lower()):
 				res = n
-				continue
-	    	if res ==-1: res=n
+				break
+	    	if res ==-1: res=len(video_urls)-1
 	    	if len(itemlista)>0:
 			try:
 	    			self.session.open(MovieInfoScreen, itemlista[res].url, self.listado[self.index], self.thumbnails[self.index], self.listado[self.index].title, self.img1,self.feedtext, itemlista[res].title)
