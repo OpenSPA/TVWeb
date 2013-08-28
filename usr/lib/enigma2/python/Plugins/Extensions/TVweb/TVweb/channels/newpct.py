@@ -56,7 +56,7 @@ def submenu(item):
     itemlist=[]
     
     data = scrapertools.cache_page(item.url)
-    data = scrapertools.get_match(data,'<a href="\#" class="dir" title="Descargar '+item.extra+' Gratis">'+item.extra+'(.*?)</ul>')
+    data = scrapertools.get_match(data,'<a href="\#".*?class="dir" title="Descargar '+item.extra+' Gratis">'+item.extra+'(.*?)</ul>')
     
     patron = '<li><a href="([^"]+)"[^>]+>([^<]+)</a></li>'
     matches = re.compile(patron,re.DOTALL).findall(data)    
