@@ -62,6 +62,7 @@ def getchanneltypes():
     itemlist.append( Item( title="Temáticos" , channel="tematicos" , action="listchannels" , category="T"   , thumbnail="tematicos", type="generic"))
     itemlist.append( Item( title="Infantiles" , channel="infantil" , action="listchannels" , category="I"   , thumbnail="infantil", type="generic"))
     itemlist.append( Item( title="Videoclub" , channel="videoclub" , action="listchannels" , category="V" , thumbnail="videoclub", type="generic"))
+    if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="Adultos" , channel="adultos" , action="listchannels" , category="X" , thumbnail="adultos", type="generic"))
     return itemlist
 
 def channeltypes(params,url,category):
@@ -169,15 +170,15 @@ def channels_list():
     itemlist.append( Item( title="Pelis24"               , channel="pelis24"              , language="ES"    , category="V"     , type="generic"  ))
     itemlist.append( Item( title="Tucinecom"               , channel="tucinecom"              , language="ES"    , category="V"     , type="generic"  ))
     itemlist.append( Item( title="Newpct"               , channel="newpct"              , language="ES"    , category="V"     , type="generic"  ))
-    itemlist.append( Item( title="PelisPekes"               , channel="pelispekes"              , language="ES" , category="V"        , type="generic"  ))
+    itemlist.append( Item( title="PelisPekes"               , channel="pelispekes"              , language="ES" , category="I"        , type="generic"  ))
     itemlist.append( Item( title="Shurweb"       , channel="shurweb"             , language="ES"      , category="V" , type="generic"    ))
     itemlist.append( Item( title="Series Yonkis"             , channel="seriesyonkis"             , language="ES" , category="V"        , type="generic"  ))
     itemlist.append( Item( title="Cinetube"             , channel="cinetube"             , language="ES" , category="V"        , type="generic"  ))
     #itemlist.append( Item( title="NewHD"             , channel="newhd"             , language="ES" , category="V"        , type="generic"  ))
     itemlist.append( Item( title="Cinetux"             , channel="cinetux"             , language="ES" , category="V"        , type="generic"  ))
-    itemlist.append( Item( title="DocumaniaTV"           , channel="documaniatv"          , language="ES"    , category="V"       , type="generic"  ))
-    if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="xhamster"          , channel="xhamster"             , language="ES" , category="V" , type="generic"  ))
-    if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="PeliculasEroticas"          , channel="peliculaseroticas"             , language="ES" , category="V" , type="generic"  ))
+    itemlist.append( Item( title="DocumaniaTV"           , channel="documaniatv"          , language="ES"    , category="T"       , type="generic"  ))
+    if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="xhamster"          , channel="xhamster"             , language="ES" , category="X" , type="generic"  ))
+    if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="PeliculasEroticas"          , channel="peliculaseroticas"             , language="ES" , category="X" , type="generic"  ))
 
 
     return itemlist
