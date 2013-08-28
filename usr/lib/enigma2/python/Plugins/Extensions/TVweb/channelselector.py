@@ -179,6 +179,8 @@ def channels_list():
     itemlist.append( Item( title="DocumaniaTV"           , channel="documaniatv"          , language="ES"    , category="T"       , type="generic"  ))
     if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="xhamster"          , channel="xhamster"             , language="ES" , category="X" , type="generic"  ))
     if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="PeliculasEroticas"          , channel="peliculaseroticas"             , language="ES" , category="X" , type="generic"  ))
+    if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="tuporno.tv"          , channel="tupornotv"             , language="ES" , category="X" , type="generic"  ))
+    if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="Beeg"          , channel="beeg"             , language="ES" , category="X" , type="generic"  ))
 
 
     return itemlist
