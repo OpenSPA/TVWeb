@@ -62,11 +62,15 @@ def peliculas(item):
     if item.extra=="":
     	patronvideos = '<a href="([^"]+)"[^<]+<img src="([^"]+)"[^<]+<div class="custom-text2">([^<]+)<'
     else:
-    	patronvideos = '<div class="post-title"><a href="([^"]+)".*?<img src="([^"]+)".*?alt="([^"]+)"'
+    	patronvideos = '<div class="post-title"><a href="([^"]+)"[^>]+>([^<]+).*?<img src="([^"]+)"'
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     # Añade las entradas encontradas
     for url,thumbnail, title in matches:
+    	if item.extra!="":
+		tmp = title
+		title = thumbnail.strip()
+		thumbnail = tmp
         scrapedtitle = title
         scrapedurl = urlparse.urljoin(item.url,url)
         scrapedthumbnail = urlparse.urljoin(item.url,thumbnail)
