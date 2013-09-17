@@ -46,22 +46,24 @@ def novedades(item):
 
     for match in matches:
         '''
-        <a target="_blank" href="http://www.pelispekes.com/shin-chan-el-pequeno-samurai/">
-        <img width="145" height="199" border="0" pagespeed_high_res_src="http://1-ps.googleusercontent.com/h/www.pelispekes.com/caratula-pekes/145x199x2079-145x199.jpg.pagespeed.ic.yIfp9_86mn.jpg" alt="Ver pelicula Shin chan. El pequeño samurai" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////2wBDAVVaWnhpeOuCguv/////////////////////////////////////////////////////////////////////////wAARCADHAJEDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIDAQT/xAAxEAACAgEDAwQBAwMDBQAAAAABAgARAxIhMUFRYQQTInGRMoGhQlKxFCPBQ2JyouH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAGxEBAQEBAAMBAAAAAAAAAAAAAAERIQIxQRL/2gAMAwEAAhEDEQA/ALCgo2HE0Fa4EwcCNRo7/wATjFIyo3IG0UrjB2AlAD3/AIiC75/iX4u0aUrgQ04/Eaj3/iaAb5/iSG0jooUkCTsdAPxLOQFN9pEPqcmtr4m/GafrChqbfmXQhjV/+sVAgJYneKxGoivqayJtVYaXUGqPWouZQu2oW3SopyKyBaIIirpLfM2QIxCU2rSByek6WrH2NDtDGgvUOZzepc6yt/cKMmcNsAPviIXYdB9ATEUMaYm+k6DgOMApuesommUotslA8HpOlCmReADJPepVbGDt278xVVsWbSAdN7EyBt/7RCNqHcQgU0qyix0m+2vaap+I+oTkrmzKFbYbGKFEpnYE1tQkzk2pRQ7nmaxqWegRXSClQbJoTG1ZF7xsOHcFlv8AeXEtZ8GLaSf3m4wYzYNKgg79ZQcTc652pqjWaPMb2CLZjvLY6/eM1VbcSjlCCxTb/UT1GMpTXdzoGkta8SjIGSiLgjnwuyqNXEUtjzMQ3xYHYyuVhoWxz/E5MyFcn3vMxpr4mxuC3F8idYtgMisarYETlxZmX4sNSnoZ06tLhBt2EUUTWRbUPEh6pqCjY7yrZCqnVU48Qt9we5MSB7+oQ+HeEuI7FHxB8SDZT7gB2EqDS1d7TmylbFH5dRMY1D5C2r5UQdoipYZa3G81sisNFHjmS31cntQlkLcaraWsSiP/ALljbuIlU1dOY4ZQCK3lxLdWZwQQOK5mIPiJPGpernSqgCJxn2AVUTny5CxrpL5GCr5PE5yB1NGNG42I6bSv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" onload="var elem=this;setTimeout(function(){elem.onload = null;elem.src=elem.getAttribute('pagespeed_high_res_src');}, 0);"/>
-        </a>
-        </div>
-        <div class="pelInfoToolTip" id="divtool2079">
-        <div class="divTituloTool">
-        <span class="titulotool"><strong>Shin chan. El pequeño samurai</strong></span> <strong>(2002)</strong>
-        </div>
-        <div>
-        <strong>Género: </strong>Comedia       </div>
-        <div class="sinopsis">
-        <strong>Sinopsis:</strong> En Shin chan el pequeño samurái Shinnosuke viaja en el tiempo como por arte de magia hasta el Japón del año 1574, una época llena de conflictos. En una batalla entre clanes conoce a Matabe, un joven samurái solitario con el que pronto hace muy buenas migas. Los Nohara, preocupados por la desaparición de su [...]       </div>
-        <div>
+        <a target="_blank" href="http://www.pelispekes.com/las-aventuras-de-tiny-toons-o-como-he-disfrutado-de-mis-vacaciones/">
+<img width="145" height="199" border="0" src="http://www.pelispekes.com/caratula-pekes/6823-145x199.jpg" alt="Ver pelicula Las aventuras de Tiny Toons, o cómo he disfrutado de mis vacaciones"/>
+</a>
+</div>
+<div class="pelInfoToolTip" id="divtool6823">
+<div class="divTituloTool">
+<span class="titulotool"><strong>Las aventuras de Tiny Toons, o cómo he disfrutado de mis vacaciones</strong></span> <strong>(1992)</strong>
+</div>
+<div>
+<strong>Género: </strong>1992 / Animacion / Infantil / L / T
+</div>
+<div class="sinopsis">
+<strong>Sinopsis:</strong> Durante las vacaciones, Búster y Babs van a vivir la batalla de agua más movidita, mientras que Plucky Duck y Hamton Pig van a compartir un viaje en coche digno de las aventuras de Thelma &#038; Louise&#8230; Película directa a DVD protagonizada por los Tiny Toons, y que parodiaba una gran cantidad de películas, como [...]
+</div>
+<div>
         '''
         patron  = '<a target="_blank" href="(.*?)"[^<]+'
-        patron += '<img width="\d+" height="\d+" border="0" pagespeed_high_res_src="(.*?)" alt="(.*?)".*?'
+        patron += '<img width="\d+" height="\d+" border="0" src="(.*?)" alt="(.*?)".*?'
         patron += '<strong>Sinopsis:</strong>(.*?)</div>'
         matches2 = re.compile(patron,re.DOTALL).findall(match)
         logger.info("hay %d matches2" % len(matches2))
@@ -84,6 +86,7 @@ def novedades(item):
         scrapedurl = match
         scrapedthumbnail = ""
         scrapeddescription = ""
+	scrapedplot = ""
         if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
 
         itemlist.append( Item(channel=item.channel , action="novedades"   , title=scrapedtitle , url=scrapedurl , thumbnail=scrapedthumbnail, plot=scrapedplot ))
