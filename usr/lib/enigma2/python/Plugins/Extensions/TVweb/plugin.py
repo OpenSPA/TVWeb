@@ -68,7 +68,7 @@ config.plugins.TVweb.imagecache = ConfigEnableDisable(default=True)
 config.plugins.TVweb.showadultcontent = ConfigYesNo(default=False)
 config.plugins.TVweb.showsecretcontent = ConfigYesNo(default=False)
 config.plugins.TVweb.downloadimages = ConfigYesNo(default=True)
-config.plugins.TVweb.version = NoSave(ConfigText(default="1.0.8"))
+config.plugins.TVweb.version = NoSave(ConfigText(default="1.0.9"))
 config.plugins.TVweb.resolution = ConfigSelection(default="360p", choices = ["240p", "360p", "480p", "720p", "1080p"])
 config.plugins.TVweb.freemem = ConfigInteger(default=10, limits=(1, 60))
 
@@ -1186,6 +1186,14 @@ class TVweb2(Screen):
 	self.picload2 = ePicLoad()
 	self.picload2.PictureData.get().append(self.finish_decode)
 	self["thumbnail"] = Pixmap()
+	self.img0="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/item.png"
+	if fileExists(self.img0):
+		sc = AVSwitch().getFramebufferScale()
+		self.picload2.setPara((162, 139, sc[0], sc[1], False, 1, "#00e0e0e0"))
+		self.picload2.startDecode(self.img0)
+	self.inicio=True
+
+
         if self.feedtitle == _("Bookmarks"):
             self.getBookmarks()
         else:
@@ -1400,14 +1408,14 @@ class TVweb2(Screen):
 			text = partes[1]
 		else:
 			text = ""
-	    #try:
-       	    exec "from TVweb.channels import "+canal
-	    if accion == "search":
+	    try:
+       	    	exec "from TVweb.channels import "+canal
+	    	if accion == "search":
             		exec "itemlista = "+canal+"."+accion+"(item, text)"
-	    else:
+	    	else:
            		exec "itemlista = "+canal+"."+accion+"(item)"
-	    #except:
-	    #	itemlista.append(Item(title="ERROR in module "+canal))
+	    except:
+	    	itemlista.append(Item(title="ERROR in module "+canal))
             print "%d elementos" % len(itemlista)
 
 	self.total = len(itemlista)
@@ -1440,14 +1448,7 @@ class TVweb2(Screen):
                 imgurl = item.thumbnail
                 url = "TVweb" + "|" + item.channel + "|" + item.action + "|" + item.url + "|" + item.server
 
-	    ###### pasa imgurl a utf8
- 	    try:
-		imgurl = imgurl.decode("utf-8").encode("utf-8")
-	    except:
-		try:
-			imgurl = imgurl.decode("iso-8859-1").encode("utf-8")
-		except:
-			pass
+
 	    ###### limpia titulo y pasa a utf8
 	    try:
                	name = limpia_texto(item.title)
@@ -1461,6 +1462,20 @@ class TVweb2(Screen):
 		except:
 			pass
  
+	    if accion == "mirrors" or accion == "findvideos":   ### change title for tucinecom
+		item.title = self.feedtitle
+		imgurl = self.olditem.thumbnail
+		item.plot = self.olditem.plot
+
+	    ###### pasa imgurl a utf8
+ 	    try:
+		imgurl = imgurl.decode("utf-8").encode("utf-8")
+	    except:
+		try:
+			imgurl = imgurl.decode("iso-8859-1").encode("utf-8")
+		except:
+			pass
+
 	    ###### limpia detalle y pasa a utf8
 	    try:
                	item.plot = limpia_texto(item.plot)
@@ -1474,20 +1489,18 @@ class TVweb2(Screen):
 		except:
 			pass
 
-	    if accion == "mirrors" or accion == "findvideos":   ### change title for tucinecom
-		item.title = self.feedtitle
 
             # APPEND ITEM TO LIST
 	    self.listado.append(item)
             self.itemlist.append((index, framePos, Page, name, imgurl, url, type, "item"))
 	    self.ItemsList.append((name, item.folder, False))
-	    if imgurl != "":
+	    if imgurl != "" and imgurl!=None:
                 filename = config.plugins.TVweb.storagepath.value+"/TVweb/images/" + ASCIItranslit.legacyEncode(name+"_"+imgurl.split(':')[-1]).lower()[25:]
 		if not config.plugins.TVweb.downloadimages.value:
 			if os_path.exists(filename) == True:
 				self.thumbnails[index] = filename
 			else:
-				self.thumbnails[index]="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/item.png"
+				self.thumbnails[index]=self.img0
 			if index == 0:
 				self.PrintImg(0)
 		elif os_path.exists(filename) == True and config.plugins.TVweb.imagecache.value == True:
@@ -1497,18 +1510,20 @@ class TVweb2(Screen):
 		else:
             		downloadPage(imgurl, filename, agent="Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.2) Gecko/2008091620 Firefox/3.0.2").addCallback(self.finishdownload,filename, index).addErrback(self.showThumbError, filename, imgurl,index)
 	    else:
-		self.thumbnails[index]="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/item.png"
-		if index == 0:
-			self.PrintImg(0)
+		self.thumbnails[index]=self.img0
+		#if index == 0:
+		#	self.PrintImg(0)
 
             index += 1
 
     def PrintImg(self,index):
 	sc = AVSwitch().getFramebufferScale()
 	filename = self.thumbnails[index]
-	print "[TVweb] DECODING THUMBNAIL file: " +filename
-	self.picload2.setPara((162, 139, sc[0], sc[1], False, 1, "#00e0e0e0"))
-	self.picload2.startDecode(filename)
+	if fileExists(filename) and not self.inicio:
+		print "[TVweb] DECODING THUMBNAIL file: " +filename
+		self.picload2.setPara((162, 139, sc[0], sc[1], False, 1, "#00e0e0e0"))
+		self.picload2.startDecode(filename)
+	self.inicio=False
 	self["seltitle"].setText(self.itemlist[index][3])
 	self["selplot"].setText(self.listado[index].plot)
 	
@@ -1516,6 +1531,7 @@ class TVweb2(Screen):
 	
 
     def finishdownload(self, data, filename, index):
+	self.inicio=False
 	self.thumbnails[index]=filename
 	if index == 0:
 		self.PrintImg(0)
@@ -1533,6 +1549,8 @@ class TVweb2(Screen):
 	ptr = self.picload2.getData()
 	if ptr != None:
 		self["thumbnail"].instance.setPixmap(ptr.__deref__())
+		self["thumbnail"].show()
+
 
     def SelectionChanged(self):
 	index = self["listado"].l.getCurrentSelectionIndex()
@@ -1565,51 +1583,51 @@ class TVweb2(Screen):
 	else:
 		extra = self.listado[self.index].extra
         item = Item(title=self.feedtitle,url=urlx,channel=canal,action=accion, server=serverx, extra=extra)
-        if (accion=="findvideos" and canal!="seriesyonkis"): ## or (accion=="detail" and canal=="peliculaseroticas"):
-            try:
-                exec "from TVweb.channels import "+canal
-                exec "itemlista = "+canal+"."+accion+"(item)"
-		n = 0
-		i = -1
-		url = ""
-		server = ""
-                for items in itemlista:
-                    items.folder=False
+        #if (accion=="findvideos" and canal!="seriesyonkis"): ## or (accion=="detail" and canal=="peliculaseroticas"):
+        #    try:
+        #        exec "from TVweb.channels import "+canal
+        #        exec "itemlista = "+canal+"."+accion+"(item)"
+	#	n = 0
+	#	i = -1
+	#	url = ""
+	#	server = ""
+        #        for items in itemlista:
+        #            items.folder=False
 		    # comprueba el primer server que funciona
-		    video_urls = []
-		    if (i == -1 or "vk" in items.server) and items.server != server:
-		    	try:
-            			exec "from servers import "+items.server+" as servermodule"
-            			video_urls = servermodule.get_video_url( items.url )
-				if len(video_urls)>0:
-					i = n
-            	    	except:
-				pass
-		    server = items.server
-		    n = n+1
- 		item = itemlista[i]
-            except:
-                from core import scrapertools
-                data = scrapertools.cache_page(urlx)
+	#	    video_urls = []
+	#	    if (i == -1 or "vk" in items.server) and items.server != server:
+	#	    	try:
+        #    			exec "from servers import "+items.server+" as servermodule"
+        #    			video_urls = servermodule.get_video_url( items.url )
+	#			if len(video_urls)>0:
+	#				i = n
+        #    	    	except:
+	#			pass
+	#	    server = items.server
+	#	    n = n+1
+ 	#	item = itemlista[i]
+        #    except:
+        #        from core import scrapertools
+        #        data = scrapertools.cache_page(urlx)
                 
                 # Busca los enlaces a los videos
-        	from servers import servertools
-                listavideos = servertools.findvideos(data)
+        #	from servers import servertools
+        #        listavideos = servertools.findvideos(data)
 
-		n=0
-		m=0
-		for videos in listavideos:
-			if "vk" in videos[0]:
-				n=m
-				break
-			m = m+1
+	#	n=0
+	#	m=0
+	#	for videos in listavideos:
+	#		if "vk" in videos[0]:
+	#			n=m
+	#			break
+	#		m = m+1
            
-		if len(listavideos)>0:                
-			scrapedtitle = item.title.strip() + " - " + listavideos[n][0]
-                	item.url = listavideos[n][1]
-                	item.server = listavideos[n][2]
+	#	if len(listavideos)>0:                
+	#		scrapedtitle = item.title.strip() + " - " + listavideos[n][0]
+        #        	item.url = listavideos[n][1]
+        #        	item.server = listavideos[n][2]
 
-	    accion = "play" 
+	#    accion = "play" 
 
 	if accion == "play" or (accion=="capitulo" and canal=="mitele"):
             try:
@@ -1659,7 +1677,7 @@ class TVweb2(Screen):
 		title = self.feedtitle
 		text = self.feedtext
 	    else:
-		title = self.itemlist[self.index][3]
+		title = self.listado[self.index].title ##self.itemlist[self.index][3]
 		text = self.feedtext + " - " + self.itemlist[self.index][3]
             if self.itemlist[self.index][6] == "cat":
 	        self.session.open(TVweb2, self.itemlist[self.index][5], title, text, self.listado[self.index],self.img1)
@@ -1765,6 +1783,14 @@ class MovieInfoScreen(Screen):
         self["key_yellow"] = Button(_("Cached Play"))
         self["key_blue"] = Button(_("Bookmark"))
 
+    	try:
+		name = name.decode("utf-8").encode("utf-8")
+	except:
+		try:
+			name = name.decode("iso-8859-1").encode("utf-8")
+		except:
+			pass
+ 
         self.url = movieurl
 	self.title = name
 	self.item = item
