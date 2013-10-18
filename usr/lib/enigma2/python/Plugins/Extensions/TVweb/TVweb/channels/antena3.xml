@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<version>
-	<name>antena3</name>
-	<tag>5</tag>
-	<date>23/01/2012</date>
-	<changes>Arreglado el fallo por el que no se veían programas antiguos</changes>
-</version>
