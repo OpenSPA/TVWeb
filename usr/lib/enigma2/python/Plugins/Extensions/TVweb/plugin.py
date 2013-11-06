@@ -68,7 +68,7 @@ config.plugins.TVweb.imagecache = ConfigEnableDisable(default=True)
 config.plugins.TVweb.showadultcontent = ConfigYesNo(default=False)
 config.plugins.TVweb.showsecretcontent = ConfigYesNo(default=False)
 config.plugins.TVweb.downloadimages = ConfigYesNo(default=True)
-config.plugins.TVweb.version = NoSave(ConfigText(default="1.0.10"))
+config.plugins.TVweb.version = NoSave(ConfigText(default="1.0.11"))
 config.plugins.TVweb.resolution = ConfigSelection(default="360p", choices = ["240p", "360p", "480p", "720p", "1080p"])
 config.plugins.TVweb.freemem = ConfigInteger(default=10, limits=(1, 60))
 
@@ -100,50 +100,43 @@ def _(txt):
 
 #############
 
-def setResumePoint(session):
+def setResumePoint(session,end=False):
 	global resumePointCacheLast, resumePointCache
 	service = session.nav.getCurrentService()
 	ref = session.nav.getCurrentlyPlayingServiceReference()
-	if (service is not None) and (ref is not None): # and (ref.type != 1):
-		# ref type 1 has its own memory...
+	if (service is not None) and (ref is not None): 
 		seek = service.seek()
 		if seek:
 			pos = seek.getPlayPosition()
 			if not pos[0]:
-				#key = ref.toString()
-				key = service.info().getName()
+				key = ref.getName()
 				lru = int(time())
 				l = seek.getLength()
 				if l:
 					l = l[1]
 				else:
 					l = None
-				resumePointCache[key] = [lru, pos[1], l]
-				if len(resumePointCache) > 50:
-					candidate = key
-					for k,v in resumePointCache.items():
-						if v[0] < lru:
-							candidate = k
-					del resumePointCache[candidate]
-				#if lru - resumePointCacheLast > 3600:
+				if end:
+					position = 0
+				else:
+					position = pos[1]
+				resumePointCache[key] = [lru, position, l]
 				saveResumePoints(session)
 
 
-def getResumePoint(session):
+def getResumePoint(ref):
 	global resumePointCache
-	resumePointCache = loadResumePoints(session)
-	service = session.nav.getCurrentService()
-	ref = session.nav.getCurrentlyPlayingServiceReference()
-	open("/tmp/prueba","w").write(str(resumePointCache))
-	#ref = session.nav.getCurrentlyPlayingServiceReference()
+	resumePointCache = loadResumePoints(ref)
 	if (ref is not None) and (ref.type != 1):
 		try:
-			#entry = resumePointCache[ref.toString()]
-			entry = resumePointCache[service.info().getName()]
+			entry = resumePointCache[ref.getName()]
 			entry[0] = int(time()) # update LRU timestamp
-			return entry[1]
+			last = entry[1]
+			length = entry[2]
 		except KeyError:
-			return None
+			last = None
+			length = 0
+	return last, length
 
 def saveResumePoints(session):
 	global resumePointCacheLast, resumePointCache
@@ -155,11 +148,10 @@ def saveResumePoints(session):
 		cPickle.dump(resumePointCache, f, cPickle.HIGHEST_PROTOCOL)
 	except Exception, ex:
 		print "[InfoBar] Failed to write resumepoints:", ex
-	resumePointCacheLast = int(time())
+	#resumePointCacheLast = int(time())
 
-def loadResumePoints(session):
-	service = session.nav.getCurrentService()
-	name = str(config.plugins.TVweb.storagepath.value)+"/TVweb/"+ASCIItranslit.legacyEncode(service.info().getName())+".cue"
+def loadResumePoints(ref):
+	name = str(config.plugins.TVweb.storagepath.value)+"/TVweb/"+ASCIItranslit.legacyEncode(ref.getName())+".cue"
 	import cPickle
 	try:
 		return cPickle.load(open(name, 'rb'))
@@ -168,7 +160,7 @@ def loadResumePoints(session):
 		return {}
 
 resumePointCache = {}
-resumePointCacheLast = int(time())
+#resumePointCacheLast = int(time())
 
 
 def limpia_texto(s):
@@ -312,7 +304,7 @@ class TVwebMoviePlayer(MoviePlayer):
 		name = str(config.plugins.TVweb.storagepath.value)+"/TVweb/"+ASCIItranslit.legacyEncode(service.info().getName())+".cue"
 		if not fileExists(name):
 			open(name,"w").write("")
-		last = getResumePoint(self.session)
+		last, length = getResumePoint(self.session.nav.getCurrentlyPlayingServiceReference())
 		if last is None:
 			return
 		if seekable is None:
@@ -340,7 +332,6 @@ class TVwebMoviePlayer(MoviePlayer):
 
     def leavePlayer(self):
         print "[TVweb] TVwebMoviePlayer.leavePlayer"
-	setResumePoint(self.session)
 	list = ((_("Yes"), True), (_("No"), False),)
 	self.session.openWithCallback(self.leavePlayerConfirmed, ChoiceBox, title=_("Stop playing this movie?"), list = list)
 
@@ -351,8 +342,10 @@ class TVwebMoviePlayer(MoviePlayer):
         print "[TVweb] TVwebMoviePlayer.leavePlayerConfirmed"
 	answer = answer and answer[1]
         if answer == True:
+		setResumePoint(self.session)
            	self.close()
 	elif self.end == True:
+		setResumePoint(self.session, True)
 		self.end = False
 		self.setSeekState(self.SEEK_STATE_PLAY)
 
@@ -1088,15 +1081,35 @@ def tvlistEntry(entry):
 	res = [ (entry[1], entry[0]) ]
 	# mpiero checqueo de texto para personalizar icono
 	textoparaicono=entry[0].replace("...","").lower()
-	name = str(config.plugins.TVweb.storagepath.value)+"/TVweb/"+ASCIItranslit.legacyEncode(entry[0])+".cue"
-	if fileExists(name):
-		tn="3"
+	#name = str(config.plugins.TVweb.storagepath.value)+"/TVweb/"+ASCIItranslit.legacyEncode(entry[0])+".cue"
+	name = '4097:0:0:0:0:0:0:0:0:0:%s:%s' % ("0", quote(entry[0]))
+	sref = eServiceReference(name)
+	last, length = getResumePoint(sref)
+	perc = 0
+	if (last == None or last == 0) and length > 0:
+		perc = 100
+	elif (last == None or last == 0) and length == 0 and fileExists(str(config.plugins.TVweb.storagepath.value)+"/TVweb/"+ASCIItranslit.legacyEncode(entry[0])+".cue"):
+		perc = 100
+	elif last>0:
+		perc = int((float(last) / 90000 / (float(length) / 90000)) * 100)
 	if textoparaicono=="search" or textoparaicono=="buscar":
 		png = LoadPixmap(cached=True, path="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/search.png")
 	elif textoparaicono.startswith(">>") or textoparaicono=="next page" or "gina siguiente" in textoparaicono:
 		png = None
-	elif fileExists(name):
-		png = LoadPixmap(cached=True, path="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/checkok.png")
+	elif perc>0:
+		ico = None
+		if perc>0 and perc<30:
+			ico = "/usr/share/enigma2/skin_default/icons/part_1_4.png"
+		elif perc>29 and perc<60:
+			ico = "/usr/share/enigma2/skin_default/icons/part_2_4.png"
+		elif perc>59 and perc<70:
+			ico = "/usr/share/enigma2/skin_default/icons/part_3_4.png"
+		elif perc>69 and perc<85:
+			ico = "/usr/share/enigma2/skin_default/icons/part_4_4.png"
+		elif perc>84:
+			ico = "/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/checkok.png"
+		if ico is not None:
+			png = LoadPixmap(cached=True, path=ico)
 	elif entry[2]:
 		if entry[1]:
 			png = LoadPixmap(cached=True, path="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/iBookmark.png")
@@ -1170,6 +1183,7 @@ class TVweb2(Screen):
             "cancel": self.Exit,
             "ok": self.key_ok,
             "blue": self.selectBookmark,
+	    "green": self.imdb,
             "contextMenu": self.key_menu,
         }, -1)
 
@@ -1218,6 +1232,14 @@ class TVweb2(Screen):
 			self.picload.startDecode(img1)
 	self.onShow.append(self.relist)
 	
+
+    def imdb(self):
+	try:
+		titulo = self.listado[self["listado"].l.getCurrentSelectionIndex()].title 
+		from Plugins.Extensions.spzIMDB.plugin import spzIMDB
+		spzIMDB(self.session,tbusqueda=titulo)
+	except:
+		pass
 
     def relist(self):
 	#self.ItemsList = templist
@@ -2246,6 +2268,8 @@ class TVweb_MenuOptions(Screen):
             list.append((_("Bookmark selected movie"), "addbookmark", "menu_addbookmark", "50"))
         elif self.movieinfo[6] == "cat":
             list.append((_("Bookmark selected category"), "addbookmark", "menu_addbookmark", "50"))
+	if fileExists("/usr/lib/enigma2/python/Plugins/Extensions/spzIMDB/plugin.pyo"):
+            list.append((_("Internet Info"), "imdbinfo", "menu_imdbinfo", "50"))
         list.append((_("View Bookmarks"), "viewbookmarks", "menu_viewbookmarks", "50"))
         list.append((_("View Downloads"), "viewdownloads", "menu_viewdownloads", "50"))
         list.append((_("TVweb Settings"), "settingsmenu", "menu_settings", "50"))
@@ -2272,7 +2296,7 @@ class TVweb_MenuOptions(Screen):
                     tmpdata = ""
                     tmpfile = open(bookmarkfile, "r")
                     for line in tmpfile:
-                        if self.movieinfo[5] not in line:
+                        if self.movieinfo[4] not in line:
                             tmpdata = tmpdata + line
 
                     tmpfile.close()
@@ -2284,6 +2308,14 @@ class TVweb_MenuOptions(Screen):
                 self.session.openWithCallback(self.Exit, TVweb_TaskViewer)
             elif selection[1] == "settingsmenu":
                 self.session.openWithCallback(self.Exit, TVweb_Settings)
+            elif selection[1] == "imdbinfo":
+		try:
+			titulo = self.item.title 
+			from Plugins.Extensions.spzIMDB.plugin import spzIMDB
+			spzIMDB(self.session,tbusqueda=titulo)
+		except:
+			pass
+
             else:
                 self.Exit()
         else:
