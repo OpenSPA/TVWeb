@@ -18,111 +18,164 @@ CHANNELNAME = "a3media"
 import hmac
 
 
-from hashlib import md5
-trans_5C = "".join(chr(x ^ 0x5c) for x in xrange(256))
-trans_36 = "".join(chr(x ^ 0x36) for x in xrange(256))
-blocksize = md5().block_size
-
-def HmacMD5(key, msg):
-	if len(key) > blocksize:
-		key = md5(key).digest()
-	key += chr(0) * (blocksize - len(key))
-	o_key_pad = key.translate(trans_5C)
-	i_key_pad = key.translate(trans_36)
-	return md5(o_key_pad + md5(i_key_pad + msg).digest())
-
 def isGeneric():
     return True
 
 def mainlist(item):
     logger.info("[a3media.py] mainlist")
 
-    url="http://servicios.atresplayer.com/api/mainMenu"
+    '''
+	<nav class="list clearfix">	
+							<a  href="http://www.atresplayer.com/television/series/">Series</a>
+					<a  href="http://www.atresplayer.com/television/programas/">Programas</a>
+					<a  href="http://www.atresplayer.com/television/deportes/">Deportes</a>
+					<a  href="http://www.atresplayer.com/television/noticias/">Noticias</a>
+					<a  href="http://www.atresplayer.com/television/documentales/">Documentales</a>
+					<a  href="http://www.atresplayer.com/television/series-infantiles/">Infantil</a>
+					<a  href="http://www.atresplayer.com/television/webseries/">Webseries</a>
+					<a  href="http://www.atresplayer.com/television/especial/">Más Contenido</a>
+	</nav>
+    '''
+
+    url="http://www.atresplayer.com/"
     data = scrapertools.cachePage(url)
     logger.info(data)
-    lista = load_json(data)[0]
-    if lista == None: lista =[]
-  
-    url2="http://servicios.atresplayer.com/api/categorySections/"
+
+    patron  = '<nav class="list clearfix">(.*?)</nav>'
+
+    bloque = scrapertools.get_match(data,patron)
+
     itemlist = []
 
-    itemlist.append( Item(channel=CHANNELNAME, title="Destacados" , action="episodios" , url="http://servicios.atresplayer.com/api/highlights", folder=True) )
+    if str(bloque)!="":
+    	patron  = '<a[^h]+href="([^"]+)">([^<]+)</a>'
+    	matches = re.compile(patron,re.DOTALL).findall(bloque)
 
-    for entry in lista['menuItems']:
-	eid = entry['idSection']
-	scrapedtitle = entry['menuTitle']
-	scrapedurl = url2 + str(eid)
-    
-        itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="secciones" , url=scrapedurl, folder=True) )
+    	itemlist.append( Item(channel=CHANNELNAME, title="Destacados" , action="programas" , extra="dest", url=url, folder=True) )
 
-    itemlist.append( Item(channel=CHANNELNAME, title="A.....Z" , action="secciones" , url="http://servicios.atresplayer.com/api/sortedCategorySections", folder=True) )
+    	for scrapedurl, scrapedtitle in matches:
+        	itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="programas" , url=scrapedurl, folder=True) )
+
+    	itemlist.append( Item(channel=CHANNELNAME, title="A.....Z" , action="alfabetico" , url="http://www.atresplayer.com/buscador/sections.json", folder=True) )
 
 
     return itemlist
 
-def secciones(item):
-    logger.info("[a3media.py] secciones")
+def alfabetico(item):
+    logger.info("[a3media.py] temporadas")
 
     data = scrapertools.cachePage(item.url)
     logger.info(data)
-    lista = load_json(data)
-    if lista == None: lista =[]
+
+    '''
+{"href":"television/series-infantiles/academia-gladiadores/","img":"/clipping/2013/06/26/00721/703.jpg","titulo":"Academia de Gladiadores","letra":"A","descripcion":"ATRESPLAYER TV. Vídeos de ACADEMIA DE GLADIADORES.","cadena":"atres"}
+    '''
+
+    patron  = '{"href":"([^"]+)","img":"([^"]+)","titulo":"([^"]+)"'
+
+    matches = re.compile(patron,re.DOTALL).findall(data)
 
     itemlist = []
-
-    for entrys in lista:
-	entry = entrys['section']
-	extra = entry['idSection']
-	scrapedtitle = entry['menuTitle']
-	scrapedurl = item.url
-	if entry.has_key('storyline'): scrapedplot = entry['storyline']
-	else: scrapedplot = ""
-	scrapedthumbnail = entry['urlImage'].replace('.jpg','03.jpg')
- 
-	if entry['drm'] == False: ##solo añade las secciones con visualizacion no protegida  
-        	# Añade al listado
-        	itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="temporadas" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , extra=extra, folder=True) )
+    for url,img,scrapedtitle in matches:
+	scrapedurl = "http://www.atresplayer.com/" + url
+	scrapedthumbnail =  "http://www.atresplayer.com" + img
+	scrapedplot = ""
+	# Añade al listado
+	itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="temporadas" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , folder=True) )
 
     return itemlist
+
 
 def temporadas(item):
     logger.info("[a3media.py] temporadas")
 
     data = scrapertools.cachePage(item.url)
     logger.info(data)
-    lista = load_json(data)
-    if lista == None: lista =[]
 
-    url2="http://servicios.atresplayer.com/api/episodes/"
+    '''
+	<div class="fn_sinopsis_lay fn_slide_lay hide">
+		<p class="mar-b_5">La acción se desarrolla a partir de octubre de 1961. Tras la doble boda entre Mauro e Inés y Daniel y Belén, muchos de los personajes deciden rehacer sus vidas lejos de Madrid. Mauro e Inés, junto con Tomás, se trasladan a Barcelona. Pedrito, en contra de su voluntad, se marcha finalmente con Felisa a Suiza para reencontrarse con su familia, abandonando a una desconsolada Dorita. Daniel y Belén cruzarán finalmente el charco hasta Colombia, dejando el hostal La Estrella en manos de Manolita. El eje central de todos los personajes, nuevos y antiguos, continúa girando alrededor de la Plaza de los Frutos, escenario principal de la ficción, y de El Asturiano, un bar clásico que se adapta a los tiempos que corren y que servirá de punto de encuentro entre los personajes y lugar de unión entre las distintas tramas.</p>
+	</div>
+    '''
+
+    patron  = '<p class="mar-b_5">(.*?)</p>'
+
+    try:
+    	plot = scrapertools.get_match(data,patron)
+	item.plot = plot
+    except:
+        pass
+
+
+    '''
+					<ul class="fn_lay hide">
+							<li><a class="item chapter_b mar-b_5" href="http://www.atresplayer.com/television/series/amar-es-para-siempre/temporada-2/">Temporada 2</a></li>
+							<li><a class="item chapter_b mar-b_5" href="http://www.atresplayer.com/television/series/amar-es-para-siempre/temporada-1/">Temporada 1</a></li>
+					</ul>
+    '''
+
+    patron  = '<li><a class="item chapter_b mar-b_5" href="([^"]+)">([^<]+)</a></li>'
+
+    matches = re.compile(patron,re.DOTALL).findall(data)
+
     itemlist = []
 
     scrapedplot=""
-    n = 0
-    ids = None
-    for entrys in lista:
-	entry = entrys['section']
-	if entry['idSection'] == item.extra:
-	    ids = entry['idSection']
-	    if entry.has_key('subCategories'):
-		for temporada in entry['subCategories']:
-			n += 1
-			extra = temporada['idSection']
-			scrapedtitle = temporada['menuTitle']
-			scrapedurl = url2 + str(extra)
-			if temporada.has_key('storyline'): scrapedplot = temporada['storyline']
-			else: scrapedplot = item.plot
-			scrapedthumbnail = entry['urlImage'].replace('.jpg','03.jpg')
-    
-        		# Añade al listado
-        		itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="episodios" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , extra=extra, folder=True) )
+    for scrapedurl, scrapedtitle  in matches:
+	# Añade al listado
+	itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="episodios" , url=scrapedurl, thumbnail=item.thumbnail, plot=item.plot , folder=True) )
 
+    if len(itemlist) == 0:   
+	if not '<div class="mod_carrousel_compuesto clearfix">' in data:  	## hay subprogramas
+		itemlist = programas(item)
+	else:					## No hay temporadas?
+		itemlist = episodios(item)
 
-    if n == 1:  #si solo hay una temporada cargar los episodios
-	itemlist = episodios(itemlist[0])
+    return itemlist
 
-    if n == 0 and ids != None:  #si no hay temporadas pueden ser mas secciones
-	item.url = "http://servicios.atresplayer.com/api/categorySections/" + str(ids)
-	itemlist = secciones(item)
+def programas(item):
+    logger.info("[a3media.py] programas")
+
+    data = scrapertools.cachePage(item.url)
+    logger.info(data)
+
+    if item.extra == "dest":
+    	try:
+		patron = '<div class="grid_4">(.*?)<div class="grid_12">'
+		match = scrapertools.get_match(data,patron)
+		data = match
+    	except:
+		pass
+
+    '''
+		<div class="mod_promo antena3 ">
+				<a title="El tiempo entre costuras" href="http://www.atresplayer.com/television/series/el-tiempo-entre-costuras/">
+					<img title="El tiempo entre costuras" src="/clipping/2013/10/21/00568/702.jpg"  alt="El tiempo entre costuras"/>
+				</a>
+    '''
+
+    patron  = '<div class="mod_promo [^"]+">[^<]+'
+    patron += '<a title="([^"]+)" href="([^"]+)">[^<]+'
+    patron += '<img.*?src="([^"]+)"'
+    if item.extra == "dest":
+	patron += '.*?<span class="segunda-linea fn_ellipsis">([^<]+)</span>'
+
+    matches = re.compile(patron,re.DOTALL).findall(data)
+
+    itemlist = []
+
+    for match in matches:
+	scrapedtitle = match[0]
+	scrapedurl = match[1]
+	scrapedthumbnail = "http://www.atresplayer.com" + match[2]
+	scrapedplot = ""
+	if item.extra == "dest":
+		scrapedtitle = scrapedtitle + " "+match[3] 
+		accion = "play" 
+	else: 
+		accion = "temporadas"
+	# Añade al listado
+	itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action=accion , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , folder=True) )
 
     return itemlist
 
@@ -131,55 +184,69 @@ def episodios(item):
 
     data = scrapertools.cachePage(item.url)
     logger.info(data)
-    lista = load_json(data)
 
-    if lista == None: lista =[]
+    patron  = '<p class="mar-b_5">(.*?)</p>'
+
+    try:
+    	plot = scrapertools.get_match(data,patron)
+	item.plot = plot
+    except:
+	pass
+
+    data = scrapertools.cachePage(item.url+"carousel.json")
+    logger.info(data)
+
+    '''
+{"title":"42 (31-10-13)","hrefHtml":"http://www.atresplayer.com/television/series/amar-es-para-siempre/temporada-2/capitulo-42-31-10-13_2013103000399.html","srcImage":"/clipping/2013/10/30/00042/703.jpg","icono":"","textButton":"Ver contenido"}
+    '''
+
+    patron = '{"title":"([^"]+)","hrefHtml":"([^"]+)","srcImage":"([^"]+)","icono":([^,]+),"textButton":"[^"]+"}'
+
+    matches = re.compile(patron,re.DOTALL).findall(data)
 
     itemlist = []
 
-    if lista.has_key('episodes'):
-    	episodes = lista['episodes']
-    elif lista.has_key('items'):
-    	episodes = lista['items']
-    else:
-	episodes = []
-	
-    for entrys in episodes:
-    	if entrys.has_key('episode'):
-		entry = entrys['episode']
-		tipo = entry['type']
-		episode = entry['contentPk']
-		scrapedtitle = entry['name']
-		if tipo == "REGISTER":
-			scrapedtitle = scrapedtitle + " (R)"
-		elif tipo == "PREMIUM":
-			scrapedtitle = scrapedtitle + " (P)"
-	
-		scrapedurl = "http://servicios.atresplayer.com/api/urlVideo/%s/%s/" % (episode, "android_tablet") 
-		extra = episode
-		if entry.has_key('storyline'): scrapedplot = entry['storyline']
-		else: scrapedplot = item.plot
-		scrapedthumbnail = entry['urlImage'].replace('.jpg','03.jpg')
-    
-		if tipo == "FREE": #solo carga los videos que no necesitan registro ni premium
-			# Añade al listado
-			itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="play" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , extra = extra, folder=False) )
+    for scrapedtitle, scrapedurl, scrapedthumbnail, icono in matches:
+	scrapedthumbnail = "http://www.atresplayer.com" + scrapedthumbnail
+	icono=icono.replace('"','')
+	if icono=="":
+		# Añade al listado
+		itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="play" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=item.plot , folder=False) )
+
 
     return itemlist
+
+
 
 def play(item):
     logger.info("[a3media.py] play")
 
-    token = d(item.extra, "puessepavuestramerced")
-    url = item.url + token
+    '''
+<section class="mod_player">
+	<div id="capa_modulo_player" episode="20131030-EPISODE-00002-false"></div> 
+    '''
 
-    data = scrapertools.cachePage(url)
+    data = scrapertools.cachePage(item.url)
     logger.info(data)
-    lista = load_json(data)
+
+    patron  = '<section class="mod_player">[^<]+'
+    patron += '<div id="[^"]+" episode="([^"]+)"></div>'
+
+    episode = scrapertools.get_match(data,patron)
     itemlist = []
-    if lista != None: 
-	item.url = lista['resultObject']['es']
-    	itemlist.append(item)
+
+    if len(episode)>0:
+    	token = d(episode, "puessepavuestramerced")
+    	url = "http://servicios.atresplayer.com/api/urlVideoLanguage/%s/%s/%s/es" % (episode, "android_tablet",token)
+    	data = scrapertools.cachePage(url)
+    	logger.info(data)
+    	lista = load_json(data)
+    	if lista != None: 
+		#item.url = lista['resultObject']['es']
+		item.url = lista['resultDes']
+		if item.url == "Idioma inválido":     #### DRM encrypted
+			item.url = "El video no puede verse en esta sistema"
+    		itemlist.append(item)
 
 
     return itemlist
@@ -196,7 +263,6 @@ def d(s, s1):
 
 def e(s, s1):
     return hmac.new(s1, s).hexdigest()
-
 
 
 def load_json(data):
