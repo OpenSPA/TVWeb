@@ -229,8 +229,7 @@ def play(item):
     data = scrapertools.cachePage(item.url)
     logger.info(data)
 
-    patron  = '<section class="mod_player">[^<]+'
-    patron += '<div id="[^"]+" episode="([^"]+)"></div>'
+    patron = '<div id="[^"]+" episode="([^"]+)"></div>'
 
     episode = scrapertools.get_match(data,patron)
     itemlist = []
