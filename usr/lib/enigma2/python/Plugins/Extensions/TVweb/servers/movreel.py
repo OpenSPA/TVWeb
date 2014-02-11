@@ -11,6 +11,7 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
+from core import jsunpack
 
 def test_video_exists( page_url ):
     return True,""
@@ -21,7 +22,20 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     data = scrapertools.cache_page(page_url)
 
-    media_url = scrapertools.get_match(data,'<param name="src" value="([^"]+)"')
+    op = scrapertools.get_match(data,'<input type="hidden" name="op" value="([^"]+)">')
+    file_code = scrapertools.get_match(data,'<input type="hidden" name="file_code" value="([^"]+)">')
+    w = scrapertools.get_match(data,'<input type="hidden" name="w" value="([^"]+)">')
+    h = scrapertools.get_match(data,'<input type="hidden" name="h" value="([^"]+)">')
+    method_free = scrapertools.get_match(data,'<input type="submit" name="method_free" value="([^"]+)">')
+
+    #op=video_embed&file_code=yrwo5dotp1xy&w=600&h=400&method_free=Close+Ad+and+Watch+as+Free+User
+    post = urllib.urlencode( {"op":op,"file_code":file_code,"w":w,"h":h,"method_free":method_free} )
+
+    data = scrapertools.cache_page(page_url,post=post)
+    data = jsunpack.unpack(data)
+    logger.info("data="+data)
+
+    media_url = scrapertools.get_match(data,'file\:"([^"]+)"')
     video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [movreel]",media_url])
 
     for video_url in video_urls:

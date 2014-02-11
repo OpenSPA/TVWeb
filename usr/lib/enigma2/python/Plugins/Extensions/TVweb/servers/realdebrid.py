@@ -41,19 +41,26 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     else:
         logger.info("Ya estas logueado en Real-Debrid")
     
-    url = 'http://real-debrid.com/lib/ajax/generator.php?lang=es&sl=1&link=%s' % page_url
+    #url = 'http://real-debrid.com/lib/ajax/generator.php?lang=es&sl=1&link=%s' % page_url
+    url = 'https://real-debrid.com/ajax/unrestrict.php?link=%s' % page_url
     data = scrapertools.cache_page(url)
+        
+    listaDict=load_json(data)
+    if 'generated_links' in listaDict :
+        generated_links = listaDict['generated_links']
+        for link in generated_links :
+            return link[2].encode('utf-8')
+    elif 'main_link' in listaDict :
+        return listaDict['main_link'].encode('utf-8')
+    else :
+        if 'message' in listaDict :    
+            msg = listaDict['message'].encode('utf-8')        
+            server_error = "REAL-DEBRID: " + msg
+            logger.info(msg)
+            return server_error
+        else :
+            return "REAL-DEBRID: No generated_link and no main_link"
     
-    
-    #print data
-    patron = 'http://(.*?)'
-    matches = re.compile(patron).findall(data)
-    if len(matches)>0:
-        return data
-    else:
-        server_error = "REAL-DEBRID: " + data
-        logger.info(data)
-        return server_error
 
 def correct_url(url):
     if "userporn.com" in url:
@@ -62,3 +69,34 @@ def correct_url(url):
     if "putlocker" in url:
         url = url.replace("/embed/","/file/")
     return url
+
+def load_json(data):
+    # callback to transform json string values to utf8
+    def to_utf8(dct):
+        
+        rdct = {}
+        for k, v in dct.items() :
+            
+        
+            if isinstance(v, (str, unicode)) :
+                rdct[k] = v.encode('utf8', 'ignore')
+            else :
+                rdct[k] = v
+        
+        return rdct
+
+    try:
+        import json
+    except:
+        try:
+            import simplejson as json
+        except:
+            from lib import simplejson as json
+
+    try :       
+        json_data = json.loads(data, object_hook=to_utf8)
+        return json_data
+    except:
+        import sys
+        for line in sys.exc_info():
+            logger.error( "%s" % line )

@@ -14,7 +14,8 @@ from core import config
 
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
     logger.info("[disneychannel.py] get_video_url(page_url='%s')" % page_url)
-    
+    video_urls = []
+
     # Descarga la página
     # http://replay.disneychannel.es/phineas-y-ferb/el-lado-doof-de-la-luna.html
     data = scrapertools.cache_page(page_url)
@@ -72,13 +73,24 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     </multimedias>
     </dataViewer>
     '''
-    url_base = scrapertools.get_match( data,"<urlHttpVideo><\!\[CDATA\[([^\]]+)\]\]></urlHttpVideo>" )
-    url_video = scrapertools.get_match( data,"<archivo><\!\[CDATA\[([^\]]+)\]\]></archivo>" )
-    url = url_base + url_video
-    logger.info("url="+url)
+    try:
+        url_base = scrapertools.get_match( data,"<urlHttpVideo><\!\[CDATA\[([^\]]+)\]\]></urlHttpVideo>" )
+        patron_url_video = "<archivoMultimedia>[^<]+<archivo><\!\[CDATA\[([^\]]+)\]\]></archivo>"
+        matches = re.compile(patron_url_video,re.DOTALL).findall(data)
+        #if DEBUG: scrapertools.printMatches(matches)
+        parte = 1
+        for url_video in matches:
+            url = url_base + url_video
+            logger.info("url="+url)
 
-    video_urls = []
-    video_urls.append( [ "[disneychannel]" , url ] )
+            if len(matches)>1:
+                video_urls.append( [ "(parte "+str(parte)+") [disneychannel]" , url ] )
+                parte = parte + 1
+            else:
+                video_urls.append( [ "[disneychannel]" , url ] )
+    except:
+        import traceback
+        logger.info(traceback.format_exc())
 
     for video_url in video_urls:
         logger.info("[disneychannel.py] %s - %s" % (video_url[0],video_url[1]))

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------
 # pelisalacarta - XBMC Plugin
-# Conector para rapidgator
+# Conector para ultramegabit
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
 
@@ -12,11 +12,8 @@ from core import scrapertools
 from core import logger
 from core import config
 
-def test_video_exists( page_url ):
-    return True,""
-
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
-    logger.info("[rapidgator.py] get_video_url(page_url='%s')" % page_url)
+    logger.info("[ultramegabit.py] get_video_url(page_url='%s')" % page_url)
     video_urls = []
     return video_urls
 
@@ -25,18 +22,17 @@ def find_videos(data):
     encontrados = set()
     devuelve = []
 
-    #http://rapidgator.net/file/10126555/ElBatallon-byjerobien.avi.html
-    #http://rapidgator.net/file/15437757
-    patronvideos  = '(rapidgator.net/file/.*?\.html)'
-    logger.info("[rapidgator.py] find_videos #"+patronvideos+"#")
+    # http://ultramegabit.com/file/
+    patronvideos  = '(ultramegabit.com/file/details/[^"]+)'
+    logger.info("[ultramegabit.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
-        titulo = "[rapidgator]"
-        url = "http://"+match
+        titulo = "[ultramegabit]"
+        url ='http://'+match
         if url not in encontrados:
             logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'rapidgator' ] )
+            devuelve.append( [ titulo , url , 'ultramegabit' ] )
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)

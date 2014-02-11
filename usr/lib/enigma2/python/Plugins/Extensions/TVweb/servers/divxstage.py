@@ -4,6 +4,9 @@
 # Conector para videos externos de divxstage
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
+# Credits:
+# Unwise and main algorithm taken from Eldorado url resolver
+# https://github.com/Eldorados/script.module.urlresolver/blob/master/lib/urlresolver/plugins/divxstage.py
 
 import urlparse,urllib2,urllib,re
 import os
@@ -11,6 +14,7 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
+from core import unwise
 
 def test_video_exists( page_url ):
     logger.info("[divxstage.py] test_video_exists(page_url='%s')" % page_url)
@@ -26,30 +30,22 @@ def test_video_exists( page_url ):
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
     logger.info("[divxstage.py] get_video_url(page_url='%s')" % page_url)
 
+    video_id = scrapertools.get_match(page_url,"http://www.divxstage.net/video/([a-z0-9]+)")
     data = scrapertools.cache_page(page_url)
 
+    data = scrapertools.cache_page(page_url)
+
+    try:
+        location = scrapertools.get_match(data,'<param name="src" value="(.+?)"')
+    except:
+        data = unwise.unwise_process(data)
+        filekey = unwise.resolve_var(data, "flashvars.filekey")
+        
+        page_url = 'http://www.divxstage.eu/api/player.api.php?user=undefined&key='+filekey+'&pass=undefined&codes=1&file='+video_id
+        data = scrapertools.cache_page(page_url)
+        location = scrapertools.get_match(data,'url=(.+?)&')
+
     video_urls = []
-    # Descarga la página
-    headers = [ ['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'],['Referer','http://www.movshare.net/'] ]
-    data = scrapertools.cache_page(page_url , headers = headers)
-    
-    # La vuelve a descargar, como si hubieras hecho click en el botón
-    data = scrapertools.cache_page(page_url , headers = headers)
-
-    # Extrae el vídeo
-    #flashvars.file="an6u81bpsbenn";
-    #flashvars.filekey="88.12.109.83-e2d263cbff66b2a510d6f7417a57e498";
-    file = scrapertools.get_match(data,'flashvars.file="([^"]+)"')
-    filekey = scrapertools.get_match(data,'flashvars.filekey="([^"]+)"')
-    
-    #http://www.divxstage.eu/api/player.api.php?file=pn7tthffreyoo&user=undefined&pass=undefined&codes=1&key=88%2E12%2E109%2E83%2Df1d041537679b37f5b25404ac66b341b
-    filekey = filekey.replace(".","%2E")
-    filekey = filekey.replace("-","%2D")
-    url = "http://www.divxstage.eu/api/player.api.php?file="+file+"&user=undefined&pass=undefined&codes=1&key="+filekey
-    data = scrapertools.cache_page(url , headers = headers)
-    logger.info("data="+data)
-    location = scrapertools.get_match(data,"url=([^\&]+)\&")
-
     video_urls.append( [ scrapertools.get_filename_from_url(location)[-4:]+" [divxstage]" , location ] )
 
     for video_url in video_urls:

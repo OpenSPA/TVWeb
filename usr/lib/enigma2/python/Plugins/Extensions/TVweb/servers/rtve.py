@@ -26,6 +26,62 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     itemlist = []
     logger.info("assetid="+codigo)
 
+    # Código sacado de PyDownTV, gracias @aabilio :)
+    # https://github.com/aabilio/PyDownTV2/blob/master/spaintvs/tve.py
+    # -- Método 24 Mayo 2013
+    videoID = codigo
+    logger.info("Probando método de 24 de uno de Mayo de 2013")
+    manager = "anubis"
+    tipo = "videos"
+    url = "http://www.rtve.es/ztnr/movil/thumbnail/%s/%s/%s.png" % (manager, tipo, videoID)
+
+    logger.info("Probando url:"+url)
+
+    from base64 import b64decode as decode
+    tmp_ = decode(scrapertools.cachePage(url))
+    tmp = re.findall(".*tEXt(.*)#[\x00]*([0-9]*).*", tmp_)[0]
+    tmp = [n for n in tmp]
+    cyphertext = tmp[0]
+    key = tmp[1]
+    tmp = tmp = [0 for n in range(500)]
+
+    # Créditos para: http://sgcg.es/articulos/2012/09/11/nuevos-cambios-en-el-mecanismo-para-descargar-contenido-multimedia-de-rtve-es-2/
+    intermediate_cyphertext = ""
+    increment = 1
+    text_index = 0
+    while text_index < len(cyphertext):
+        text_index = text_index + increment
+        try: intermediate_cyphertext = intermediate_cyphertext + cyphertext[text_index-1]
+        except: pass
+        increment = increment + 1
+        if increment == 5: increment = 1
+
+    plaintext = ""
+    key_index = 0
+    increment = 4
+    while key_index < len(key):
+        key_index = key_index + 1
+        text_index = int(key[key_index-1]) * 10
+        key_index = key_index + increment
+        try: text_index = text_index + int(key[key_index-1])
+        except: pass
+        text_index = text_index + 1
+        increment = increment + 1
+        if increment == 5: increment = 1
+        try: plaintext = plaintext + intermediate_cyphertext[text_index-1]
+        except: pass
+
+    urlVideo = plaintext
+    if urlVideo != "":
+        url_video = urlVideo.replace("www.rtve.es", "media5.rtve.es")
+    else:
+        logger.info("No se pudo encontrar el enlace de descarga")
+    url=urlVideo
+
+    # -- Método 24 Mayo 2013 FIN
+    
+
+    '''
     if url=="":
         url = "http://www.rtve.es/ztnr/consumer/xl/video/alta/" + codigo + "_es_292525252525111"
         logger.info("url="+url)
@@ -129,6 +185,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
         except:
             url = ""
+    '''
 
     logger.info("[rtve.py] url="+url)
 

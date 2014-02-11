@@ -26,7 +26,33 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 def find_videos(data):
     encontrados = set()
     devuelve = []
-
+    
+    patronvideos = "(www.filefactory.com/file.*?\.mkv)"
+    logger.info("[filefactory.py] find_videos #"+patronvideos+"#")
+    matches = re.compile(patronvideos,re.DOTALL).findall(data)
+    for match in matches:
+        titulo = "[filefactory]"
+        url = "http://"+match
+        if url not in encontrados:
+            logger.info("  url="+url)
+            devuelve.append( [ titulo , url , 'filefactory' ] )
+            encontrados.add(url)
+        else:
+            logger.info("  url duplicada="+url)
+            
+    patronvideos = "(www.filefactory.com/file.*?\.mp4)"
+    logger.info("[filefactory.py] find_videos #"+patronvideos+"#")
+    matches = re.compile(patronvideos,re.DOTALL).findall(data)
+    for match in matches:
+        titulo = "[filefactory]"
+        url = "http://"+match
+        if url not in encontrados:
+            logger.info("  url="+url)
+            devuelve.append( [ titulo , url , 'filefactory' ] )
+            encontrados.add(url)
+        else:
+            logger.info("  url duplicada="+url)
+            
     #http://www.filefactory.com/file/35ip193vzp1f/n/HMD-5x19-ESP.avi
     patronvideos = "(www.filefactory.com/file.*?\.avi)"
     logger.info("[filefactory.py] find_videos #"+patronvideos+"#")
@@ -40,5 +66,34 @@ def find_videos(data):
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)
+            
+    patronvideos = "(www.filefactory.com/file.*?\.rar)"
+    logger.info("[filefactory.py] find_videos #"+patronvideos+"#")
+    matches = re.compile(patronvideos,re.DOTALL).findall(data)
+    for match in matches:
+        titulo = "[filefactory]"
+        url = "http://"+match
+        if url not in encontrados:
+            logger.info("  url="+url)
+            devuelve.append( [ titulo , url , 'filefactory' ] )
+            encontrados.add(url)
+        else:
+            logger.info("  url duplicada="+url)
+            
+            
+    #http://filefactory.com/file/15437757
+    patronvideos  = '(filefactory.com/file/[a-z0-9]+)'
+    logger.info("[filefactory.py] find_videos #"+patronvideos+"#")
+    matches = re.compile(patronvideos,re.DOTALL).findall(data)
+
+    for match in matches:
+        titulo = "[filefactory]"
+        url = "http://"+match
+        if url not in encontrados:
+            logger.info("  url="+url)
+            devuelve.append( [ titulo , url , 'filefactory' ] )
+            encontrados.add(url)
+        else:
+            logger.info("  url duplicada="+url)      
 
     return devuelve

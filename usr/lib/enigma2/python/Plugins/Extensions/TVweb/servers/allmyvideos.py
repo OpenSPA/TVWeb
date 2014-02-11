@@ -7,6 +7,7 @@
 
 import urlparse,urllib2,urllib,re
 import os
+import re
 
 from core import scrapertools
 from core import logger
@@ -33,13 +34,22 @@ def test_video_exists( page_url ):
 
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
     logger.info("[allmyvideos.py] url="+page_url)
-    
+
+    # Normaliza la URL
+    try:
+        if page_url.startswith("http://allmyvideos.net/embed-"):
+            videoid = scrapertools.get_match(page_url,"allmyvideos.net/embed-([a-z0-9A-Z]+).html")
+            page_url = "http://allmyvideos.net/"+videoid
+    except:
+        import traceback
+        logger.info(traceback.format_exc())
+
     # Lo pide una vez
     headers = [['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14']]
     data = scrapertools.cache_page( page_url , headers=headers )
     logger.info("data="+data)
     
-    try:
+    try:     
         '''
         <input type="hidden" name="op" value="download1">
         <input type="hidden" name="usr_login" value="">
@@ -67,13 +77,24 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
         data = scrapertools.cache_page( page_url , post=post, headers=headers )
         logger.info("data="+data)
     except:
-        pass
+        import traceback
+        logger.info(traceback.format_exc())
     
     # Extrae la URL
-    media_url = scrapertools.get_match( data , '"file"\s*\:\s*"([^"]+)"' )+"?start=0"
-    
+    match = re.compile('"file" : "(.+?)",').findall(data)
+    media_url = ""
+    if len(match) > 0:
+        for tempurl in match:
+            if not tempurl.endswith(".png") and not tempurl.endswith(".srt"):
+                media_url = tempurl
+
+        if media_url == "":
+            media_url = match[0]
+
     video_urls = []
-    video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [allmyvideos]",media_url])
+
+    if media_url!="":
+        video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [allmyvideos]",media_url])
 
     for video_url in video_urls:
         logger.info("[allmyvideos.py] %s - %s" % (video_url[0],video_url[1]))
@@ -82,17 +103,31 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
 # Encuentra vídeos del servidor en el texto pasado
 def find_videos(data):
+
+    # Añade manualmente algunos erróneos para evitarlos
     encontrados = set()
+    encontrados.add("http://allmyvideos.net/embed-theme.html")
+    encontrados.add("http://allmyvideos.net/embed-jquery.html")
+    encontrados.add("http://allmyvideos.net/embed-s.html")
+    encontrados.add("http://allmyvideos.net/embed-images.html")
+    encontrados.add("http://allmyvideos.net/embed-faq.html")
+    encontrados.add("http://allmyvideos.net/embed-embed.html")
+    encontrados.add("http://allmyvideos.net/embed-ri.html")
+    encontrados.add("http://allmyvideos.net/embed-d.html")
+    encontrados.add("http://allmyvideos.net/embed-css.html")
+    encontrados.add("http://allmyvideos.net/embed-js.html")
+    encontrados.add("http://allmyvideos.net/embed-player.html")
+    encontrados.add("http://allmyvideos.net/embed-cgi.html")
     devuelve = []
 
     # http://allmyvideos.net/embed-d6fefkzvjc1z.html 
-    patronvideos  = 'allmyvideos.net/embed-([a-z0-9]+)'
+    patronvideos  = 'allmyvideos.net/embed-([a-z0-9]+)\.html'
     logger.info("[allmyvideos.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
         titulo = "[allmyvideos]"
-        url = "http://allmyvideos.net/"+match
+        url = "http://allmyvideos.net/embed-"+match+".html"
         if url not in encontrados and url!="http://allmyvideos.net/embed":
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'allmyvideos' ] )
@@ -107,7 +142,7 @@ def find_videos(data):
 
     for match in matches:
         titulo = "[allmyvideos]"
-        url = "http://allmyvideos.net/"+match
+        url = "http://allmyvideos.net/embed-"+match+".html"
         if url not in encontrados and not url.startswith("embed"):
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'allmyvideos' ] )
@@ -122,7 +157,7 @@ def find_videos(data):
 
     for match in matches:
         titulo = "[allmyvideos]"
-        url = "http://allmyvideos.net/"+match
+        url = "http://allmyvideos.net/embed-"+match+".html"
         if url not in encontrados and not url.startswith("embed"):
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'allmyvideos' ] )
@@ -135,6 +170,6 @@ def find_videos(data):
 
 def test():
 
-    video_urls = get_video_url("http://allmyvideos.net/6lgjjav5cymi")
+    video_urls = get_video_url("http://allmyvideos.net/uhah7dmq2ydp")
 
     return len(video_urls)>0

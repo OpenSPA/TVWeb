@@ -26,7 +26,7 @@ def find_videos(data):
     devuelve = []
 
     #http://shareflare.net/download/99094.9feafdcc1fa511c89ea775cd862f/Emergo.dvdrip.avi.html
-    patronvideos  = '(shareflare.net/download/.*?\.html)'
+    patronvideos  = '(shareflare.net/download/[a-zA-Z0-9\.\/]+\.html)'
     logger.info("[shareflare.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 

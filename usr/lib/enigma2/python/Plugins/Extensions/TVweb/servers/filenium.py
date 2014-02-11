@@ -31,11 +31,13 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
             data = scrapertools.cache_page(url, post=post, timeout=TIMEOUT)
             link = urlencode({'filez':page_url})
             location = scrapertools.cache_page("http://filenium.com/?filenium&" + link, timeout=TIMEOUT)
-            
+
         user = user.replace("@","%40")
         
         #logger.info("[filenium.py] torrent url (location='%s')" % location)
         
+        location = location.replace("http://","http://"+user+":"+password+"@")
+        '''
         if "xbmc" in config.get_platform():
             #location = location.replace("http://cdn.filenium.com","http://"+user+":"+password+"@cdn.filenium.com")
             location = location.replace("http://","http://"+user+":"+password+"@")
@@ -43,6 +45,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
             location = location.replace("/?.zip","")
             user = user.replace(".","%2e")
             location = location + "?user="+user+"&passwd="+password
+        '''
 
         logger.info("location="+location)
 
@@ -78,6 +81,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     return location
 
 def get_file_extension(location):
+    logger.info("[filenium.py] get_file_extension("+location+")")
 
     try:
         content_disposition_header = scrapertools.get_header_from_response(location,header_to_get="Content-Disposition")
@@ -96,6 +100,8 @@ def get_file_extension(location):
     return extension
 
 def extract_authorization_header(url):
+    logger.info("[filenium.py] extract_authorization_header("+url+")")
+
     # Obtiene login y password, y lo añade como cabecera Authorization
     partes = url[7:].split("@")
     partes = partes[0].split(":")
@@ -123,3 +129,6 @@ def correct_url(url):
     if "putlocker" in url:
         url = url.replace("/embed/","/file/")
     return url
+
+def find_videos(data):
+    return []

@@ -31,7 +31,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     if len(matches)>0:
          
         # La URL es http://srv.hdplay.org:81/storage/flv/JOUhxy.mp4?key=3e518187037720b4ef1a210df2c92162
-        url = matches[0][0] #+"?file="+matches[0][1]+"&start=0"
+        url = matches[0][0]
         video_urls.append( ["[hdplay]",url ] )
 
     for video_url in video_urls:

@@ -15,38 +15,30 @@ from core import logger
 from core import config
 
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
-    logger.info("[dailymotion.py] get_video_url(page_url='%s')" % page_url)
+    logger.info("pelisalacarta.dailymotion get_video_url(page_url='%s')" % page_url)
     video_urls = []
     
     data = scrapertools.cache_page(page_url)
+    data = scrapertools.get_match(data,'<param name="flashvars" value="(.*?)"')
+    #logger.info("pelisalacarta.dailymotion data="+data)
+
     #logger.info("data="+data)
-    sequence = re.compile('"sequence":"(.+?)"').findall(data)
-    logger.info("sequence="+str(sequence))
-    newseqeunce = urllib.unquote(sequence[0]).decode('utf8').replace('\\/', '/')
-    logger.info("newseqeunce="+newseqeunce)
+    sequence = scrapertools.get_match(data,"sequence=(.*?)$")
+    #logger.info("pelisalacarta.dailymotion sequence="+sequence)
 
-    dm_low = re.compile('"sdURL":"(.+?)"').findall(newseqeunce)
-    dm_high = re.compile('"hqURL":"(.+?)"').findall(newseqeunce)
-    videoUrl = ''
+    sequence = urllib.unquote(sequence)
+    #logger.info("pelisalacarta.dailymotion sequence="+sequence)
 
-    if len(dm_low) > 0:
-        video_urls.append( [ "SD [dailymotion]",dm_low[0] ] )
+    mediaurl = scrapertools.get_match(sequence,'"video_url"\:"([^"]+)"')
+    #logger.info("pelisalacarta.dailymotion mediaurl="+mediaurl)
 
-    if len(dm_high) > 0:
-        video_urls.append( [ "HD [dailymotion]",dm_high[0] ] )
+    mediaurl = urllib.unquote(mediaurl)
+    logger.info("pelisalacarta.dailymotion mediaurl="+mediaurl)
 
-    try:
-        alternate_url = re.compile('"video_url":"(.+?)"').findall(newseqeunce)
-        alternate_url = urllib.unquote( alternate_url[0] ).decode('utf8').replace('\\/', '/')
-
-        location = scrapertools.get_header_from_response(alternate_url,header_to_get="location")
-
-        video_urls.append( [ "SD [dailymotion]" , location ] )
-    except:
-        pass
+    video_urls.append( [ "mp4 [dailymotion]", mediaurl ] )
 
     for video_url in video_urls:
-        logger.info("[dailymotion.py] %s - %s" % (video_url[0],video_url[1]))
+        logger.info("pelisalacarta.dailymotion %s - %s" % (video_url[0],video_url[1]))
 
     return video_urls
 
@@ -58,7 +50,7 @@ def find_videos(data):
     # http://www.dailymotion.com/embed/video/xrva9o
     # http://www.dailymotion.com/swf/video/xocczx
     patronvideos  = 'dailymotion.com/(?:embed|swf)/video/([a-z0-9]+)'
-    logger.info("[dailymotion.py] find_videos #"+patronvideos+"#")
+    logger.info("pelisalacarta.dailymotion find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
@@ -71,24 +63,9 @@ def find_videos(data):
         else:
             logger.info("  url duplicada="+url)
 
-    # <a href="http://www.dailymotion.com/video/xssekp_natgeo-huesos-con-historia-08-los-esqueletos-de-windy-pits_tech" target="_blank">[Natgeo] Huesos con Historia 08 - Los Esqueletos de Windy Pits</a><br />
-    patronvideos  = '<a href=".*?dailymotion.com/video/([a-z0-9]+)[^>]+([^<]+)</a>'
-    logger.info("[dailymotion.py] find_videos #"+patronvideos+"#")
-    matches = re.compile(patronvideos,re.DOTALL).findall(data)
-
-    for url,title in matches:
-        titulo = title[1:]+" [dailymotion]"
-        url = "http://www.dailymotion.com/video/"+url
-        if url not in encontrados:
-            logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'dailymotion' ] )
-            encontrados.add(url)
-        else:
-            logger.info("  url duplicada="+url)
-
     # http://www.dailymotion.com/video/xrva9o
     patronvideos  = 'dailymotion.com/video/([a-z0-9]+)'
-    logger.info("[dailymotion.py] find_videos #"+patronvideos+"#")
+    logger.info("pelisalacarta.dailymotion find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
@@ -113,4 +90,4 @@ def test():
     #if len(video_urls)==0:
     #    return false;
 
-    return true
+    return True

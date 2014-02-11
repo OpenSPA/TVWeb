@@ -12,28 +12,28 @@ from core import logger
 
 # Returns an array of possible video url's from the page_url
 def get_video_url( page_url , premium = False , user="" , password="" , video_password="" ):
-    logger.info("[bliptv.py] get_video_url(page_url='%s')" % page_url)
+    logger.info("pelisalacarta.bliptv get_video_url(page_url='%s')" % page_url)
 
     video_urls = []
 
     if page_url.startswith("http://blip.tv/play"):    
         redirect = scrapertools.get_header_from_response(page_url,header_to_get="location")
-        logger.info("[bliptv.py] redirect="+redirect)
+        logger.info("pelisalacarta.bliptv redirect="+redirect)
         
         patron='file\=(.*?)$'
         matches = re.compile(patron).findall(redirect)
-        logger.info("[bliptv.py] matches1=%d" % len(matches))
+        logger.info("pelisalacarta.bliptv matches1=%d" % len(matches))
         
         if len(matches)==0:
             patron='file\=([^\&]+)\&'
             matches = re.compile(patron).findall(redirect)
-            logger.info("[bliptv.py] matches2=%d" % len(matches))
+            logger.info("pelisalacarta.bliptv matches2=%d" % len(matches))
         
         if len(matches)>0:
             url = matches[0]
-            logger.info("[bliptv.py] url="+url)
+            logger.info("pelisalacarta.bliptv url="+url)
             url = urllib.unquote(url)
-            logger.info("[bliptv.py] url="+url)
+            logger.info("pelisalacarta.bliptv url="+url)
 
             data = scrapertools.cache_page(url)
             logger.info(data)
@@ -46,7 +46,7 @@ def get_video_url( page_url , premium = False , user="" , password="" , video_pa
                 video_urls.append( video_url )
 
     for video_url in video_urls:
-        logger.info("[bliptv.py] %s - %s" % (video_url[0],video_url[1]))
+        logger.info("pelisalacarta.bliptv %s - %s" % (video_url[0],video_url[1]))
 
     return video_urls
 
@@ -57,7 +57,7 @@ def find_videos(text):
 
     # Código embed de Blip.tv
     patronvideos  = '(http://blip.tv/play/[A-Z0-9a-z]+.html)'
-    logger.info("[bliptv.py] find_videos #"+patronvideos+"#")
+    logger.info("pelisalacarta.bliptv find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(text)
 
     for match in matches:

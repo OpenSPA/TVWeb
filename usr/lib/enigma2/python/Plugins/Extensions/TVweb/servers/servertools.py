@@ -15,12 +15,13 @@ from core import logger
 
 # Lista de los servidores que se pueden ver sin cuenta premium de ningún tipo
 FREE_SERVERS = []
-FREE_SERVERS.extend(['directo','allmyvideos','adnstream','bliptv','divxstage','downupload','facebook','fourshared', 'hulkshare', 'twitvid'])
-FREE_SERVERS.extend(['googlevideo','gigabyteupload','hdplay','filebox','mediafire','moevideos','movshare','novamov','ovfile','putlocker'])
-FREE_SERVERS.extend(['rapidtube','royalvids','sockshare','stagevu','stagero','tutv','userporn','veoh','videobam'])
+FREE_SERVERS.extend(['directo','allmyvideos','adnstream','bliptv','divxstage','facebook','fourshared', 'hulkshare', 'twitvid'])
+FREE_SERVERS.extend(['googlevideo','gigabyteupload','mediafire','moevideos','movshare','novamov','putlocker'])
+FREE_SERVERS.extend(['royalvids','sockshare','stagevu','tutv','userporn','veoh','videobam'])
 FREE_SERVERS.extend(['vidbux','videoweed','vimeo','vk','watchfreeinhd','youtube','nowdownload'])#,'videobeer'
-FREE_SERVERS.extend(['jumbofiles','nowvideo','allbox4','streamcloud', 'zinwa', 'dailymotion','justintv', 'vidbull'])
-FREE_SERVERS.extend(['vureel','nosvideo','videopremium','one80upload','movreel','flashx','magnovideo','upafile','rapidvideo','fileflyer','playedto'])
+FREE_SERVERS.extend(['jumbofiles','nowvideo','streamcloud', 'zinwa', 'dailymotion','justintv', 'vidbull'])
+FREE_SERVERS.extend(['vureel','nosvideo','videopremium','movreel','flashx','magnovideo','upafile'])
+FREE_SERVERS.extend(['fileflyer','playedto','tunepk','powvideo','videomega','mega','vidspot','netutv','rutube','videozed','documentary','hugefiles'])
 # YA NO FUNCIONAN
 # rutube
 
@@ -30,42 +31,30 @@ PREMIUM_SERVERS = ['uploadedto','nowvideo']
 # Lista de TODOS los servidores soportados por Filenium
 FILENIUM_SERVERS = []
 FILENIUM_SERVERS.extend(['linkto','uploadedto','gigasize','youtube','filepost','hotfile','rapidshare','turbobit','mediafire','bitshare','depositfiles'])
-FILENIUM_SERVERS.extend(['oron','downupload','allmyvideos','novamov','videoweed','movshare','fooget','letitbit','shareonline','shareflare','rapidgator'])
-FILENIUM_SERVERS.extend(['filebox','filefactory','netload','nowdownload','filevelocity','freakshare','userporn','divxstage','putlocker','extabit','vidxden'])
-FILENIUM_SERVERS.extend(['vimeo','dailymotion','jumbofiles','zippyshare','glumbouploads','bayfiles','twoshared', 'fourshared','crocko','fiberupload','filereactor'])
-FILENIUM_SERVERS.extend(['ifile','megashares','slingfile','uploading','vipfile','filenium','movreel','one80upload','flashx','uploaz','nowvideo','vk','moevideos'])
-FILENIUM_SERVERS.extend(['cloudzer','filecloudio','luckyshare','lumfile','magnovideo','playedto','ryushare','streamcloud','videozed','xenubox'])
+FILENIUM_SERVERS.extend(['oron','allmyvideos','novamov','videoweed','movshare','letitbit','shareonline','shareflare','rapidgator'])
+FILENIUM_SERVERS.extend(['filefactory','netload','nowdownload','filevelocity','freakshare','userporn','divxstage','putlocker','extabit','vidxden'])
+FILENIUM_SERVERS.extend(['vimeo','dailymotion','jumbofiles','zippyshare','glumbouploads','bayfiles','twoshared', 'fourshared','crocko','fiberupload'])
+FILENIUM_SERVERS.extend(['ifile','megashares','slingfile','uploading','vipfile','filenium','movreel','one80upload','flashx','nowvideo','vk','moevideos'])
+FILENIUM_SERVERS.extend(['cloudzer','filecloudio','luckyshare','lumfile','magnovideo','playedto','ryushare','streamcloud','videozed','xenubox','filesmonster'])
 #wupload,fileserve
 
 # Lista de TODOS los servidores soportados por Real-Debrid
-REALDEBRID_SERVERS = ['one80upload','tenupload','onefichier','onehostclick','twoshared','fourfastfile','fourshared','abc','asfile','badongo','bayfiles','bitshare','cbscom','cramit','crocko','cwtv','dailymotion','dateito',
-                    'dengee','diglo','extabit','fiberupload','filebox','filedino','filefactory','fileflyer','filekeen','filemade','filemates','fileover','filepost',
-                   'filereactor','filesend','filesmonster','filevelocity','freakshare','free','furk','fyels','gigasize','gigaup','glumbouploads','goldfile','hitfile','hipfile','hostingbulk',
-                   'hotfile','hulkshare','hulu','ifile','jakfile','jumbofiles','justintv','letitbit','loadto','mediafire','megashare','megashares','mixturevideo','muchshare','netload',
-                   'novafile','nowdownload','purevid','putbit','putlocker','redtube','rapidshare','rutube','ryushare','scribd','sendspace','sharebees','shareflare','shragle','slingfile','sockshare',
+REALDEBRID_SERVERS = ['one80upload','tenupload','onefichier','onehostclick','twoshared','fourfastfile','fourshared','abc','asfile','badongo','bayfiles','bitshare','cbscom','cloudzer','cramit','crocko','cwtv','dailymotion','dateito',
+                    'dengee','diglo','extabit','fiberupload','filedino','filefactory','fileflyer','filekeen','filemade','filemates','fileover','filepost',
+                   'filesend','filesmonster','filevelocity','freakshare','free','furk','fyels','gigasize','gigaup','glumbouploads','goldfile','hitfile','hipfile','hostingbulk',
+                   'hotfile','hulkshare','hulu','ifile','jakfile','jumbofiles','justintv','letitbit','loadto','mediafire','mega','megashare','megashares','mixturevideo','muchshare','netload',
+                   'novafile','nowdownload','purevid','putbit','putlocker','redtube','rapidgator','rapidshare','rutube','ryushare','scribd','sendspace','sharebees','shareflare','shragle','slingfile','sockshare',
                    'soundcloud','speedyshare','turbobit','unibytes','uploadc','uploadedto','uploading','uploadspace','uptobox',
-                   'userporn','veevr','vidbux','vidhog','vidxden','vimeo','vipfile','wattv','xfileshare','youporn','youtube','yunfile','zippyshare','justintv']
+                   'userporn','veevr','vidbux','vidhog','vidxden','vimeo','vipfile','wattv','xfileshare','youporn','youtube','yunfile','zippyshare','justintv','nowvideo','ultramegabit','filesmonster']
 #wupload,fileserve
 
 ALLDEBRID_SERVERS = ['one80upload','onefichier','twoshared','fourfastfile','fourshared','albafile','bayfiles','bitshare','cloudzer','cramit','crocko','cyberlocker','dailymotion','dengee',
-                   'depfile','dlfree','extabit','extmatrix','filebox','filefactory','fileflyer','filegag','filehost','fileover','filepost','filerio','filesabc',
+                   'depfile','dlfree','extabit','extmatrix','filefactory','fileflyer','filegag','filehost','fileover','filepost','filerio','filesabc',
                    'filesend','filesmonster','filestay','freakshare','gigasize','hotfile','hulkshare','jumbofiles','letitbit','loadto','mediafire','megashares','mixturevideo','netload',
                    'nitrobits','oteupload','purevid','putlocker','rapidgator','rapidshare','redtube','scribd','secureupload','sharebees','shareflare','slingfile','sockshare',
                    'soundcloud','speedload','speedyshare','turbobit', 'uloadto', 'uploadc','uploadedto','uploading','uptobox',
-                   'userporn','vimeo','vipfile','youporn','youtube','yunfile','zippyshare','lumfile']               
-               
-#Resultado de http://alldebrid.com/api.php?action=get_host
-#"10upload.com", "1fichier.com", "180upload.com", "2shared.com", "4fastfile.com", "4shared.com", "asfile.com", "badongo.com", "bayfiles.com", "bitshare.com", "buckshare.com", "bulletupload.com", "cloudnator.com", 
-#"cloudnxt.net", "cramit.in", "crocko.com", "datei.to", "ddlstorage.com", "dengee.net", "diglo.com", "easybytez.com", "enterupload.com", "exoshare.com", "extabit.com", "fiberupload.com", "fileape.com", "filebox.com",
-# "filebase.com", "fileden.com", "filedino.com", "filefactory.com", "fileflyer.com", "filefrog.com", "fileforth.com", "filegag.com", "filejungle.com", "filekeen.com", "filelaser.com", "filemade.com", "filemates.com", 
-# "fileover.com", "filepost.com", "files-save.com", "filesend.com", "fileserve.com", "filesmonster.net", "filevelocity.com", "filemarkets.com", "filereactor.com", "freakshare.com", "free.fr", "furk.net", "fyels.com",
-# "gigapeta.com", "gigasize.com", "gigaup.fr", "glumbouploads.com", "goldfile.eu", "grupload", "hitfile.net", "hotfile.com", "hu.lk", "ifile.com", "jumbofiles.com", "keepfile.com", "letitbit.net", "load.to", "mediafire.com",
-# "MegaShare.com", "megashares.com", "mixturevideo.com", "movbay.com", "muchshare.net", "novafile.com", "nowdownload.eu", "netload.in", "piggyshare.com", "pigsonic.com", "przeklej.pl", "purevid.com", "putlocker.com", 
-# "pyramidfiles.com", "rapidgator.net", "rapidshare.com", "ryushare.com", "scribd.com", "sendspace.com", "shareflare.net", "share-online.biz", "shragle.com", "simpleupload.com", "slingfile.com", "sockshare.com", 
-# "soundcloud.com", "speedy.sh", "speedyshare.com", "squillion.com", "turbobit.net", "turboupload".com, "ugotfile.com", "unibytes.com", "uploadbox.com", "uploadc.com", "uploaded.to", "uploadhere.com", "uploadhero.com", 
-# "uploading.com", "uploadking.com", "uploadspace.pl", "uploadstation.com", "uptobox.com", "userporn.com", "usershare.com", "vidbux.com", "videobb.com", "videozer.com", "vidxden.com", "vip-file.com", "wupload.com", 
-# "x7.com", "youtube.com", "yunfile.com", "zippyshare.com", "zshare.net"               
-               
+                   'userporn','vimeo','vipfile','youporn','youtube','yunfile','zippyshare','lumfile','ultramegabit','filesmonster']
+    
 # Lista completa de todos los servidores soportados por pelisalacarta, usada para buscar patrones
 ALL_SERVERS = list( set(FREE_SERVERS) | set(FILENIUM_SERVERS) | set(REALDEBRID_SERVERS) | set(ALLDEBRID_SERVERS) )
 ALL_SERVERS.sort()
@@ -179,9 +168,9 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
     # Averigua las URL de los vídeos
     else:
         
-        if server=="torrent":
-            server="filenium"
-            torrent = True
+        #if server=="torrent":
+        #    server="filenium"
+        #    torrent = True
 
         # Carga el conector
         try:
@@ -271,7 +260,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
                 video_gen = gen_conector.get_video_url( page_url=url , premium=(config.get_setting("alldebridpremium")=="true") , user=config.get_setting("alldebriduser") , password=config.get_setting("alldebridpassword"), video_password=video_password )
                 logger.info("[xbmctools.py] alldebrid url="+video_gen)
                 if video_gen.startswith("http"):
-                    video_urls.append( [ "[alldebrid]", video_gen ] )
+                    video_urls.append( [ "."+video_gen.rsplit('.',1)[1]+" [alldebrid]", video_gen ] )
                 else:
                     # Si Alldebrid da error pero tienes un enlace válido, no te dice nada
                     if len(video_urls)==0:

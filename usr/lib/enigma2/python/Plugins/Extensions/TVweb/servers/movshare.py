@@ -4,6 +4,9 @@
 # Conector para Movshare
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
+# Credits:
+# Unwise, jsunpack and main algorithm taken from Eldorado url resolver
+# https://github.com/Eldorados/script.module.urlresolver/blob/master/lib/urlresolver/plugins/movshare.py
 
 import urlparse,urllib2,urllib,re
 import os
@@ -11,6 +14,8 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
+from core import unwise
+from core import jsunpack
 
 def test_video_exists( page_url ):
     logger.info("[movshare.py] test_video_exists(page_url='%s')" % page_url)
@@ -26,41 +31,28 @@ def test_video_exists( page_url ):
 def get_video_url( page_url , premium = False , user="" , password="" , video_password="" ):
     logger.info("[movshare.py] get_video_url(page_url='%s')" % page_url)
 
+    videoid = scrapertools.get_match(page_url,"http://www.movshare.net/video/([a-z0-9]+)")
     video_urls = []
 
     # Descarga la página
-    headers = [ ['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'],['Referer','http://www.movshare.net/'] ]
-    data = scrapertools.cache_page(page_url , headers = headers)
+    headers = []
+    headers.append( ['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'] )
+    html = scrapertools.cache_page(page_url , headers = headers)
     
     # La vuelve a descargar, como si hubieras hecho click en el botón
-    data = scrapertools.cache_page(page_url , headers = headers)
+    #html = scrapertools.cache_page(page_url , headers = headers)
+    filekey = scrapertools.find_single_match(html,'flashvars.filekey="([^"]+)"')
+        
+    #get stream url from api
+    api = 'http://www.movshare.net/api/player.api.php?key=%s&file=%s' % (filekey, videoid)
+    headers.append( ['Referer',page_url] )
 
-    # Extrae el vídeo
-    #flashvars.file="an6u81bpsbenn";
-    #flashvars.filekey="88.12.109.83-e2d263cbff66b2a510d6f7417a57e498";
-    file = scrapertools.get_match(data,'flashvars.file="([^"]+)"')
-    filekey = scrapertools.get_match(data,'flashvars.filekey="([^"]+)"')
-    
-    #http://www.movshare.net/api/player.api.php?file=an6u81bpsbenn&user=undefined&codes=undefined&pass=undefined&key=88%2E12%2E109%2E83%2De2d263cbff66b2a510d6f7417a57e498
-    filekey = filekey.replace(".","%2E")
-    filekey = filekey.replace("-","%2D")
-    url = "http://www.movshare.net/api/player.api.php?file="+file+"&user=undefined&codes=undefined&pass=undefined&key="+filekey
-    data = scrapertools.cache_page(url , headers = headers)
-    logger.info("data="+data)
-    location = scrapertools.get_match(data,"url=([^\&]+)\&")
+    html = scrapertools.cache_page(api,headers=headers)
+    logger.info("html="+html)
+    stream_url = scrapertools.find_single_match(html,'url=(.+?)&title')
 
-    try:
-        import urlparse
-        parsed_url = urlparse.urlparse(location)
-        logger.info("parsed_url="+str(parsed_url))
-        extension = parsed_url.path[-4:]
-    except:
-        if len(parsed_url)>=4:
-            extension = parsed_url[2][-4:]
-        else:
-            extension = ""
-
-    video_urls.append( [ extension+" [movshare]" , location ] )
+    if stream_url!="":
+        video_urls.append( [ scrapertools.get_filename_from_url(stream_url)[-4:]+" [movshare]" , stream_url ] )
 
     for video_url in video_urls:
         logger.info("[movshare.py] %s - %s" % (video_url[0],video_url[1]))
@@ -124,6 +116,6 @@ def find_videos(data):
 
 def test():
     #http://www.movshare.net/video/6090de0821098
-    video_urls = get_video_url("http://www.movshare.net/video/6090de0821098")
+    video_urls = get_video_url("http://www.movshare.net/video/isj5p3f0d58x6")
 
     return len(video_urls)>0

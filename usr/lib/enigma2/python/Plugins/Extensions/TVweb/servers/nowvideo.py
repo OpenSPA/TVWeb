@@ -4,6 +4,9 @@
 # Conector para nowvideo
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
+# Credits:
+# Unwise and main algorithm taken from Eldorado url resolver
+# https://github.com/Eldorados/script.module.urlresolver/blob/master/lib/urlresolver/plugins/nowvideo.py
 
 import urlparse,urllib2,urllib,re
 import os
@@ -11,6 +14,7 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
+from core import unwise
 
 USER_AGENT="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:20.0) Gecko/20100101 Firefox/20.0"
 
@@ -28,6 +32,8 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     logger.info("[nowvideo.py] get_video_url(page_url='%s')" % page_url)
     video_urls = []
     
+    video_id = scrapertools.get_match(page_url,"http://www.nowvideo.../video/([a-z0-9]+)")
+
     if premium:
         # Lee la página de login
         login_url = "http://www.nowvideo.eu/login.php"
@@ -74,30 +80,22 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
         video_urls.append( [ scrapertools.get_filename_from_url(location)[-4:] + " [premium][nowvideo]",location ] )
     else:
-
+        # http://www.nowvideo.sx/video/xuntu4pfq0qye
         data = scrapertools.cache_page( page_url )
-        logger.debug("data:" + data)
+        logger.debug("data="+data)
+
+        data = unwise.unwise_process(data)
+        logger.debug("data="+data)
+
+        filekey = unwise.resolve_var(data, "flashvars.filekey")
+        logger.debug("filekey="+filekey)
         
-        # URL a invocar: http://www.nowvideo.eu/api/player.api.php?file=3695bce6e6288&user=undefined&codes=1&pass=undefined&key=83%2E44%2E253%2E73%2D64a25e17853b4b19586841e04b0d9382
-        # En la página:
-        '''
-        flashvars.domain="http://www.nowvideo.eu";
-        flashvars.file="3695bce6e6288";
-        flashvars.filekey="83.44.253.73-64a25e17853b4b19586841e04b0d9382";
-        flashvars.advURL="0";
-        flashvars.autoplay="false";
-        flashvars.cid="1";
-        '''
-        file = scrapertools.get_match(data,'flashvars.file="([^"]+)"')
-        key = scrapertools.get_match(data,'flashvars.filekey="([^"]+)"')
-        #http://www.nowvideo.eu/api/player.api.php?key=88%2E19%2E203%2E156%2Dd140046f284485aedf05563b85f1e8e9&codes=undefined&user=undefined&pass=undefined&file=6f213c972dc5b
-        url = "http://www.nowvideo.eu/api/player.api.php?file="+file+"&user=undefined&codes=undefined&pass=undefined&key="+key.replace(".","%2E").replace("-","%2D")
-        data = scrapertools.cache_page( url )
-        logger.info("data="+data)
-        # url=http://f23.nowvideo.eu/dl/653d434d3cd95f1f7b9df894366652ba/4fc2af77/nnb7e7f45f276be5a75b10e8d6070f6f4c.flv&title=Title%26asdasdas&site_url=http://www.nowvideo.eu/video/3695bce6e6288&seekparm=&enablelimit=0
-        
-        location = scrapertools.get_match(data,'url=([^\&]+)&')
-        location = location + "?client=FLASH"
+        #get stream url from api
+        url = 'http://www.nowvideo.sx/api/player.api.php?key=%s&file=%s' % (filekey, video_id)
+        data = scrapertools.cache_page(url)
+        logger.debug("data="+data)
+
+        location = scrapertools.get_match(data,'url=(.+?)&title')
 
         video_urls.append( [ scrapertools.get_filename_from_url(location)[-4:] + " [nowvideo]",location ] )
 
@@ -112,13 +110,13 @@ def find_videos(data):
     devuelve = []
 
     #<a href="http://www.nowvideo.eu/video/3695bce6e6288" target="_blank">1° Tempo</a>
-    patronvideos  = '<a href="(http://www.nowvideo.../video/[a-z0-9]+)"[^>]+>([^<]+)</a>'
+    patronvideos  = '<a href="http://www.nowvideo.../video/([a-z0-9]+)"[^>]+>([^<]+)</a>'
     logger.info("[nowvideo.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
         titulo = match[1]+" [nowvideo]"
-        url = match[0]
+        url = "http://www.nowvideo.sx/video/"+match[0]
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'nowvideo' ] )
@@ -128,13 +126,13 @@ def find_videos(data):
 
     #http://www.nowvideo.eu/video/3695bce6e6288
     #http://www.nowvideo.eu/video/4fd0757fd4592
-    patronvideos  = '(nowvideo.../video/[a-z0-9]+)'
+    patronvideos  = 'nowvideo.../video/([a-z0-9]+)'
     logger.info("[nowvideo.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
         titulo = "[nowvideo]"
-        url = "http://www."+match
+        url = "http://www.nowvideo.sx/video/"+match
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'nowvideo' ] )
@@ -149,7 +147,7 @@ def find_videos(data):
 
     for match in matches:
         titulo = "[nowvideo]"
-        url = "http://www.nowvideo.eu/video/"+match
+        url = "http://www.nowvideo.sx/video/"+match
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'nowvideo' ] )
@@ -165,7 +163,7 @@ def find_videos(data):
 
     for match in matches:
         titulo = "[nowvideo]"
-        url = "http://www.nowvideo.eu/video/"+match
+        url = "http://www.nowvideo.sx/video/"+match
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'nowvideo' ] )
@@ -180,7 +178,7 @@ def find_videos(data):
 
     for match in matches:
         titulo = "[nowvideo]"
-        url = "http://www.nowvideo.eu/video/"+match
+        url = "http://www.nowvideo.sx/video/"+match
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'nowvideo' ] )

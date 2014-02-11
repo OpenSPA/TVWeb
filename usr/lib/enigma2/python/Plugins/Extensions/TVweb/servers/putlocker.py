@@ -48,7 +48,9 @@ def test_video_exists( page_url ):
 
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
     logger.info("[putlocker.py] url="+page_url)
+    
     data = scrapertools.cache_page(page_url)
+    logger.info("data="+data)
 
     patron  = '<input type="hidden" value="([0-9a-f]+?)" name="([^"]+)">[^<]+'
     patron += '<input name="confirm" type="submit" value="([^"]+)"'
@@ -63,7 +65,8 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     headers.append( ['Referer',page_url] )
 
     data = scrapertools.cache_page( page_url , post=post, headers=headers )
-    #logger.info("data="+data)
+    logger.info("data="+data)
+    
     # extrae 
     patron = "playlist: '(.+?)'"
     matches = re.compile(patron,re.DOTALL).findall(data)
@@ -72,7 +75,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     video_urls = []
     if len(matches)>0:
         xmlurl = urlparse.urljoin(page_url,matches[0])
-        logger.info("[putlocker.py] Playlis="+xmlurl)
+        logger.info("[putlocker.py] Playlist="+xmlurl)
     
         logger.info("xmlurl="+xmlurl)
         data = scrapertools.downloadpageWithoutCookies(xmlurl)

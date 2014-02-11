@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------
 # pelisalacarta - XBMC Plugin
-# Conector para Wupload (solo filenium)
+# Conector para novamov
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
+# Credits:
+# Unwise and main algorithm taken from Eldorado url resolver
+# https://github.com/Eldorados/script.module.urlresolver/blob/master/lib/urlresolver/plugins/novamov.py
 
 import urlparse,urllib2,urllib,re
 import os
@@ -12,6 +15,7 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
+from core import unwise
 
 def test_video_exists( page_url ):
     logger.info("[novamov.py] test_video_exists(page_url='%s')" % page_url)
@@ -29,35 +33,38 @@ def test_video_exists( page_url ):
 def get_video_url( page_url , premium = False , user="" , password="" , video_password="" ):
     logger.info("[novamov.py] get_video_url(page_url='%s')" % page_url)
 
-    data = scrapertools.cache_page(page_url)
-    flashvarsfile = scrapertools.get_match(data,'flashvars.file="(.*?)";')
-    flashvarsfilekey = scrapertools.get_match(data,'flashvars.filekey="(.*?)";')
-    
-    post="key="+flashvarsfilekey+"&user=undefined&codes=1&pass=undefined&file="+flashvarsfile
-    url = "http://www.novamov.com/api/player.api.php?"+post
-    data = scrapertools.cache_page(url, post=post)
-    logger.info(data)
-    patron = 'url=(.*?)&title='
-    matches = re.compile(patron).findall(data)
-    scrapertools.printMatches(matches)
-    
+    media_id = scrapertools.get_match(page_url,"http://www.novamov.com/video/([a-z0-9]+)")
+
+    html = scrapertools.cache_page(page_url)
+    html = unwise.unwise_process(html)
+    filekey = unwise.resolve_var(html, "flashvars.filekey")
+
+    #get stream url from api
+    api = 'http://www.novamov.com/api/player.api.php?key=%s&file=%s' % (filekey, media_id)
+    html = scrapertools.cache_page(api)
+    r = re.search('url=(.+?)&title', html)
+    if r:
+        stream_url = urllib.unquote(r.group(1))
+
     video_urls = []
-    logger.info(matches[0])
-    video_urls.append( [".flv [novamov]",matches[0]])
+    video_urls.append( [".flv [novamov]",stream_url])
     
+    for video_url in video_urls:
+        logger.info("[novamov.py] %s - %s" % (video_url[0],video_url[1]))
+
     return video_urls
 
 def find_videos(data):
     encontrados = set()
     devuelve = []
 
-    patronvideos = '(http://www.novamov.com/video/[a-z0-9]{13})'
+    patronvideos = 'novamov.com/video/([a-z0-9]{13})'
     logger.info("[novamov.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos).findall(data)
 
     for match in matches:
         titulo = "[novamov]"
-        url = match
+        url = "http://www.novamov.com/video/"+match
 
         if url not in encontrados:
             logger.info("  url="+url)
