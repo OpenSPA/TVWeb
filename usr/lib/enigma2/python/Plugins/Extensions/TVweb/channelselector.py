@@ -163,7 +163,6 @@ def channels_list():
    #itemlist.append( Item( title="RojaDirecta"             , channel="rojadirecta"        , language="ES" , category="T"   , type="generic" ))
     itemlist.append( Item( title="Mitele"                     , channel="mitele"               , language="ES" , category="I,N" , type="generic" ))
     itemlist.append( Item( title="RTVA (Andalucia)"           , channel="rtva"                 , language="ES" , category="A"   , type="generic" ))
-    itemlist.append( Item( title="RTVV (Valencia)", channel="rtvv"                 , language="ES" , category="A"   , type="generic" ))
     itemlist.append( Item( title="RTVCM (Castilla La Mancha)" , channel="rtvcm"                , language="ES" , category="A" , type="generic"  ))  # jesus 01/01/2013
     #itemlist.append( Item( title="La Sexta"                   , channel="lasexta"              , language="ES" , category="N"   , type="generic" ))  # juanfran 07/02/2011
     itemlist.append( Item( title="TV3 (Cataluña)"             , channel="tv3"                  , language="ES" , category="I,A" , type="generic" ))
@@ -181,7 +180,7 @@ def channels_list():
     itemlist.append( Item( title="DocumaniaTV"           , channel="documaniatv"          , language="ES"    , category="T"       , type="generic"  ))
     itemlist.append( Item( title="vepelis"             , channel="vepelis"             , language="ES" , category="V"        , type="generic"  ))
     if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="xhamster"          , channel="xhamster"             , language="ES" , category="X" , type="generic"  ))
-    if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="PeliculasEroticas"          , channel="peliculaseroticas"             , language="ES" , category="X" , type="generic"  ))
+#    if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="PeliculasEroticas"          , channel="peliculaseroticas"             , language="ES" , category="X" , type="generic"  ))
     if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="tuporno.tv"          , channel="tupornotv"             , language="ES" , category="X" , type="generic"  ))
     if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="Beeg"          , channel="beeg"             , language="ES" , category="X" , type="generic"  ))
 
