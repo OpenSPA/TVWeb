@@ -150,6 +150,7 @@ def play(item):
     data = scrapertools.cachePage(item.url)
     logger.debug(data)
     #vvfW6Oh2jYE,end=1323406794/data=1473813193/speed=83200/701863_brooklyn_and_gauge.flv'
+    data=data.replace("%2C",",").replace("%3D","=").replace("%2F","/")
     patron = '\'file\': \'(.*?)/(.*?)/(.*?)/(.*?)\','
     matches = re.compile(patron).findall(data)
     if len(matches)>0:
