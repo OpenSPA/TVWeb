@@ -155,6 +155,7 @@ def channels_list():
     itemlist.append( Item( title="Extremadura TV"             , channel="extremaduratv"        , language="ES" , category="A"   , type="generic", extra="rtmp" ))
     itemlist.append( Item( title="Telemadrid"                 , channel="telemadrid"     , language="ES" , category="A" , type="generic", extra="rtmp" ))  # jesus 17/12/2012
     itemlist.append( Item( title="EITB (País Vasco)"          , channel="eitb"           , language="ES" , category="A" , type="generic", extra="rtmp" )) # jesus 17/12/2012
+    itemlist.append( Item( title="7RM (Murcia)"               , channel="sieterm"              , language="ES" , category="A"   , type="generic" ))
     itemlist.append( Item( title="Giralda TV (Sevilla)"       , channel="giraldatv"            , language="ES" , category="L"   , type="generic" ))  # jesus 20/01/2010
     itemlist.append( Item( title="Internautas TV"             , channel="internautastv"        , language="ES" , category="T"   , type="generic" ))
     itemlist.append( Item( title="MTV"             , channel="mtv"        , language="ES" , category="T"   , type="generic" ))
