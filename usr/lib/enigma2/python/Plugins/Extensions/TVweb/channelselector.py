@@ -145,7 +145,6 @@ def channels_history_list():
 def channels_list():
     itemlist = []
     itemlist.append( Item( title="TVE"                        , channel="rtve"                 , language="ES" , category="N"   , type="generic" ))
-    #itemlist.append( Item( title="Antena3"                    , channel="antena3"              , language="ES" , category="I,N" , type="generic", extra="rtmp" ))
     itemlist.append( Item( title="A3Media"                    , channel="a3media"              , language="ES" , category="I,N" , type="generic", extra="rtmp" ))
     itemlist.append( Item( title="Aragón TV"                  , channel="aragontv"             , language="ES" , category="A"   , type="generic", extra="rtmp" ))  # jesus 25/01/2012
     itemlist.append( Item( title="Boing"                      , channel="boing"                , language="ES" , category="I"   , type="generic" ))   # juanfran 07/02/2011
@@ -165,7 +164,6 @@ def channels_list():
     itemlist.append( Item( title="Mitele"                     , channel="mitele"               , language="ES" , category="I,N" , type="generic" ))
     itemlist.append( Item( title="RTVA (Andalucia)"           , channel="rtva"                 , language="ES" , category="A"   , type="generic" ))
     itemlist.append( Item( title="RTVCM (Castilla La Mancha)" , channel="rtvcm"                , language="ES" , category="A" , type="generic"  ))  # jesus 01/01/2013
-    #itemlist.append( Item( title="La Sexta"                   , channel="lasexta"              , language="ES" , category="N"   , type="generic" ))  # juanfran 07/02/2011
     itemlist.append( Item( title="TV3 (Cataluña)"             , channel="tv3"                  , language="ES" , category="I,A" , type="generic" ))
     itemlist.append( Item( title="NewDivx"               , channel="newdivx"              , language="ES"    , category="V"     , type="generic"  ))
     itemlist.append( Item( title="Pelis24"               , channel="pelis24"              , language="ES"    , category="V"     , type="generic"  ))
@@ -178,7 +176,8 @@ def channels_list():
     itemlist.append( Item( title="Cinetube"             , channel="cinetube"             , language="ES" , category="V"        , type="generic"  ))
     #itemlist.append( Item( title="NewHD"             , channel="newhd"             , language="ES" , category="V"        , type="generic"  ))
     #itemlist.append( Item( title="Cinetux"             , channel="cinetux"             , language="ES" , category="V"        , type="generic"  ))
-    itemlist.append( Item( title="DocumaniaTV"           , channel="documaniatv"          , language="ES"    , category="T"       , type="generic"  ))
+    #itemlist.append( Item( title="DocumaniaTV"           , channel="documaniatv"          , language="ES"    , category="T"       , type="generic"  ))
+    itemlist.append( Item( title="Teledocumentales"           , channel="teledocumentales"          , language="ES"    , category="T"       , type="generic"  ))
     itemlist.append( Item( title="vepelis"             , channel="vepelis"             , language="ES" , category="V"        , type="generic"  ))
     if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="xhamster"          , channel="xhamster"             , language="ES" , category="X" , type="generic"  ))
 #    if config.plugins.TVweb.showadultcontent.value == True: itemlist.append( Item( title="PeliculasEroticas"          , channel="peliculaseroticas"             , language="ES" , category="X" , type="generic"  ))
