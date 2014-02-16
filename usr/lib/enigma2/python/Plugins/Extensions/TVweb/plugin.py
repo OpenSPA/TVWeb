@@ -68,7 +68,7 @@ config.plugins.TVweb.imagecache = ConfigEnableDisable(default=True)
 config.plugins.TVweb.showadultcontent = ConfigYesNo(default=False)
 config.plugins.TVweb.showsecretcontent = ConfigYesNo(default=False)
 config.plugins.TVweb.downloadimages = ConfigYesNo(default=True)
-config.plugins.TVweb.version = NoSave(ConfigText(default="1.0.11"))
+config.plugins.TVweb.version = NoSave(ConfigText(default="1.0.12"))
 config.plugins.TVweb.resolution = ConfigSelection(default="360p", choices = ["240p", "360p", "480p", "720p", "1080p"])
 config.plugins.TVweb.freemem = ConfigInteger(default=10, limits=(1, 60))
 
@@ -1989,7 +1989,7 @@ class MovieInfoScreen(Screen):
             self.LastJobView()
         else:
             self.session.open(MessageBox, _("Sorry, this Video can not get saved on HDD.\nOnly HTTP, FTP and RTMP streams can get saved on HDD!"), MessageBox.TYPE_ERROR)
-	    self.tfreemem.stop()
+	    #self.tfreemem.stop()
 
     def LastJobView(self):
         currentjob = None
