@@ -1185,6 +1185,12 @@ class TVweb2(Screen):
             "blue": self.selectBookmark,
 	    "green": self.imdb,
             "contextMenu": self.key_menu,
+	    "up": self.up,
+	    "down": self.down,
+	    "left": self.leftUp,
+	    "right": self.rightDown,
+	    "upUp": self.SelectionChanged,
+	    "downUp": self.SelectionChanged,
         }, -1)
 
 
@@ -1216,7 +1222,7 @@ class TVweb2(Screen):
 	self["listado"] = self.ItemsMenuList
 	self.ItemsMenuList.setList(map(tvlistEntry, self.ItemsList))
 	self.img1 = img1
-	self["listado"].onSelectionChanged.append(self.SelectionChanged)
+	#self["listado"].onSelectionChanged.append(self.SelectionChanged)
 
         self["key_blue"] = Button(_("Bookmarks"))
 		
@@ -1232,6 +1238,20 @@ class TVweb2(Screen):
 			self.picload.startDecode(img1)
 	self.onShow.append(self.relist)
 	
+
+    def up(self):
+	self["listado"].up()
+
+    def down(self):
+	self["listado"].down()
+		
+    def leftUp(self):
+	self["listado"].pageUp()
+	self.SelectionChanged()
+		
+    def rightDown(self):
+	self["listado"].pageDown()
+	self.SelectionChanged()
 
     def imdb(self):
 	try:
@@ -1483,6 +1503,8 @@ class TVweb2(Screen):
 			name = name.decode("iso-8859-1").encode("utf-8")
 		except:
 			pass
+
+	    item.title = name
  
 	    if accion == "mirrors" or accion == "findvideos":   ### change title for tucinecom
 		item.title = self.feedtitle
