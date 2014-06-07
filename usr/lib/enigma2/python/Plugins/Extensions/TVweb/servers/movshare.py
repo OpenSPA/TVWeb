@@ -5,7 +5,6 @@
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
 # Credits:
-# Unwise, jsunpack and main algorithm taken from Eldorado url resolver
 # https://github.com/Eldorados/script.module.urlresolver/blob/master/lib/urlresolver/plugins/movshare.py
 
 import urlparse,urllib2,urllib,re
@@ -15,7 +14,6 @@ from core import scrapertools
 from core import logger
 from core import config
 from core import unwise
-from core import jsunpack
 
 def test_video_exists( page_url ):
     logger.info("[movshare.py] test_video_exists(page_url='%s')" % page_url)

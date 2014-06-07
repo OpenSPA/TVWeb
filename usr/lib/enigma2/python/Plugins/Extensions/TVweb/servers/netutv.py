@@ -45,6 +45,21 @@ def find_videos(data):
     encontrados = set()
     devuelve = []
 
+    # http://netu.tv/player/embed_player.php?vid=82U4BRSOB4UU&autoplay=no
+    patronvideos  = 'netu.tv/player/embed_player.php\?vid\=([A-Z0-9]+)'
+    logger.info("[netutv.py] find_videos #"+patronvideos+"#")
+    matches = re.compile(patronvideos,re.DOTALL).findall(data)
+
+    for match in matches:
+        titulo = "[netu.tv]"
+        url = "http://netu.tv/watch_video.php?v="+match
+        if url not in encontrados:
+            logger.info("  url="+url)
+            devuelve.append( [ titulo , url , 'netutv' ] )
+            encontrados.add(url)
+        else:
+            logger.info("  url duplicada="+url)
+
     # http://netu.tv/watch_video.php?v=96WDAAA71A8K
     patronvideos  = 'netu.tv/watch_video.php\?v\=([A-Z0-9]+)'
     logger.info("[netutv.py] find_videos #"+patronvideos+"#")
@@ -64,6 +79,6 @@ def find_videos(data):
 
 def test():
 
-    video_urls = get_video_url("http://netu.tv/watch_video.php?v=96WD71A71A8K")
+    video_urls = get_video_url("http://netu.tv/watch_video.php?v=82U4BRSOB4UU")
 
     return len(video_urls)>0

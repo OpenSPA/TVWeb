@@ -17,28 +17,26 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     video_urls = []
 
     # Descarga la página como navegador web
+    data = scrapertools.cache_page(page_url)
+
+    '''
+    <div 
+    id="mediaplayer"
+    data-vidUrl="rtmp://canalextremadura.cdn.canalextremadura.es/canalextremadura/tv/PROG00103641.mp4#535#300#/sites/default/files/los_ultimos_exclavos.jpg"
+    data-iosUrl="http://iphonevod.canalextremadura.es/PROG00103641.mp4#535#300#/sites/default/files/los_ultimos_exclavos.jpg">
+    </div>         
+    '''
+
     #http://www.canalextremadura.es/alacarta/tv/videos/extremadura-desde-el-aire
     #<div id="mediaplayer" rel="rtmp://canalextremadurafs.fplive.net/canalextremadura/#tv/S-B5019-006.mp4#535#330"></div>
-    data = scrapertools.cachePage(page_url)
-    patron  = '<div id="mediaplayer" rel="([^"]+)"></div>'
-    matches = re.findall(patron,data,re.DOTALL)
-
-    for url in matches:
-        partes = url.split("#")
-        url = partes[0]+partes[1]
-        logger.info("url="+url)
-        video_urls.append( [ "RTMP [extremaduratv]" , url.replace(" ","%20") ] )
+    url = scrapertools.find_single_match(data,'data-vidUrl="([^\#]+)')
+    logger.info("url="+url)
+    video_urls.append( [ "para Web (rtmp) [extremaduratv]" , url[0:7]+urllib.quote(url[7:]) ] )
 
     # Descarga la página como ipad
-    headers = []
-    headers.append( ["User-Agent","Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.10"] )
-    data = scrapertools.cachePage(page_url,headers=headers)
-    logger.info("data="+data)
-    patron = "<video.*?src ='([^']+)'"
-    matches = re.findall(patron,data,re.DOTALL)
-
-    for url in matches:
-        video_urls.append( [ "iPhone [extremaduratv]" , url ] )
+    url = scrapertools.find_single_match(data,'data-iosUrl="([^\#]+)')
+    logger.info("url="+url)
+    video_urls.append( [ "para iOS (mp4) [extremaduratv]" , url[0:7]+urllib.quote(url[7:]) ] )
 
     return video_urls
 

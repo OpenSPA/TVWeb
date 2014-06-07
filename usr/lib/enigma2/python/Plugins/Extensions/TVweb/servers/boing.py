@@ -36,7 +36,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     logger.info("url="+url)
 
     video_urls = []
-    video_urls.append( [ "[boing]" , url ] )
+    video_urls.append( [ "(mp4) [boing]" , url ] )
 
     for video_url in video_urls:
         logger.info("[boing.py] %s - %s" % (video_url[0],video_url[1]))

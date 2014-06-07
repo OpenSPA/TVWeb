@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------
 # pelisalacarta - XBMC Plugin
-# Conector para Youtube
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
+#
+# Conector para Youtube
+#
+# La técnica ha sido extraída del add-on oficial de YouTube
+# hecho por Tobias Ussing y Henrik Mosgaard Jensen
+# Gracias por resolverlo, y hacerlo open source :)
 #------------------------------------------------------------
 import urlparse,urllib2,urllib,re,httplib
 from core import config
@@ -27,71 +32,6 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
         
     # Lee la página del video
     data = scrapertools.cache_page( page_url , headers=[['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3']] , )
-    '''
-    data = scrapertools.get_match(data,"yt.playerConfig \= (.*?)yt.setConfig")
-    data = data.replace("\\","")
-    logger.info("-------------------------------------------------------------------------------------------")
-    logger.info("data="+data)
-    logger.info("-------------------------------------------------------------------------------------------")
-
-    # "fmt_list": "37/1920x1080/9/0/115,22/1280x720/9/0/115,84/1280x720/9/0/115,35/854x480/9/0/115,34/640x360/9/0/115,18/640x360/9/0/115,82/640x360/9/0/115,5/320x240/7/0/0,36/320x240/99/0/0,17/176x144/99/0/0"
-    fmt_list = urllib.unquote( scrapertools.get_match(data,'"fmt_list"\: "([^"]+)"') )
-    logger.info(fmt_list)
-    fmt_list_array = fmt_list.split(",")
-
-    # "url_encoded_fmt_stream_map": 
-    #    "fallback_host=tc.v15.cache6.c.youtube.com\u0026sig=6CB93CBC67CF3B593A6C5193A40246D43879EC12.3EC65E221B0113A8EAA63F0A059F91A24C0ABEF9\u0026itag=37\u0026url=http%3A%2F%2Fr6---sn-h5q7enel.c.youtube.com%2Fvideoplayback%3Fkey%3Dyt1%26ip%3D80.26.225.23%26sver%3D3%26expire%3D1358232284%26itag%3D37%26fexp%3D920704%252C912806%252C922403%252C922405%252C929901%252C913605%252C925710%252C929104%252C929110%252C908493%252C920201%252C913302%252C919009%252C911116%252C910221%252C901451%26source%3Dyoutube%26mv%3Dm%26newshard%3Dyes%26ms%3Dau%26upn%3DKJ4LhwFLl7g%26ratebypass%3Dyes%26id%3D9cbfb0c3e5c7b5a6%26mt%3D1358208854%26sparams%3Dcp%252Cgcr%252Cid%252Cip%252Cipbits%252Citag%252Cratebypass%252Csource%252Cupn%252Cexpire%26gcr%3Des%26ipbits%3D8%26cp%3DU0hUTVJOUF9NTkNONF9KSFRDOkJnNE9EUGNUeWtj\u0026quality=hd1080\u0026type=video%2Fmp4%3B+codecs%3D%22avc1.64001F%2C+mp4a.40.2%22
-    #     ,fallback_host=
-    fmt_stream_map = urllib.unquote( scrapertools.get_match(data,'"url_encoded_fmt_stream_map"\: "([^"]+)"') )
-    logger.info(fmt_stream_map)
-    fmt_stream_map_array = fmt_stream_map.split(",")
-
-    logger.info("-------------------------------------------------------------------------------------------")
-    logger.info("len(fmt_list_array)=%d" % len(fmt_list_array))
-    logger.info("len(fmt_stream_map_array)=%d" % len(fmt_stream_map_array))
-
-    CALIDADES = {'5':'240p','34':'360p','18':'360p','35':'480p','22':'720p','84':'720p','37':'1080p','38':'3072p','17':'144p','43':'360p','44':'480p','45':'720p'}
-
-    for i in range(len(fmt_list_array)):
-        try:
-            video_url = urllib.unquote(fmt_stream_map_array[i])
-            logger.info("video_url="+video_url)
-            video_url = urllib.unquote(video_url[4:])
-            video_url = video_url.split(";")[0]
-            logger.info(" [%s] - %s" % (fmt_list_array[i],video_url))
-            
-            calidad = fmt_list_array[i].split("/")[0]
-            video_url = video_url.replace("flv&itag="+calidad,"flv")
-            video_url = video_url.replace("="+calidad+"&url=","")
-            video_url = video_url.replace("sig=","signature=")
-            video_url = re.sub("^=http","http",video_url)
-
-            resolucion = fmt_list_array[i].split("/")[1]
-    
-            formato = ""
-            patron = '&type\=video/([a-z0-9\-]+)'
-            matches = re.compile(patron,re.DOTALL).findall(video_url)
-            if len(matches)>0:
-                formato = matches[0]
-                if formato.startswith("x-"):
-                    formato = formato[2:]
-                formato = formato.upper()
-    
-            etiqueta = ""
-            try:
-                etiqueta = CALIDADES[calidad]
-                if formato!="":
-                    etiqueta = etiqueta + " (%s a %s) [youtube]" % (formato,resolucion)
-                else:
-                    etiqueta = etiqueta + " (%s) [youtube]" % (resolucion)
-        
-                video_urls.append( [ etiqueta , video_url ])
-            except:
-                pass
-            
-        except:
-            pass
-    '''
     video_urls = scrapeWebPageForVideoLinks(data)
 
     video_urls.reverse()
@@ -101,6 +41,13 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     
     return video_urls
 
+def removeAdditionalEndingDelimiter(data):
+    pos = data.find("};")
+    if pos != -1:
+        logger.info("found extra delimiter, removing")
+        data = data[:pos + 1]
+    return data
+
 def extractFlashVars(data):
     flashvars = {}
     #found = False
@@ -108,24 +55,35 @@ def extractFlashVars(data):
     matches = re.compile(patron,re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
     if matches:
-        data = json.loads(matches[0])
-        flashvars = data["args"]
-    '''
-    for line in data.split("\n"):
-        #if line.strip().startswith("yt.playerConfig = "):
-        if "ytplayer.config = " in line.strip():
-            found = True
-            p1 = line.find("ytplayer.config = ")
-            p2 = line.rfind(";")
-            if p1 <= 0 or p2 <= 0:
-                continue
-            data = line[p1 + 1:p2]
-            break
-    if found:
+        data = matches[0]
+        data = removeAdditionalEndingDelimiter(data)
         data = json.loads(data)
         flashvars = data["args"]
     '''
-    #logger.info("flashvars: " + repr(flashvars))
+    def extractFlashVars(self, data):
+        flashvars = {}
+        found = False
+
+        for line in data.split("\n"):
+            if line.strip().find(";ytplayer.config = ") > 0:
+                found = True
+                p1 = line.find(";ytplayer.config = ") + len(";ytplayer.config = ") - 1
+                p2 = line.rfind(";")
+                if p1 <= 0 or p2 <= 0:
+                    continue
+                data = line[p1 + 1:p2]
+                break
+        data = self.removeAdditionalEndingDelimiter(data)
+
+        if found:
+            data = json.loads(data)
+            flashvars = data["args"]
+        self.common.log("Step2: " + repr(data))
+
+        self.common.log(u"flashvars: " + repr(flashvars), 2)
+        return flashvars
+    '''
+    logger.info("flashvars: " + repr(flashvars))
     return flashvars
 
 def scrapeWebPageForVideoLinks(data):

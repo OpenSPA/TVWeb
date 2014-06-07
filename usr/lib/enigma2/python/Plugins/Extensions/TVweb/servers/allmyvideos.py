@@ -12,7 +12,6 @@ import re
 from core import scrapertools
 from core import logger
 from core import config
-from core import unpackerjs,unpackerjs3
 
 def test_video_exists( page_url ):
     logger.info("[allmyvideos.py] test_video_exists(page_url='%s')" % page_url)
@@ -118,6 +117,25 @@ def find_videos(data):
     encontrados.add("http://allmyvideos.net/embed-js.html")
     encontrados.add("http://allmyvideos.net/embed-player.html")
     encontrados.add("http://allmyvideos.net/embed-cgi.html")
+    encontrados.add("http://allmyvideos.net/embed-i.html")
+    encontrados.add("http://allmyvideos.net/images")
+    encontrados.add("http://allmyvideos.net/theme")
+    encontrados.add("http://allmyvideos.net/xupload")
+    encontrados.add("http://allmyvideos.net/s")
+    encontrados.add("http://allmyvideos.net/js")
+    encontrados.add("http://allmyvideos.net/jquery")
+    encontrados.add("http://allmyvideos.net/login")
+    encontrados.add("http://allmyvideos.net/make")
+    encontrados.add("http://allmyvideos.net/i")
+    encontrados.add("http://allmyvideos.net/faq")
+    encontrados.add("http://allmyvideos.net/tos")
+    encontrados.add("http://allmyvideos.net/premium")
+    encontrados.add("http://allmyvideos.net/checkfiles")
+    encontrados.add("http://allmyvideos.net/privacy")
+    encontrados.add("http://allmyvideos.net/refund")
+    encontrados.add("http://allmyvideos.net/links")
+    encontrados.add("http://allmyvideos.net/contact")
+
     devuelve = []
 
     # http://allmyvideos.net/embed-d6fefkzvjc1z.html 
@@ -127,7 +145,7 @@ def find_videos(data):
 
     for match in matches:
         titulo = "[allmyvideos]"
-        url = "http://allmyvideos.net/embed-"+match+".html"
+        url = "http://allmyvideos.net/"+match
         if url not in encontrados and url!="http://allmyvideos.net/embed":
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'allmyvideos' ] )
@@ -142,7 +160,7 @@ def find_videos(data):
 
     for match in matches:
         titulo = "[allmyvideos]"
-        url = "http://allmyvideos.net/embed-"+match+".html"
+        url = "http://allmyvideos.net/"+match
         if url not in encontrados and not url.startswith("embed"):
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'allmyvideos' ] )
@@ -157,14 +175,13 @@ def find_videos(data):
 
     for match in matches:
         titulo = "[allmyvideos]"
-        url = "http://allmyvideos.net/embed-"+match+".html"
+        url = "http://allmyvideos.net/"+match
         if url not in encontrados and not url.startswith("embed"):
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'allmyvideos' ] )
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)
-
 
     return devuelve
 

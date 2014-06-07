@@ -80,7 +80,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     video_urls = []
     if url != "":
-        video_urls.append( [ "RTMP [aragontv]" , url ] )
+        video_urls.append( [ "para Web (rtmp) [aragontv]" , url ] )
 
     for video_url in video_urls:
         logger.info("[aragontv.py] %s - %s" % (video_url[0],video_url[1]))

@@ -84,7 +84,7 @@ def find_videos(data):
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
-        titulo = "[tut.v]"
+        titulo = "[tu.tv]"
         url = match
     
         if url not in encontrados:
@@ -99,7 +99,7 @@ def find_videos(data):
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
-        titulo = "[tut.v]"
+        titulo = "[tu.tv]"
         url = match
     
         if url not in encontrados:
@@ -115,7 +115,7 @@ def find_videos(data):
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
-        titulo = "[tut.v]"
+        titulo = "[tu.tv]"
         url = "http://tu.tv/"+match
     
         if url not in encontrados:

@@ -16,12 +16,13 @@ from core import logger
 # Lista de los servidores que se pueden ver sin cuenta premium de ningún tipo
 FREE_SERVERS = []
 FREE_SERVERS.extend(['directo','allmyvideos','adnstream','bliptv','divxstage','facebook','fourshared', 'hulkshare', 'twitvid'])
-FREE_SERVERS.extend(['googlevideo','gigabyteupload','mediafire','moevideos','movshare','novamov','putlocker'])
+FREE_SERVERS.extend(['googlevideo','gigabyteupload','mediafire','moevideos','movshare','novamov']) #,'putlocker'
 FREE_SERVERS.extend(['royalvids','sockshare','stagevu','tutv','userporn','veoh','videobam'])
-FREE_SERVERS.extend(['vidbux','videoweed','vimeo','vk','watchfreeinhd','youtube','nowdownload'])#,'videobeer'
+FREE_SERVERS.extend(['vidbux','videoweed','vimeo','vk','watchfreeinhd','youtube'])#,'videobeer','nowdownload'
 FREE_SERVERS.extend(['jumbofiles','nowvideo','streamcloud', 'zinwa', 'dailymotion','justintv', 'vidbull'])
 FREE_SERVERS.extend(['vureel','nosvideo','videopremium','movreel','flashx','magnovideo','upafile'])
-FREE_SERVERS.extend(['fileflyer','playedto','tunepk','powvideo','videomega','mega','vidspot','netutv','rutube','videozed','documentary','hugefiles'])
+FREE_SERVERS.extend(['fileflyer','playedto','tunepk','powvideo','videomega','mega','vidspot','netutv','rutube'])
+FREE_SERVERS.extend(['videozed','documentary','hugefiles', 'firedrive','videott','tumitv','nubestream','gamovideo'])
 # YA NO FUNCIONAN
 # rutube
 
@@ -45,7 +46,7 @@ REALDEBRID_SERVERS = ['one80upload','tenupload','onefichier','onehostclick','two
                    'hotfile','hulkshare','hulu','ifile','jakfile','jumbofiles','justintv','letitbit','loadto','mediafire','mega','megashare','megashares','mixturevideo','muchshare','netload',
                    'novafile','nowdownload','purevid','putbit','putlocker','redtube','rapidgator','rapidshare','rutube','ryushare','scribd','sendspace','sharebees','shareflare','shragle','slingfile','sockshare',
                    'soundcloud','speedyshare','turbobit','unibytes','uploadc','uploadedto','uploading','uploadspace','uptobox',
-                   'userporn','veevr','vidbux','vidhog','vidxden','vimeo','vipfile','wattv','xfileshare','youporn','youtube','yunfile','zippyshare','justintv','nowvideo','ultramegabit','filesmonster']
+                   'userporn','veevr','vidbux','vidhog','vidxden','vimeo','vipfile','wattv','xfileshare','youporn','youtube','yunfile','zippyshare','justintv','nowvideo','ultramegabit','filesmonster','oboom']
 #wupload,fileserve
 
 ALLDEBRID_SERVERS = ['one80upload','onefichier','twoshared','fourfastfile','fourshared','albafile','bayfiles','bitshare','cloudzer','cramit','crocko','cyberlocker','dailymotion','dengee',

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------
 # pelisalacarta - XBMC Plugin
-# Conector para powvideo
+# Conector para gamovideo
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
 
@@ -11,15 +11,15 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
-from core import jsunpack
+from core import unpackerjs
 
 def test_video_exists( page_url ):
-    logger.info("pelisalacarta.powvideo test_video_exists(page_url='%s')" % page_url)
+    logger.info("pelisalacarta.gamovideo test_video_exists(page_url='%s')" % page_url)
     
     return True,""
 
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
-    logger.info("pelisalacarta.powvideo get_video_url(page_url='%s')" % page_url)
+    logger.info("pelisalacarta.gamovideo get_video_url(page_url='%s')" % page_url)
 
     # Lo pide una vez
     headers = [['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14']]
@@ -40,7 +40,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
         usr_login = ""
         id = scrapertools.get_match(data,'<input type="hidden" name="id" value="([^"]+)"')
         fname = scrapertools.get_match(data,'<input type="hidden" name="fname" value="([^"]+)"')
-        referer = scrapertools.get_match(data,'<input type="hidden" name="referer" value="([^"]*)"')
+        referer = scrapertools.get_match(data,'<input type="hidden" name="referer"\s+value="([^"]*)"')
         hashvalue = scrapertools.get_match(data,'<input type="hidden" name="hash" value="([^"]*)"')
         submitbutton = scrapertools.get_match(data,'<input type="submit" name="imhuman" value="([^"]+)"').replace(" ","+")
 
@@ -62,16 +62,20 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     logger.info("data="+data)
     data = scrapertools.find_single_match(data,"<script type='text/javascript'>(.*?)</script>")
     logger.info("data="+data)
-    data = jsunpack.unpack(data)
+    data = unpackerjs.unpackjs(data)
     logger.info("data="+data)
-    data = data.replace("\\","")
 
-    media_url = scrapertools.find_single_match(data,"file:'([^']+)'")
+
+    pfile = scrapertools.get_match(data,'file\s*\:\s*"([^"]+)"')
+    pstreamer = scrapertools.get_match(data,'streamer\s*\:\s*"([^"]+)"')
+
+    media_url = pstreamer+" playpath="+pfile
+
     video_urls = []
-    video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [powvideo]",media_url])
+    video_urls.append( [ "RTMP [gamovideo]",media_url])
 
     for video_url in video_urls:
-        logger.info("[powvideo.py] %s - %s" % (video_url[0],video_url[1]))
+        logger.info("[gamovideo.py] %s - %s" % (video_url[0],video_url[1]))
 
     return video_urls
 
@@ -80,32 +84,32 @@ def find_videos(data):
     encontrados = set()
     devuelve = []
 
-    # http://powvideo.net/auoxxtvyoy
-    patronvideos  = 'powvideo.net/([a-z0-9]+)'
-    logger.info("pelisalacarta.powvideo find_videos #"+patronvideos+"#")
+    # http://gamovideo.com/auoxxtvyoy
+    patronvideos  = 'gamovideo.com/([a-z0-9]+)'
+    logger.info("pelisalacarta.gamovideo find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
-        titulo = "[powvideo]"
-        url = "http://powvideo.net/"+match
+        titulo = "[gamovideo]"
+        url = "http://gamovideo.com/"+match
         if url not in encontrados and match!="embed":
             logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'powvideo' ] )
+            devuelve.append( [ titulo , url , 'gamovideo' ] )
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)
             
-    # http://powvideo.net/embed-sbb9ptsfqca2-588x360.html
-    patronvideos  = 'powvideo.net/embed-([a-z0-9]+)'
-    logger.info("pelisalacarta.powvideo find_videos #"+patronvideos+"#")
+    # http://gamovideo.com/embed-sbb9ptsfqca2-588x360.html
+    patronvideos  = 'gamovideo.com/embed-([a-z0-9]+)'
+    logger.info("pelisalacarta.gamovideo find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
-        titulo = "[powvideo]"
-        url = "http://powvideo.net/"+match
+        titulo = "[gamovideo]"
+        url = "http://gamovideo.com/"+match
         if url not in encontrados:
             logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'powvideo' ] )
+            devuelve.append( [ titulo , url , 'gamovideo' ] )
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)
@@ -113,6 +117,6 @@ def find_videos(data):
     return devuelve
 
 def test():
-    video_urls = get_video_url("http://powvideo.net/auoxxtvyquoy")
+    video_urls = get_video_url("http://gamovideo.com/91zidptmfqnr")
 
     return len(video_urls)>0

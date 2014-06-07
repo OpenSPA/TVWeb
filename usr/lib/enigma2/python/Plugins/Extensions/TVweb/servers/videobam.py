@@ -64,7 +64,7 @@ def find_videos(data):
 
     # VideoBam para AnimeID    src="http://videobam.com/widget/USezW"
     # VideoBam custom    src="http://videobam.com/widget/USezW/custom/568"
-    patronvideos  = 'http://videobam.com/widget/([\w]+)'
+    patronvideos  = 'videobam.com/widget/([\w]+)'
     logger.info("[videobam.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
@@ -79,7 +79,7 @@ def find_videos(data):
             logger.info("  url duplicada="+url)
 
     # http://videobam.com/fsgUt
-    patronvideos  = 'http://videobam.com/([\w]+)'
+    patronvideos  = 'videobam.com/([\w]+)'
     logger.info("[videobam.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 

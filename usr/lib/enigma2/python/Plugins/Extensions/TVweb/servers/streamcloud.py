@@ -77,8 +77,22 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
 # Encuentra vídeos de este servidor en el texto pasado
 def find_videos(text):
-    encontrados = set()
     devuelve = []
+
+    encontrados = set()
+    encontrados.add("http://streamcloud.eu/stylesheets")
+    encontrados.add("http://streamcloud.eu/control")
+    encontrados.add("http://streamcloud.eu/xupload")
+    encontrados.add("http://streamcloud.eu/js")
+    encontrados.add("http://streamcloud.eu/favicon")
+    encontrados.add("http://streamcloud.eu/reward")
+    encontrados.add("http://streamcloud.eu/login")
+    encontrados.add("http://streamcloud.eu/deliver")
+    encontrados.add("http://streamcloud.eu/faq")
+    encontrados.add("http://streamcloud.eu/tos")
+    encontrados.add("http://streamcloud.eu/checkfiles")
+    encontrados.add("http://streamcloud.eu/contact")
+    encontrados.add("http://streamcloud.eu/serve")
 
     # http://streamcloud.eu/cwvhcluep67i
     patronvideos  = '(streamcloud.eu/[a-z0-9]+)'

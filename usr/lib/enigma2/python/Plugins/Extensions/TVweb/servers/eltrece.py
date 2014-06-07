@@ -15,7 +15,10 @@ from core import config
 def get_video_url( page_url , premium = False , user="" , password="", video_password="", page_data="" ):
     logger.info("[eltrece.py] get_video_url(page_url='%s')" % page_url)
 
-    #http://www.eltrecetv.com.ar/los-%C3%BAnicos/los-%C3%BAnicos-2012/00052062/cap%C3%ADtulo-28-los-%C3%BAnicos
+    #http://www.eltrecetv.com.ar/cqc-2013/21-de-enero-cqc_066584
+    '''
+    iMac-de-Jesus:rtmpdump $ ./rtmpdump-2.4 -r "rtmp://10.vod.eltrecetv.com.ar/vod/13tv" --playpath "mp4:13tv/2014/01/22/CQC-210114-360.mp4" --app "vod/13tv" --swfUrl "http://static.eltrecetv.com.ar/sites/all/libraries/jwplayer/player-licensed.swf" --pageUrl "http://www.eltrecetv.com.ar/cqc-2013/21-de-enero-cqc_066584" -o out.mp4
+    '''
     data = scrapertools.cache_page(page_url)
 
     '''
@@ -24,23 +27,28 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     video_urls = []
 
-    data_mobile = scrapertools.get_match(data,"data-mobile\='13tv/([^']+)'")
+    fullurl = "rtmp://10.vod.eltrecetv.com.ar/vod/13tv"
+    app = "vod/13tv"
+    swfurl = "http://static.eltrecetv.com.ar/sites/all/libraries/jwplayer/player-licensed.swf"
+
+    data_mobile = scrapertools.get_match(data,"data-mobile\='([^']+)'")
     logger.info("data_mobile="+data_mobile)
-    url = "http://ctv.eltrecetv.com.ar/"+data_mobile
-    extension = scrapertools.get_filename_from_url(url)[-4:]
-    
+    playpath = "mp4:"+data_mobile
+    url = fullurl + " app=" + app + " swfUrl=" + swfurl + " playpath=" + playpath + " pageUrl="+page_url
+    extension = "rtmp"
     video_urls.append( [ extension+" (para móviles) [eltrece]" , url ] )
 
     data_level = scrapertools.get_match(data,"data-levels\='(.*?)'")
     data_level = data_level.replace("\\","")
     logger.info("data_level="+data_level)
-    patron = '"bitrate"\:"(\d+)","file"\:"13tv/([^"]+)"'
+    patron = '"bitrate"\:"(\d+)","file"\:"([^"]+)"'
     matches = re.compile(patron,re.DOTALL).findall(data_level)
 
     for bitrate,fileurl in matches:
         logger.info("bitrate="+bitrate+", url="+fileurl)
-        url = "http://ctv.eltrecetv.com.ar/"+fileurl
-        extension = scrapertools.get_filename_from_url(url)[-4:]
+        playpath = "mp4:"+fileurl
+        url = fullurl + " app=" + app + " swfUrl=" + swfurl + " playpath=" + playpath + " pageUrl="+page_url
+        extension = "rtmp"
         
         video_urls.append( [ extension+" ("+bitrate+" Kbps) [eltrece]" , url ] )
 
