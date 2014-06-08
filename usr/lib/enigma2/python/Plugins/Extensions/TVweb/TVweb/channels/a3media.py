@@ -10,6 +10,7 @@ import urllib, urllib2
 from core import logger
 from core import scrapertools
 from core.item import Item
+from core import jsontools
 
 
 DEBUG = False
@@ -221,6 +222,16 @@ def episodios(item):
 def play(item):
     logger.info("[a3media.py] play")
 
+    itemlist = []
+
+    data = scrapertools.cache_page("http://www.pydowntv.com/api/"+item.url)
+    json_object = jsontools.load_json(data)
+    logger.info("json_object="+repr(json_object))
+
+    itemlist.append( Item(url=json_object["videos"][0]["url_video"][0]) )
+
+    return itemlist
+
     '''
 <section class="mod_player">
 	<div id="capa_modulo_player" episode="20131030-EPISODE-00002-false"></div> 
@@ -232,7 +243,6 @@ def play(item):
     patron = '<div id="[^"]+" episode="([^"]+)"></div>'
 
     episode = scrapertools.get_match(data,patron)
-    itemlist = []
 
     if len(episode)>0:
     	token = d(episode, "puessepavuestramerced")
@@ -258,7 +268,9 @@ def getApiTime():
 def d(s, s1):
     l = 3000L + getApiTime()
     s2 = e(s+str(l), s1)
-    return "%s|%s|%s" % (s, str(l), s2)
+    resolver = "http://www.descargavideos.tv/util/atresplayer-util1.php?msg="+s+str(l);
+    s3=scrapertools.cachePage(resolver)
+    return "%s|%s|%s" % (s, str(l), s3)
 
 def e(s, s1):
     return hmac.new(s1, s).hexdigest()

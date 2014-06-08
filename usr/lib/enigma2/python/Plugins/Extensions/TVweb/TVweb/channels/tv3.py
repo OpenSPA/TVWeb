@@ -34,7 +34,6 @@ def mainlist(item):
     
     itemlist = []
     
-    itemlist.append( Item(channel=__channel__, title="Alta definicio", action="hdvideolist", url = "http://www.tv3.cat/pprogrames/hd/mhdSeccio.jsp") )
     itemlist.append( Item(channel=__channel__, title="Series", action="loadsection" , extra = "TSERIES|") )
     itemlist.append( Item(channel=__channel__, title="Actualitat", action="loadsection" , extra = "TACTUALITA|") )
     itemlist.append( Item(channel=__channel__, title="Esports", action="loadsection", extra = "TESPORTS|" ) )
@@ -45,12 +44,10 @@ def mainlist(item):
     itemlist.append( Item(channel=__channel__, title="Infantil", action="loadsection" , extra= "TINFANTIL|" ) )
     itemlist.append( Item(channel=__channel__, title="Musica", action="loadsection" , extra= "TMUSICA|" ) )
     itemlist.append( Item(channel=__channel__, title="Gent TVC", action="loadsection" , extra= "TGENTTVC|" ) )
+    itemlist.append( Item(channel=__channel__, title="Alta definicio", action="hdvideolist", url = "http://www.tv3.cat/pprogrames/hd/mhdSeccio.jsp") )
     itemlist.append( Item(channel=__channel__, title="Buscar", action="search") )
     
-    
     return itemlist
-
-
 
 def loadsection(item):
     try:
@@ -85,11 +82,12 @@ def loadsection(item):
                     patron = '<span class="avant">([^<]+)</span>'                
                     matches = re.compile(patron,re.DOTALL).findall(chapter)
                     scrapedtitle = matches[0]
-                    
+
                     patron= '<a href="([^"]+)">([^<]+)</a>'                
                     matches = re.compile(patron,re.DOTALL).findall(chapter)
                     scrapedurl = "http://www.tv3.cat%s" % matches[0][0]
                     scrapedtitle = scrapedtitle + " - \"" + matches[0][1] + "\""
+                    scrapedtitle = unicode( scrapedtitle, "iso-8859-1" , errors="replace" ).encode("utf-8")
                     
                     patron= '<p>([^<]+)<'                
                     matches = re.compile(patron,re.DOTALL).findall(chapter)
@@ -98,11 +96,13 @@ def loadsection(item):
                     # Añade al listado de XBMC
                     itemlist.append(
                         Item(channel=item.channel,
-                             action = 'links',
+                             action = 'play',
                              title = str(scrapedtitle).replace("&quot;", "'"),
                              url = scrapedurl,
                              thumbnail = scrapedthumbnail,
-                             plot = scrapedplot
+                             plot = scrapedplot,
+                             server = "tv3",
+                             folder = False
                         )
                     ) 
                 except:
@@ -112,7 +112,7 @@ def loadsection(item):
                         
             
         # Extrae el paginador
-        patron = '<li class="lastpag">.*?send\(\'frmSearcher\',.*?(\d+)\)".*?</li>'
+        patron = '<li class="lastpag">.*?sendLocalVid\(\'frmSearcher\',.*?(\d+)\)".*?</li>'
         numeros = re.compile(patron,re.DOTALL).findall(data)
         
         if len(numeros)>0 :
@@ -125,7 +125,7 @@ def loadsection(item):
             itemlist.append(
                 Item(channel=item.channel,
                      action = 'loadsection',
-                     title = 'Siguiente',
+                     title = '>> Siguiente',
                      url = urlsiguiente,
                      thumbnail = '',
                      plot = "",
@@ -155,7 +155,7 @@ def dosearch(item):
     post = post + '&hiSearchIn=0'
     post = post + '&maxRowsDisplay=50'
     post = post + '&hiStartValue=' + start
-    post = post + '&hiTarget=searching.jsp'
+    post = post + '&hiTarget=searchingVideos.jsp' #Mod
     post = post + '&hiCategory=VID'
     post = post + '&textBusca=' + texto
     
@@ -163,11 +163,11 @@ def dosearch(item):
     data = scrapertools.cachePage(url,post)
     
     #resultado busqueda
-    patron = '<div class="resultatcercador">.*?</body>'            
+    patron = '<div class="mod_searcher_borders">.*?</body>' #Mod
     matches = re.compile(patron,re.DOTALL).findall(data)
     data = matches[0]
     
-    patron = '<li>.*?<p class="topitem">.*?</ul>.*?</div>'
+    patron = '<li>.*?<div class="img_p_txt_mes_a">(.*?)</li>' #Mod
     matches = re.compile(patron,re.DOTALL).findall(data)
     if len(matches) > 0:
         for chapter in matches:
@@ -192,11 +192,13 @@ def dosearch(item):
                 # Añade al listado de XBMC
                 itemlist.append(
                     Item(channel=item.channel,
-                         action = 'links',
+                         action = 'play',
                          title = str(scrapedtitle).replace("&quot;", "'"),
                          url = scrapedurl,
                          thumbnail = scrapedthumbnail,
-                         plot = scrapedplot
+                         plot = scrapedplot,
+                         server = "tv3",
+                         folder = False
                     )
                 ) 
             except:
@@ -260,7 +262,7 @@ def hdvideolist(item):
         
         #addItemToVideoList( 2, "El búnquer", "871599", "http://hd.tv3.cat/720/el7ecamio5capitol1__H264_720.mp4" , "http://hd.tv3.cat/1080/el7ecamio5capitol1__H264_1080.mp4" , "http://www.tv3.cat/multimedia/jpg/2/2/1234374324022.jpg", "http://www.tv3.cat/multimedia/jpg/2/2/1234374324022.jpg", "http://www.tv3.cat/multimedia/jpg/2/2/1234374324022.jpg", "Uns caçadors de tresors francesos investiguen si hi ha or a la zona de la Vajol." , "" , "49 mgb.", "99 mgb.", "El tresor del setè camió", "http://www.tv3.cat/multimedia/gif/5/8/1230554823185.gif", "http://www.tv3.cat/multimedia/jpg/3/9/1230554796793.jpg", "Docusèrie" , "http://www.tv3.cat/programa/240582695/El-tresor-del-7e-camio" , "http://www.tv3.cat/multimedia/jpg/5/5/1234374299055.jpg" , "Fitxa del programa", "20090211");
             
-        server = "directo"
+        server = "Directo"
         patron = 'addItemToVideoList\((.*?)\);'
         matches = re.compile(patron,re.DOTALL).findall(data)
         for match in matches:
@@ -281,113 +283,21 @@ def hdvideolist(item):
                 import sys
                 for line in sys.exc_info():
                     logger.error( "%s" % line )     
-        
-        
+
     except:
         import sys
         for line in sys.exc_info():
             logger.error( "%s" % line )
     return itemlist
 
-def links(item): 
-    logger.info("[tv3.py] links")   
-     
-    server = "directo"   
-    itemlist = []
-    try:
-        # --------------------------------------------------------
-        # Saca el codigo de la URL y descarga
-        # --------------------------------------------------------
-        patron = "/videos/(\d+)/"
-        matches = re.compile(patron,re.DOTALL).findall(item.url)
-        scrapertools.printMatches(matches)
-        codigo = matches[0]
-    
-        # Prueba con el modo 1
-        url = geturl3(codigo)
-        if url=="" or url == None:
-            url = geturl1(codigo)
-        if url=="" or url == None:
-            url = geturl2(codigo)
-        if url=="" or url == None:
-            url = geturl4(codigo)
-        
-        if url=="" or url == None:
-            return []
-        
-        if url.startswith("http"):
-            itemlist.append( Item(channel=__channel__, action="play" , title="play", url=url, thumbnail=item.thumbnail, plot=item.plot, server=server, extra="", category=item.category, fanart=item.thumbnail, folder=False))
-        else:
-            #url = "rtmp://mp4-500-str.tv3.cat/ondemand/mp4:g/tvcatalunya/3/1/1269579524113.mp4"
-            patron = "rtmp\:\/\/([^\/]+)\/ondemand\/mp4\:(g\/.*?mp4)"
-            matches = re.compile(patron,re.DOTALL).findall(url)
-            media = matches[0][1]
-            
-            videourl = "http://mp4-medium-dwn.media.tv3.cat/" + media
-            itemlist.append( Item(channel=__channel__, action="play" , title="play", url=videourl, thumbnail=item.thumbnail, plot=item.plot, server=server, extra="", category=item.category, fanart=item.thumbnail, folder=False))
-    except:  
-        import sys
-        for line in sys.exc_info():
-            logger.error( "%s" % line ) 
-                
-        
-    return itemlist
+# Verificación automática de canales: Esta función debe devolver "True" si todo está ok en el canal.
+def test():
 
-def geturl1(codigo):
-    #http://www.tv3.cat/su/tvc/tvcConditionalAccess.jsp?ID=1594629&QUALITY=H&FORMAT=FLVGES&RP=www.tv3.cat&rnd=796474
-    dataurl = "http://www.tv3.cat/su/tvc/tvcConditionalAccess.jsp?ID="+codigo+"&QUALITY=H&FORMAT=FLV&rnd=481353"
-    logger.info("[tv3.py] geturl1 dataurl="+dataurl)
-        
-    data = scrapertools.cachePage(dataurl)
-    
-    patron = "(rtmp://[^\?]+)\?"
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    url = ""
-    if len(matches)>0:
-    	url = matches[0]
-    	url = url.replace('rtmp://flv-500-str.tv3.cat/ondemand/g/','http://flv-500.tv3.cat/g/')
-    return url
+    # Comprueba que la primera opción tenga algo
+    items = mainlist(Item())
+    section = loadsection(items[0])
 
-def geturl2(codigo):
-    #http://www.tv3.cat/su/tvc/tvcConditionalAccess.jsp?ID=1594629&QUALITY=H&FORMAT=FLVGES&RP=www.tv3.cat&rnd=796474
-    dataurl = "http://www.tv3.cat/su/tvc/tvcConditionalAccess.jsp?ID="+codigo+"&QUALITY=H&FORMAT=FLVGES&RP=www.tv3.cat&rnd=796474"
-    logger.info("[tv3.py] geturl2 dataurl="+dataurl)
-        
-    data = scrapertools.cachePage(dataurl)
-    
-    patron = "(rtmp://[^\?]+)\?"
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    url = ""
-    if len(matches)>0:
-    	url = matches[0]
-    	url = url.replace('rtmp://flv-es-500-str.tv3.cat/ondemand/g/','http://flv-500-es.tv3.cat/g/')
-	return url
+    if len(section)>0:
+        return True
 
-def geturl3(codigo):
-    dataurl = "http://www.tv3.cat/su/tvc/tvcConditionalAccess.jsp?ID="+codigo+"&QUALITY=H&FORMAT=MP4"
-    logger.info("[tv3.py] geturl3 dataurl="+dataurl)
-        
-    data = scrapertools.cachePage(dataurl)
-    
-    patron = "(rtmp://[^\?]+)\?"
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    url = ""
-    if len(matches)>0:
-    	url = matches[0]
-    	#url = url.replace('rtmp://flv-es-500-str.tv3.cat/ondemand/g/','http://flv-500-es.tv3.cat/g/')
-    return url
-
-def geturl4(codigo):
-    dataurl = "http://www.tv3.cat/su/tvc/tvcConditionalAccess.jsp?ID="+codigo+"&QUALITY=H&FORMAT=MP4GES&RP=www.tv3.cat"
-    logger.info("[tv3.py] geturl4 dataurl="+dataurl)
-        
-    data = scrapertools.cachePage(dataurl)
-    
-    patron = "(rtmp://[^\?]+)\?"
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    url = ""
-    if len(matches)>0:
-    	url = matches[0]
-    	#url = url.replace('rtmp://flv-es-500-str.tv3.cat/ondemand/g/','http://flv-500-es.tv3.cat/g/')
-    return url
-
+    return False

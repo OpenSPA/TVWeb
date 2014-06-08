@@ -17,7 +17,7 @@ from servers import servertools
 from StringIO import StringIO
 import gzip
 import xml.parsers.expat
-
+from core import jsontools
 
 __channel__ = "mitele"
 __category__ = "S,F,A"
@@ -38,9 +38,8 @@ def mainlist(item):
     itemlist.append( Item(channel=__channel__, title="Programas" , action="series"  , category="programas" , thumbnail = "" , url="http://www.mitele.es/programas-tv/"))
     itemlist.append( Item(channel=__channel__, title="Moto GP" , action="series"  , category="programas" , thumbnail = "" , url="http://www.mitele.es/motogp/"))
     itemlist.append( Item(channel=__channel__, title="TV Movies" , action="series"  , category="series"    , thumbnail = "" , url="http://www.mitele.es/tv-movies/"))
-    itemlist.append( Item(channel=__channel__, title="Infantil"  , action="series"  , category="infantil"  , thumbnail = "" , url="http://www.mitele.es/tv-infantil/"))
     itemlist.append( Item(channel=__channel__, title="V.O."      , action="series"  , thumbnail = "" , url="http://www.mitele.es/mitele-vo/"))
-    itemlist.append( Item(channel=__channel__, title="Directo"   , action="directo" , thumbnail = "" , url="http://www.mitele.es/directo/"))
+    #itemlist.append( Item(channel=__channel__, title="Directo"   , action="directo" , thumbnail = "" , url="http://www.mitele.es/directo/"))
     return itemlist
 
 def series(item):
@@ -89,12 +88,13 @@ def temporadas(item):
 
     # Extrae las temporadas
     data = scrapertools.cachePage(item.url)
+    logger.info("data="+data)
     patron = 'temporadasBrowser\({\s+temporadas(.*?)\)'
     matches = re.compile(patron,re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
     data_json = '{"temporadas"'+matches[0]
-    temporadas_json = load_json(data_json)
+    temporadas_json = jsontools.load_json(data_json)
     if temporadas_json == None : temporadas_json = []
 
     itemlist = []
@@ -117,7 +117,7 @@ def capitulos(item):
         item.extra="1"
 
     data = scrapertools.cachePage(item.url+"/"+item.extra)
-    capitulos_json = load_json(data)
+    capitulos_json = jsontools.load_json(data)
     if capitulos_json == None : capitulos_json = []
 
     itemlist = []
@@ -466,7 +466,6 @@ def playrtmptoken3(item, data):
 
     return itemlist
 
-
 #unescapes all the xml formatted characters
 def unescape(s):
     want_unicode = False
@@ -495,61 +494,21 @@ def unescape(s):
         es = u""
     return es.join(list)
 
-# TODO: Pasar al core
-def load_json(data):
-    # callback to transform json string values to utf8
-    def to_utf8(dct):
-        rdct = {}
-        for k, v in dct.items() :
-            if isinstance(v, (str, unicode)) :
-                rdct[k] = v.encode('utf8', 'ignore')
-            else :
-                rdct[k] = v
-        return rdct
+def test():
 
-    try:
-        from lib import simplejson
-        json_data = simplejson.loads(data, object_hook=to_utf8)
-        return json_data
-    except:
-        try :        
-            import simplejson
-            json_data = simplejson.loads(data, object_hook=to_utf8)
-            return json_data
-        except:
-            import traceback
-            from pprint import pprint
-            exc_type, exc_value, exc_tb = sys.exc_info()
-            lines = traceback.format_exception(exc_type, exc_value, exc_tb)
-            for line in lines:
-                line_splits = line.split("\n")
-                for line_split in line_splits:
-                    logger.error(line_split)
-            
-            try:
-                import json
-                json_data = json.loads(data, object_hook=to_utf8)
-                return json_data
-            except:
-                import traceback
-                from pprint import pprint
-                exc_type, exc_value, exc_tb = sys.exc_info()
-                lines = traceback.format_exception(exc_type, exc_value, exc_tb)
-                for line in lines:
-                    line_splits = line.split("\n")
-                    for line_split in line_splits:
-                        logger.error(line_split)
+    # Al entrar sale una lista de programas
+    mainlist_items = mainlist(Item())
+    programas_items = series(mainlist_items[0])
+    if len(programas_items)==0:
+        print "La categoria '"+mainlist_item.title+"' no devuelve programas"
+        return False
 
-                try:
-                    json_data = JSON.ObjectFromString(data, encoding="utf-8")
-                    return json_data
-                except:
-                    import traceback
-                    from pprint import pprint
-                    exc_type, exc_value, exc_tb = sys.exc_info()
-                    lines = traceback.format_exception(exc_type, exc_value, exc_tb)
-                    for line in lines:
-                        line_splits = line.split("\n")
-                        for line_split in line_splits:
-                            logger.error(line_split)
+    temporadas_items = temporadas(programas_items[0])
+    if len(temporadas_items)==0:
+        print "El programa '"+programas_items[0].title+"' no devuelve temporadas"
 
+    episodios_items = capitulos(temporadas_items[0])
+    if len(episodios_items)==0:
+        print "El programa '"+programas_items[0].title+"' temporada '"+temporadas_items[0].title+"' no devuelve episodios"
+
+    return True

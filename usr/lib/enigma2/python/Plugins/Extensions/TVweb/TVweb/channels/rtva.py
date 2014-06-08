@@ -69,16 +69,13 @@ def programas(item):
         scrapedtitle = match[2].strip()
         scrapedurl = match[0]
         scrapedthumbnail = match[1]
-        scrapedplot = match[3].strip()
+        scrapedplot = scrapertools.htmlclean(match[3].strip())
         if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
-        itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="episodios" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , show=scrapedtitle) )
+        itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="episodios" , url=scrapedurl, thumbnail=scrapedthumbnail, fanart=scrapedthumbnail, plot=scrapedplot , show=scrapedtitle, viewmode="movie_with_plot") )
 
-    patron = '<a href="([^"]+)"  class="enlace siguiente"'
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    if len(matches)>0:
-        logger.info("[rtva.py] Página siguiente: "+matches[0])
-        item = Item(url=matches[0])
-        itemlist.extend(programas(item))
+    next_page = scrapertools.find_single_match(data,'<a href="([^"]+)"  class="enlace siguiente"')
+    if next_page!="":
+        itemlist.append( Item(channel=CHANNELNAME, title=">> Página siguiente" , action="programas" , url=urlparse.urljoin(item.url,next_page), folder=True ))
 
     return itemlist
 
@@ -167,3 +164,17 @@ def play(item):
     itemlist.append( Item(channel=CHANNELNAME, title=item.title , action="play" , server="directo" , url=url, thumbnail=item.thumbnail, plot=item.plot , show=item.show , folder=False) )
 
     return itemlist
+
+def test():
+
+    programas_items = mainlist(Item())
+    if len(programas_items)==0:
+        print "No devuelve programas en "+categorias_items[0]
+        return False
+
+    episodios_items = episodios(programas_items[0])
+    if len(episodios_items)==1:
+        print "No devuelve videos en "+programas_items[0].title
+        return False
+
+    return True
