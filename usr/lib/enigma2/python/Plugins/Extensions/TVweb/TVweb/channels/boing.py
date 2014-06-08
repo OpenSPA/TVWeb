@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------
 # tvalacarta - XBMC Plugin
 # Canal para boing.es
@@ -7,29 +7,31 @@
 import urlparse,re
 import urllib
 
+from core import config
 from core import logger
 from core import scrapertools
 from core.item import Item
 
-logger.info("[boing.py] init")
-
-DEBUG = True
+DEBUG = config.get_setting("debug")
 CHANNELNAME = "boing"
-MAIN_URL = "http://www.boing.es/series?order=title&sort=asc"
 
 def isGeneric():
     return True
 
 def mainlist(item):
-    logger.info("[boing.py] mainlist")
-    item.url = MAIN_URL
-    return series(item)
+    logger.info("tvalacarta.channels.boing mainlist")
+
+    itemlist = []
+    itemlist.append( Item(channel=CHANNELNAME, title="Últimos vídeos añadidos" , url="http://www.boing.es/videos" , action="episodios" , folder=True) )
+    itemlist.append( Item(channel=CHANNELNAME, title="Todas las series" , url="http://www.boing.es/series?order=title&sort=asc" , action="series" , folder=True) )
+
+    return itemlist
 
 def series(item):
-    logger.info("[boing.py] series")
+    logger.info("tvalacarta.channels.boing series")
     itemlist = []
 
-    # Descarga la p�gina
+    # Descarga la página
     data = scrapertools.cachePage(item.url)
     #logger.info(data)
 
@@ -56,7 +58,7 @@ def series(item):
     </div></form></div>
     <div class="title"><a href="/serie/chowder">Chowder</a></div>
     
-    <div class="sin">�Qui�n dijo que cocinar es aburrido? La cocina de Chowder...</div>
+    <div class="sin">¿Quién dijo que cocinar es aburrido? La cocina de Chowder...</div>
     '''
     patron  = '<div class="pic"><div class="pic2"><div class="pic3"><a href="([^"]+)"[^<]+<img src="([^"]+)".*?'
     patron += '<div class="title"><a href="[^"]+">([^<]+)</a></div>'
@@ -73,19 +75,19 @@ def series(item):
         else:
             itemlist.append( Item(channel=item.channel, title=scrapedtitle , action="episodios" , url=urlparse.urljoin(item.url,scrapedurl), thumbnail=scrapedthumbnail , show = scrapedtitle, folder=True) )
     
-    #<li class="pager-next"><a href="/series?page=1&amp;order=title&amp;sort=asc" title="Ir a la p�gina siguiente" class="active">siguiente
+    #<li class="pager-next"><a href="/series?page=1&amp;order=title&amp;sort=asc" title="Ir a la página siguiente" class="active">siguiente
     patron = '<li class="pager-next"><a href="([^"]+)"'
     matches = re.compile(patron,re.DOTALL).findall(data)
     if DEBUG: scrapertools.printMatches(matches)
     if len(matches)>0:
-        itemlist.extend( series(Item(channel=item.channel, title="P�gina siguiente >>" , action="series" , url=urlparse.urljoin(item.url,matches[0].replace("&amp;","&")), folder=True) ) )
+        itemlist.extend( series(Item(channel=item.channel, title="Página siguiente >>" , action="series" , url=urlparse.urljoin(item.url,matches[0].replace("&amp;","&")), folder=True) ) )
 
     return itemlist
 
 def episodios(item):
-    logger.info("[boing.py] episodios")
+    logger.info("tvalacarta.channels.boing episodios")
 
-    # Descarga la p�gina
+    # Descarga la página
     #http://www.boing.es/serie/hora-de-aventuras
     #http://www.boing.es/videos/hora-de-aventuras
     data = scrapertools.cachePage(item.url.replace("/serie/","/videos/"))
@@ -100,7 +102,7 @@ def episodios(item):
     <img class="bcvid" height="73" width="130" src="http://i.cdn.turner.com/tbseurope/big/Boing_ES/thumbs/SP_SA_GERSTI0017_01.jpg" />
     </a>
     </div></div></div>
-    <div class="series"><a href="/serie/geronimo-stilton">Ger�nimo Stilton</a></div>
+    <div class="series"><a href="/serie/geronimo-stilton">Gerónimo Stilton</a></div>
     <div class="title"><a href="/serie/geronimo-stilton/video/top-model">Top Model</a></div>
     '''
     '''
@@ -134,7 +136,7 @@ def episodios(item):
     '''
     <div class="pic3">
     
-    <a href="/serie/monster-high/video/monster-high-superpillada" class="imagecache imagecache-130x73 imagecache-linked imagecache-130x73_linked"><img src="http://www.boing.es/sites/default/files/imagecache/130x73/pantallazo2mh.jpg" alt="" title=""  class="imagecache imagecache-130x73" width="130" height="73" /></a>      		      		
+    <a href="/serie/monster-high/video/monster-high-superpillada" class="imagecache imagecache-130x73 imagecache-linked imagecache-130x73_linked"><img src="http://www.boing.es/sites/default/files/imagecache/130x73/pantallazo2mh.jpg" alt="" title=""  class="imagecache imagecache-130x73" width="130" height="73" /></a>                       
     
     </div></div></div>
     <div class="stars"><form action="/videos/monster-high"  accept-charset="UTF-8" method="post" id="fivestar-custom-widget" class="fivestar-widget">
@@ -159,6 +161,7 @@ def episodios(item):
     '''
     patron  = '<div class="pic3"[^<]+'
     patron += '<a href="([^"]+)"[^<]+<img style="[^"]+" height="\d+" width="\d+" src="([^"]+)".*?'
+    patron += '<div class="series">(.*?)</div[^<]+'
     patron += '<div class="title"><a[^>]+>([^<]+)</a>'
     matches = re.compile(patron,re.DOTALL).findall(bloque)
     scrapertools.printMatches(matches)
@@ -167,25 +170,40 @@ def episodios(item):
     if len(matches)==0:
         patron  = '<div class="pic3"[^<]+'
         patron += '<a href="([^"]+)"[^<]+<img src="([^"]+)".*?'
+        patron += '<div class="series">(.*?)</div[^<]+'
         patron += '<div class="title"><a[^>]+>([^<]+)</a>'
         matches = re.compile(patron,re.DOTALL).findall(bloque)
         scrapertools.printMatches(matches)
         #if DEBUG: scrapertools.printMatches(matches)
 
     itemlist = []
-    for scrapedurl,scrapedthumbnail,scrapedtitle in matches:
-        if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
+    for scrapedurl,scrapedthumbnail,scrapedshow,scrapedtitle in matches:
+        title = scrapedtitle
+        if scrapedshow!="":
+            title = scrapertools.find_single_match(scrapedshow,'<a[^>]+>([^<]+)</a>') + " - " + title
+        if (DEBUG): logger.info("title=["+title+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
         url = urlparse.urljoin(item.url,scrapedurl)
-        itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="play", server="boing" , url=url, thumbnail=scrapedthumbnail, page=url, show = item.show, folder=False) )
+        itemlist.append( Item(channel=CHANNELNAME, title=title , action="play", server="boing" , url=url, thumbnail=scrapedthumbnail, page=url, show = item.show, folder=False) )
+
+    next_page = scrapertools.find_single_match(data,'<li class="pager-next"><a href="([^"]+)"')
+    if next_page!="":
+        itemlist.append( Item(channel=item.channel, title=">> Página siguiente" , action="episodios" , url=urlparse.urljoin(item.url,next_page), folder=True) )
 
     return itemlist
 
+# Verificación automática de canales: Esta función debe devolver "True" si todo está ok en el canal.
 def test():
-    itemsmainlist = mainlist(None)
-    for item in itemsmainlist: print item.tostring()
+    bien = True
+    
+    # El canal tiene estructura programas -> episodios -> play
+    programas_list = mainlist(Item())
+    if len(programas_list)==0:
+        return False
 
-    itemsseries = series(itemsmainlist[1])
-    itemsepisodios = episodios(itemsseries[4])
+    for programa in programas_list:
+        if programa.title=="Be Boing":
+            episodios_list = episodios(programa)
+            if len(episodios_list)==0:
+                return False
 
-if __name__ == "__main__":
-    test()
+    return bien

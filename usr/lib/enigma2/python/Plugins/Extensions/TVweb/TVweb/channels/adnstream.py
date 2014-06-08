@@ -19,7 +19,7 @@ def isGeneric():
     return True
 
 def mainlist(item):
-    logger.info("[adnstream.py] mainlist")
+    logger.info("tvalacarta.channels.adnstream mainlist")
 
     itemlist = []
     data = scrapertools.cache_page("http://www.adnstream.com")
@@ -34,12 +34,12 @@ def mainlist(item):
         url = urlparse.urljoin("http://www.adnstream.com",scrapedurl)
         thumbnail = "http://www.adnstream.com/img/"+scrapedurl.replace("/canal/","canales/")[:-1]+"_w320.jpg"
         
-        itemlist.append( Item(channel=CHANNELNAME, title=title , url=url,  thumbnail=thumbnail , action="subcanales" , folder=True) )
+        itemlist.append( Item(channel=CHANNELNAME, title=title , url=url,  thumbnail=thumbnail , action="subcanales" , viewmode="movie", folder=True) )
 
     return itemlist
 
 def subcanales(item):
-    logger.info("[adnstream.py] subcanales")
+    logger.info("tvalacarta.channels.adnstream subcanales")
 
     itemlist = []
     data = scrapertools.cache_page(item.url)
@@ -53,7 +53,12 @@ def subcanales(item):
         title = scrapedtitle.strip()
         url = urlparse.urljoin(item.url,scrapedurl)
         thumbnail = scrapedthumbnail.replace("w160","w320")
-        itemlist.append( Item(channel=CHANNELNAME, title=title , url=url,  thumbnail=thumbnail , action="subcanales" , show = item.title , folder=True) )
+
+        if url=="http://www.adnstream.com/canal/BRBplay/":
+            itemlist.append( Item(channel=CHANNELNAME, title="BRBplay en español" , url="http://www.adnstream.com/canal/BRBplay-en-espanol/",  thumbnail=thumbnail , action="subcanales" , show = item.title , folder=True) )
+            itemlist.append( Item(channel=CHANNELNAME, title="BRBplay en inglés" , url="http://www.adnstream.com/canal/BRBplay-en-ingles/",  thumbnail=thumbnail , action="subcanales" , show = item.title , folder=True) )
+        else:
+            itemlist.append( Item(channel=CHANNELNAME, title=title , url=url,  thumbnail=thumbnail , action="subcanales" , viewmode="movie", show = item.title , folder=True) )
 
     if len(itemlist)==0:
         itemlist = videos(item)
@@ -61,7 +66,7 @@ def subcanales(item):
     return itemlist
 
 def videos(item):
-    logger.info("[adnstream.py] videos")
+    logger.info("tvalacarta.channels.adnstream videos")
 
     itemlist = []
     data = scrapertools.cache_page(item.url)

@@ -98,3 +98,18 @@ def load_json(data):
             import sys
             for line in sys.exc_info():
                 logger.error("%s" % line)
+
+def test():
+
+    # Al entrar sale una lista de programas
+    programas_items = mainlist(Item())
+    if len(programas_items)==0:
+        print "Al entrar a mainlist no sale nada"
+        return False
+
+    episodios_items = episodios(programas_items[0])
+    if len(episodios_items)==0:
+        print "El programa "+programas_items[0].title+" no tiene episodios"
+        return False
+
+    return True
