@@ -5,6 +5,8 @@
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
 import urlparse,urllib2,urllib,re
+import os, sys
+import hashlib
 
 from core import logger
 from core import config
@@ -20,6 +22,20 @@ __language__ = "ES"
 
 DEBUG = config.get_setting("debug")
 
+ENLACESPEPITO_REQUEST_HEADERS = [
+    ["User-Agent" , "Mozilla/5.0 (Windows NT 6.1; rv:28.0) Gecko/20100101 Firefox/28.0"],
+    ["Accept-Encoding","gzip, deflate"],
+    ["Accept-Language" , "es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3"],
+    ["Accept" , "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"],
+    ["Cookie" , "__test"],
+    ["Cookie" , "_ga=GA1.2.1328656124.1402475801"],
+    ["Referer" , "http://star-trek-voyager.seriespepito.com/temporada-1/capitulo-5/"],
+    ["Connection" , "keep-alive"]
+]
+
+SERIES_PEPITO    = 0
+PELICULAS_PEPITO = 1
+
 def isGeneric():
     return True
 
@@ -31,15 +47,7 @@ def mainlist(item):
     itemlist.append( Item(channel=__channel__, action="lomasvisto"        , title="Lo más visto", url="http://www.seriespepito.com/nuevos-capitulos/",fanart="http://pelisalacarta.mimediacenter.info/fanart/seriespepito.jpg"))
     itemlist.append( Item(channel=__channel__, action="listalfabetico"   , title="Listado alfabético",fanart="http://pelisalacarta.mimediacenter.info/fanart/seriespepito.jpg"))
     itemlist.append( Item(channel=__channel__, action="allserieslist"    , title="Listado completo",    url="http://www.seriespepito.com/",fanart="http://pelisalacarta.mimediacenter.info/fanart/seriespepito.jpg"))
-    itemlist.append( Item(channel=__channel__, action="search"   , title="Buscar"))
 
-    return itemlist
-
-def search(item,texto):
-    texto = texto.replace("+","-")
-    itemlist = []
-    item.url = "http://www.seriespepito.com/buscador/" + texto
-    itemlist.extend(novedades(item))
     return itemlist
 
 def novedades(item):
@@ -85,10 +93,10 @@ def lomasvisto(item):
 
     # Descarga la página
     data = scrapertools.cachePage(item.url)
-    data = scrapertools.get_match(data,'s visto de esta semana en Pepito</div><ul id="ulfblista" class="navdoble">(.*?)</ul>')
-    #<a class="clearfix top" href="http://arrow.seriespepito.com/"><img class="thumb_mini" alt="Arrow" src="http://www.seriespepito.com/uploads/series/1545-arrow-thumb.jpg" />Arrow</a></li>
+    data = scrapertools.get_match(data,'s visto de esta semana en Pepito</div><ul(.*?)</ul>')
+
     patron  = '<a title="([^"]+)" href="([^"]+)"[^<]+'
-    patron += '<img.*?src="([^"]+)"[^>]+>'
+    patron += '<img.*?src="([^"]+)"'
 
     matches = re.compile(patron,re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
@@ -113,30 +121,18 @@ def lomasvisto(item):
     return itemlist
 
 def allserieslist(item):
-    logger.info("[seriespepito.py] allserieslist")
-
-    # Descarga la página
-    data = scrapertools.cachePage(item.url)
-    data = scrapertools.get_match(data,'<ul id="lista_completa_series_ul" class="nav">(.*?)</ul>')
-    patron = '<li><a title="[^"]+" href="([^"]+)">([^<]+)</a></li>'
-
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    scrapertools.printMatches(matches)
-
+    logger.info("[seriespepito.py] completo()")
     itemlist = []
-    for match in matches:
-        #scrapedtitle = unicode( match[1].strip(), "iso-8859-1" , errors="replace" ).encode("utf-8")
-        scrapedtitle = scrapertools.htmlclean( match[1]).strip()
-        scrapedurl = match[0]
-        scrapedthumbnail = ""
-        scrapedplot = ""
-        if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
 
-        # Ajusta el encoding a UTF-8
-        #scrapedtitle = unicode( scrapedtitle, "iso-8859-1" , errors="replace" ).encode("utf-8")
-        #scrapedplot = unicode( scrapedplot, "iso-8859-1" , errors="replace" ).encode("utf-8")
-
-        itemlist.append( Item(channel=__channel__, action="episodios" , title=scrapedtitle , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot, show=scrapedtitle,fanart="http://pelisalacarta.mimediacenter.info/fanart/seriespepito.jpg"))
+    # Carga el menú "Alfabético" de series
+    item = Item(channel=__channel__, action="listalfabetico")
+    items_letras = listalfabetico(item)
+    
+    # Para cada letra
+    for item_letra in items_letras:
+        # Lee las series
+        items_programas = series(item_letra)
+        itemlist.extend( items_programas )
 
     return itemlist
 
@@ -227,9 +223,9 @@ def episodios(item):
 
     itemlist = []
     for scrapedurl,scrapedepisode,scrapedtitle,idiomas in matches:
-        title = unicode( scrapedtitle.strip(), "iso-8859-1" , errors="replace" ).encode("utf-8")
-        title = scrapertools.htmlclean(scrapedepisode) + " " + scrapertools.htmlclean(scrapedtitle).strip()
-        #title = scrapertools.entityunescape(title)
+        #title = unicode( scrapedtitle.strip(), "iso-8859-1" , errors="replace" ).encode("utf-8")
+        title = scrapedepisode + " " + scrapedtitle.strip()
+        title = scrapertools.entityunescape(title)
         if "flag_0" in idiomas:
             title = title + " (Español)"
         if "flag_1" in idiomas:
@@ -310,9 +306,9 @@ def play(item):
     logger.info("[seriespepito.py] play")
     itemlist=[]
     
-    data = scrapertools.cache_page(item.url)
-    
-    videoitemlist = servertools.find_video_items(data=data)
+    mediaurl = get_server_link_series(item.url)
+    # Busca el vídeo
+    videoitemlist = servertools.find_video_items(data=mediaurl)
     i=1
     for videoitem in videoitemlist:
         if not "favicon" in videoitem.url:
@@ -324,6 +320,89 @@ def play(item):
             i=i+1
 
     return itemlist
+
+def get_cookie(html):
+    import cookielib
+
+    ficherocookies = os.path.join( config.get_setting("cookies.dir"), 'cookies.dat' )
+    cj = cookielib.MozillaCookieJar()
+    cj.load(ficherocookies,ignore_discard=True)
+
+    cookie_pat = "cookie\('([a-zA-Z0-9]+)'\);"
+    cookie_name = scrapertools.find_single_match(html, cookie_pat)
+
+    cookie_value = ""
+
+    for cookie in cj:
+        if cookie.name == cookie_name:
+            cookie_value = cookie.value
+            break
+
+    return cookie_value
+
+# Busca el enlace correcto y lo procesa capturando los caracteres
+# y posiciones del Javascript
+#
+def convert_link(html, link_type):
+
+    hash_seed = get_cookie(html);
+    logger.info("[seriespepito.py] hash_seed="+hash_seed)
+
+    HASH_PAT = 'CryptoJS\.(\w+)\('
+    hash_func = scrapertools.find_single_match(html, HASH_PAT).lower()
+
+    if hash_func == "md5":
+        hash = hashlib.md5(hash_seed).hexdigest()
+    else:
+        hash = hashlib.sha256(hash_seed).hexdigest()
+
+    if link_type == PELICULAS_PEPITO:
+        hash += '0'
+    logger.info("[seriespepito.py] hash="+hash)
+
+    HREF_SEARCH_PAT = '<a class=".' + hash + '".*?href="http://www.enlacespepito.com\/([^\.]*).html"><i class="icon-(?:play|download)">'
+    logger.info("[seriespepito.py] HREF_SEARCH_PAT="+HREF_SEARCH_PAT)
+
+    href = list(scrapertools.find_single_match(html, HREF_SEARCH_PAT))
+    logger.info("[seriespepito.py] href="+repr(href))
+    CHAR_REPLACE_PAT = '[a-z]\[(\d+)\]="(.)";'
+
+    matches = re.findall(CHAR_REPLACE_PAT , html, flags=re.DOTALL|re.IGNORECASE)
+    logger.info("[seriespepito.py] matches="+repr(matches))
+
+    for match in matches:
+        href[int(match[0])] = match[1]
+
+    href = ''.join(href)
+
+    return 'http://www.enlacespepito.com/' + href + '.html'
+
+def get_server_link(first_link, link_type):
+    logger.info("[seriespepito.py] first_link="+str(first_link)+", link_type="+str(link_type))
+
+    html = scrapertools.downloadpage(first_link, headers = ENLACESPEPITO_REQUEST_HEADERS)
+    logger.info("[seriespepito.py] html="+html)
+
+    fixed_link = convert_link(html, link_type)
+    logger.info("[seriespepito.py] fixed_link="+fixed_link)
+
+    # Sin el Referer da 404
+    #ENLACESPEPITO_REQUEST_HEADERS.append(['Referer', first_link])
+
+    return scrapertools.get_header_from_response(fixed_link, header_to_get="location", headers = ENLACESPEPITO_REQUEST_HEADERS)
+
+# Estas funciones son las únicas que deberían llamarse desde fuera
+#
+def get_server_link_series(first_link):
+    return get_server_link(first_link, SERIES_PEPITO)
+
+def get_server_link_peliculas(first_link):
+
+    return get_server_link(first_link, PELICULAS_PEPITO)
+
+
+
+
 
 # Verificación automática de canales: Esta función debe devolver "True" si está ok el canal.
 def test():
