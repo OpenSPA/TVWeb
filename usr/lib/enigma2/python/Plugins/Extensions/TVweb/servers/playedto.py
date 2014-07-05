@@ -87,6 +87,12 @@ def find_videos(data):
     encontrados.add("http://played.to/embed-js.html")
     encontrados.add("http://played.to/embed-player.html")
     encontrados.add("http://played.to/embed-cgi.html")
+    encontrados.add("http://played.to/embed-new.html")
+    encontrados.add("http://played.to/embed-make.html")
+    encontrados.add("http://played.to/embed-contact.html")
+    encontrados.add("http://played.to/embed-privacy.html")
+    encontrados.add("http://played.to/embed-dmca.html")
+    encontrados.add("http://played.to/embed-tos.html")
     devuelve = []
 
     #http://played.to/z3nnqbspjyne

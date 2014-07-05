@@ -29,7 +29,7 @@ logger.info("[scrapertools.py] init")
 
 # True - Muestra las cabeceras HTTP en el log
 # False - No las muestra
-DEBUG_LEVEL = False
+DEBUG_LEVEL = True
 
 CACHE_ACTIVA = "0"  # Automatica
 CACHE_SIEMPRE = "1" # Cachear todo
@@ -307,7 +307,7 @@ class NoRedirectHandler(urllib2.HTTPRedirectHandler):
     http_error_303 = http_error_302
     http_error_307 = http_error_302
 
-def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; es-ES; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12']],follow_redirects=True, timeout=socket.getdefaulttimeout()):
+def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; es-ES; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12']],follow_redirects=True, timeout=socket.getdefaulttimeout(), header_to_get=None):
     logger.info("[scrapertools.py] downloadpage")
     logger.info("[scrapertools.py] url="+url)
     
@@ -356,10 +356,18 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
         # importing cookielib worked
         urlopen = urllib2.urlopen
         Request = urllib2.Request
-        cj = cookielib.MozillaCookieJar()
-        # This is a subclass of FileCookieJar
-        # that has useful load and save methods
 
+        logger.info("[scrapertools.py] cambio en politicas")
+
+        #cj = cookielib.LWPCookieJar(ficherocookies,policy=MyCookiePolicy())
+        #cj = cookielib.MozillaCookieJar(ficherocookies,policy=MyCookiePolicy)
+        #cj = cookielib.FileCookieJar(ficherocookies)
+        try:
+            cj = cookielib.MozillaCookieJar()
+            cj.set_policy(MyCookiePolicy())
+        except:
+            import traceback
+            logger.info(traceback.format_exc())
     if cj is not None:
     # we successfully imported
     # one of the two cookie handling modules
@@ -370,7 +378,7 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
             # if we have a cookie file already saved
             # then load the cookies into the Cookie Jar
             try:
-                cj.load(ficherocookies)
+                cj.load(ficherocookies,ignore_discard=True)
             except:
                 logger.info("[scrapertools.py] El fichero de cookies existe pero es ilegible, se borra")
                 os.remove(ficherocookies)
@@ -423,18 +431,22 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
     req = Request(url, post, txheaders)
 
     try:
-
         if timeout is None:
+            logger.info("[scrapertools.py] Peticion sin timeout")
             handle=urlopen(req)
         else:        
+            logger.info("[scrapertools.py] Peticion con timeout")
             #Para todas las versiones:
             deftimeout = socket.getdefaulttimeout()
             socket.setdefaulttimeout(timeout)
             handle=urlopen(req)            
             socket.setdefaulttimeout(deftimeout)
+        logger.info("[scrapertools.py] ...hecha")
         
         # Actualiza el almacén de cookies
-        cj.save(ficherocookies)
+        logger.info("[scrapertools.py] Grabando cookies...")
+        cj.save(ficherocookies,ignore_discard=True) #  ,ignore_expires=True
+        logger.info("[scrapertools.py] ...hecho")
 
         # Lee los datos y cierra
         if handle.info().get('Content-Encoding') == 'gzip':
@@ -452,9 +464,8 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
             logger.info("[scrapertools.py] normal")
             data = handle.read()
     except urllib2.HTTPError,e:
-        logger.info("error "+repr(e))
         import traceback
-        traceback.print_exc()
+        logger.info(traceback.format_exc())
         data = e.read()
         #logger.info("data="+repr(data))
         return data
@@ -464,6 +475,12 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
     logger.info("[scrapertools.py] ---------------------------")
     for header in info:
         logger.info("[scrapertools.py] "+header+"="+info[header])
+
+        # Truco para devolver el valor de un header en lugar del cuerpo entero
+        if header_to_get is not None:
+            if header==header_to_get:
+                data=info[header]
+
     handle.close()
     logger.info("[scrapertools.py] ---------------------------")
 
@@ -487,6 +504,35 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
     logger.info("[scrapertools.py] Descargado en %d segundos " % (fin-inicio+1))
 
     return data
+
+import cookielib
+class MyCookiePolicy(cookielib.DefaultCookiePolicy):
+    def set_ok(self, cookie, request):
+        #logger.info("set_ok Cookie "+repr(cookie)+" request "+repr(request))
+        #cookie.discard = False
+        #cookie.
+        devuelve = cookielib.DefaultCookiePolicy.set_ok(self, cookie, request)
+        #logger.info("set_ok "+repr(devuelve))
+        return devuelve
+
+    def return_ok(self, cookie, request):
+        #logger.info("return_ok Cookie "+repr(cookie)+" request "+repr(request))
+        #cookie.discard = False
+        devuelve = cookielib.DefaultCookiePolicy.return_ok(self, cookie, request)
+        #logger.info("return_ok "+repr(devuelve))
+        return devuelve
+
+    def domain_return_ok(self, domain, request):
+        #logger.info("domain_return_ok domain "+repr(domain)+" request "+repr(request))
+        devuelve = cookielib.DefaultCookiePolicy.domain_return_ok(self, domain, request)
+        #logger.info("domain_return_ok "+repr(devuelve))
+        return devuelve
+
+    def path_return_ok(self,path, request):
+        #logger.info("path_return_ok path "+repr(path)+" request "+repr(request))
+        devuelve = cookielib.DefaultCookiePolicy.path_return_ok(self, path, request)
+        #logger.info("path_return_ok "+repr(devuelve))
+        return devuelve
 
 def downloadpagewithcookies(url):
     # ---------------------------------
@@ -1206,6 +1252,7 @@ def unseo(cadena):
         cadena = cadena[17:]
     return cadena
 
+#scrapertools.get_filename_from_url(media_url)[-4:]
 def get_filename_from_url(url):
     
     import urlparse
@@ -1256,7 +1303,7 @@ def get_sha1(cadena):
     except:
         import sha
         import binascii
-        devuelve = binascii.hexlify(sha.new(url).digest())
+        devuelve = binascii.hexlify(sha.new(cadena).digest())
     
     return devuelve
 
@@ -1267,6 +1314,176 @@ def get_md5(cadena):
     except:
         import md5
         import binascii
-        devuelve = binascii.hexlify(md5.new(url).digest())
+        devuelve = binascii.hexlify(md5.new(cadena).digest())
     
     return devuelve
+
+def read_body_and_headers(url, post=None, headers=[], follow_redirects=False, timeout=None):
+    logger.info("read_body_and_headers "+url)
+
+    if post is not None:
+        logger.info("read_body_and_headers post="+post)
+
+    if len(headers)==0:
+        headers.append(["User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:18.0) Gecko/20100101 Firefox/18.0"])
+
+    # Start cookie lib
+    ficherocookies = os.path.join( config.get_data_path(), 'cookies.dat' )
+    logger.info("read_body_and_headers cookies_file="+ficherocookies)
+
+    cj = None
+    ClientCookie = None
+    cookielib = None
+
+    # Let's see if cookielib is available
+    try:
+        logger.info("read_body_and_headers importing cookielib")
+        import cookielib
+    except ImportError:
+        logger.info("read_body_and_headers cookielib no disponible")
+        # If importing cookielib fails
+        # let's try ClientCookie
+        try:
+            logger.info("read_body_and_headers importing ClientCookie")
+            import ClientCookie
+        except ImportError:
+            logger.info("read_body_and_headers ClientCookie not available")
+            # ClientCookie isn't available either
+            urlopen = urllib2.urlopen
+            Request = urllib2.Request
+        else:
+            logger.info("read_body_and_headers ClientCookie available")
+            # imported ClientCookie
+            urlopen = ClientCookie.urlopen
+            Request = ClientCookie.Request
+            cj = ClientCookie.MozillaCookieJar()
+
+    else:
+        logger.info("read_body_and_headers cookielib available")
+        # importing cookielib worked
+        urlopen = urllib2.urlopen
+        Request = urllib2.Request
+        cj = cookielib.MozillaCookieJar()
+        # This is a subclass of FileCookieJar
+        # that has useful load and save methods
+
+    if cj is not None:
+    # we successfully imported
+    # one of the two cookie handling modules
+        logger.info("read_body_and_headers Cookies enabled")
+
+        if os.path.isfile(ficherocookies):
+            logger.info("read_body_and_headers Reading cookie file")
+            # if we have a cookie file already saved
+            # then load the cookies into the Cookie Jar
+            try:
+                cj.load(ficherocookies)
+            except:
+                logger.info("read_body_and_headers Wrong cookie file, deleting...")
+                os.remove(ficherocookies)
+
+        # Now we need to get our Cookie Jar
+        # installed in the opener;
+        # for fetching URLs
+        if cookielib is not None:
+            logger.info("read_body_and_headers opener using urllib2 (cookielib)")
+            # if we use cookielib
+            # then we get the HTTPCookieProcessor
+            # and install the opener in urllib2
+            if not follow_redirects:
+                opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=DEBUG_LEVEL),urllib2.HTTPCookieProcessor(cj),NoRedirectHandler())
+            else:
+                opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=DEBUG_LEVEL),urllib2.HTTPCookieProcessor(cj))
+            urllib2.install_opener(opener)
+
+        else:
+            logger.info("read_body_and_headers opener using ClientCookie")
+            # if we use ClientCookie
+            # then we get the HTTPCookieProcessor
+            # and install the opener in ClientCookie
+            opener = ClientCookie.build_opener(ClientCookie.HTTPCookieProcessor(cj))
+            ClientCookie.install_opener(opener)
+
+    # -------------------------------------------------
+    # Cookies instaladas, lanza la petición
+    # -------------------------------------------------
+
+    # Contador
+    inicio = time.clock()
+
+    # Diccionario para las cabeceras
+    txheaders = {}
+
+    # Construye el request
+    if post is None:
+        logger.info("read_body_and_headers GET request")
+    else:
+        logger.info("read_body_and_headers POST request")
+    
+    # Añade las cabeceras
+    logger.info("read_body_and_headers ---------------------------")
+    for header in headers:
+        logger.info("read_body_and_headers header %s=%s" % (str(header[0]),str(header[1])) )
+        txheaders[header[0]]=header[1]
+    logger.info("read_body_and_headers ---------------------------")
+
+    req = Request(url, post, txheaders)
+    if timeout is None:
+        handle=urlopen(req)
+    else:        
+        #Disponible en python 2.6 en adelante --> handle = urlopen(req, timeout=timeout)
+        #Para todas las versiones:
+        try:
+            import socket
+            deftimeout = socket.getdefaulttimeout()
+            socket.setdefaulttimeout(timeout)
+            handle=urlopen(req)            
+            socket.setdefaulttimeout(deftimeout)
+        except:
+            import sys
+            for line in sys.exc_info():
+                logger.info( "%s" % line )
+    
+    # Actualiza el almacén de cookies
+    cj.save(ficherocookies)
+
+    # Lee los datos y cierra
+    if handle.info().get('Content-Encoding') == 'gzip':
+        buf = StringIO( handle.read())
+        f = gzip.GzipFile(fileobj=buf)
+        data = f.read()
+    else:
+        data=handle.read()
+
+    info = handle.info()
+    logger.info("read_body_and_headers Response")
+
+    returnheaders=[]
+    logger.info("read_body_and_headers ---------------------------")
+    for header in info:
+        logger.info("read_body_and_headers "+header+"="+info[header])
+        returnheaders.append([header,info[header]])
+    handle.close()
+    logger.info("read_body_and_headers ---------------------------")
+
+    '''
+    # Lanza la petición
+    try:
+        response = urllib2.urlopen(req)
+    # Si falla la repite sustituyendo caracteres especiales
+    except:
+        req = urllib2.Request(url.replace(" ","%20"))
+    
+        # Añade las cabeceras
+        for header in headers:
+            req.add_header(header[0],header[1])
+
+        response = urllib2.urlopen(req)
+    '''
+    
+    # Tiempo transcurrido
+    fin = time.clock()
+    logger.info("read_body_and_headers Downloaded in %d seconds " % (fin-inicio+1))
+    logger.info("read_body_and_headers body="+data)
+
+    return data,returnheaders

@@ -48,7 +48,10 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
         headers.append(['Referer',page_url])
         post = "id=1&enviar2=ver+video"
         data = scrapertools.cache_page( page_url , post=post, headers=headers )
-        code = scrapertools.get_match(data,'flashvars\="file\=([^"]+)"')
+        ### Modificado 12-6-2014
+        #code = scrapertools.get_match(data,'flashvars\="file\=([^"]+)"')
+        #<iframe width="860" height="440" src="http://moevideo.net/framevideo/16363.1856374b43bbd40c7f8d2b25b8e5?width=860&height=440" frameborder="0" allowfullscreen ></iframe>
+        code = scrapertools.get_match(data,'<iframe width="860" height="440" src="http://moevideo.net/framevideo/([^\?]+)\?width=860\&height=440" frameborder="0" allowfullscreen ></iframe>')
         logger.info("code="+code)
     else:
         #http://moevideo.net/?page=video&uid=81492.8c7b6086f4942341aa1b78fb92df
@@ -57,8 +60,9 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     # API de letitbit
     headers2 = []
     headers2.append(['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14'])
-    #url = "http://api.letitbit.net"
-    url = "http://api.moevideo.net"
+    ### Modificado 12-6-2014
+    url = "http://api.letitbit.net"
+    #url = "http://api.moevideo.net"
     #post = "r=%5B%22tVL0gjqo5%22%2C%5B%22preview%2Fflv%5Fimage%22%2C%7B%22uid%22%3A%2272871%2E71f6541e64b0eda8da727a79424d%22%7D%5D%2C%5B%22preview%2Fflv%5Flink%22%2C%7B%22uid%22%3A%2272871%2E71f6541e64b0eda8da727a79424d%22%7D%5D%5D"
     #post = "r=%5B%22tVL0gjqo5%22%2C%5B%22preview%2Fflv%5Fimage%22%2C%7B%22uid%22%3A%2212110%2E1424270cc192f8856e07d5ba179d%22%7D%5D%2C%5B%22preview%2Fflv%5Flink%22%2C%7B%22uid%22%3A%2212110%2E1424270cc192f8856e07d5ba179d%22%7D%5D%5D
     #post = "r=%5B%22tVL0gjqo5%22%2C%5B%22preview%2Fflv%5Fimage%22%2C%7B%22uid%22%3A%2268653%2E669cbb12a3b9ebee43ce14425d9e%22%7D%5D%2C%5B%22preview%2Fflv%5Flink%22%2C%7B%22uid%22%3A%2268653%2E669cbb12a3b9ebee43ce14425d9e%22%7D%5D%5D"
@@ -168,6 +172,7 @@ def find_videos(data):
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
+
         titulo = "[moevideos]"
         url = "http://moevideo.net/?page=video&uid="+match
         if url not in encontrados:

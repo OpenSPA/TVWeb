@@ -20,11 +20,10 @@ FREE_SERVERS.extend(['googlevideo','gigabyteupload','mediafire','moevideos','mov
 FREE_SERVERS.extend(['royalvids','sockshare','stagevu','tutv','userporn','veoh','videobam'])
 FREE_SERVERS.extend(['vidbux','videoweed','vimeo','vk','watchfreeinhd','youtube'])#,'videobeer','nowdownload'
 FREE_SERVERS.extend(['jumbofiles','nowvideo','streamcloud', 'zinwa', 'dailymotion','justintv', 'vidbull'])
-FREE_SERVERS.extend(['vureel','nosvideo','videopremium','movreel','flashx','magnovideo','upafile'])
+FREE_SERVERS.extend(['vureel','nosvideo','videopremium','movreel','flashx','upafile'])
 FREE_SERVERS.extend(['fileflyer','playedto','tunepk','powvideo','videomega','mega','vidspot','netutv','rutube'])
-FREE_SERVERS.extend(['videozed','documentary','hugefiles', 'firedrive','videott','tumitv','nubestream','gamovideo'])
-# YA NO FUNCIONAN
-# rutube
+FREE_SERVERS.extend(['videozed','documentary','hugefiles', 'firedrive','videott','tumitv','gamovideo'])
+FREE_SERVERS.extend(['torrent','video4you','mailru'])
 
 # Lista de TODOS los servidores que funcionan con cuenta premium individual
 PREMIUM_SERVERS = ['uploadedto','nowvideo']
@@ -36,7 +35,7 @@ FILENIUM_SERVERS.extend(['oron','allmyvideos','novamov','videoweed','movshare','
 FILENIUM_SERVERS.extend(['filefactory','netload','nowdownload','filevelocity','freakshare','userporn','divxstage','putlocker','extabit','vidxden'])
 FILENIUM_SERVERS.extend(['vimeo','dailymotion','jumbofiles','zippyshare','glumbouploads','bayfiles','twoshared', 'fourshared','crocko','fiberupload'])
 FILENIUM_SERVERS.extend(['ifile','megashares','slingfile','uploading','vipfile','filenium','movreel','one80upload','flashx','nowvideo','vk','moevideos'])
-FILENIUM_SERVERS.extend(['cloudzer','filecloudio','luckyshare','lumfile','magnovideo','playedto','ryushare','streamcloud','videozed','xenubox','filesmonster'])
+FILENIUM_SERVERS.extend(['cloudzer','filecloudio','luckyshare','lumfile','playedto','ryushare','streamcloud','videozed','xenubox','filesmonster'])
 #wupload,fileserve
 
 # Lista de TODOS los servidores soportados por Real-Debrid
