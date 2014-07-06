@@ -145,20 +145,15 @@ def listcategorias(item):
 
 # OBTIENE LOS ENLACES SEGUN LOS PATRONES DEL VIDEO Y LOS UNE CON EL SERVIDOR
 def play(item):
-    logger.info("[xhamster.py] obtienedir")
+    logger.info("[xhamster.py] play")
     itemlist = []
+
     data = scrapertools.cachePage(item.url)
-    logger.debug(data)
-    #vvfW6Oh2jYE,end=1323406794/data=1473813193/speed=83200/701863_brooklyn_and_gauge.flv'
-    data=data.replace("%2C",",").replace("%3D","=").replace("%2F","/")
-    patron = '\'file\': \'(.*?)/(.*?)/(.*?)/(.*?)\','
-    matches = re.compile(patron).findall(data)
-    if len(matches)>0:
-        match= matches[0]
-        server = re.compile('\'srv\': \'(.*?)\'').findall(data);
-        dir = server[0]+'/key=' + match[0] + '/' +match[1] + '/' + match[2] + '/' + match[3]
-        logger.debug("url="+dir)
-        itemlist.append( Item(channel=__channel__, action="play" , title=item.title, fulltitle=item.fulltitle , url=dir, thumbnail=item.thumbnail, plot=item.plot, show=item.title, server="directo", folder=False))
+    #logger.debug(data)
+
+    url = scrapertools.get_match(data,'<video poster="[^"]+" controls type=\'video/mp4\' file="([^"]+)"')
+    logger.debug("url="+url)
+    itemlist.append( Item(channel=__channel__, action="play" , title=item.title, fulltitle=item.fulltitle , url=url, thumbnail=item.thumbnail, plot=item.plot, show=item.title, server="directo", folder=False))
     return itemlist
 
 
