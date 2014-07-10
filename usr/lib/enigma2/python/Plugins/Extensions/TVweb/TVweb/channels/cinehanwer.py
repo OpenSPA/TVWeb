@@ -32,9 +32,21 @@ def mainlist(item):
 
     itemlist = []
     itemlist.append( Item(channel=__channel__, action="peliculas" , title="Estrenos"            , url="http://cinehanwer.com/estrenos/" ))
+    itemlist.append( Item(channel=__channel__, action="peliculas" , title="Novedades"            , url="http://cinehanwer.com" ))
     itemlist.append( Item(channel=__channel__, action="calidades" , title="Por calidad"          , url="http://cinehanwer.com/estrenos/" ))
     itemlist.append( Item(channel=__channel__, action="generos" , title="Por género"          , url="http://cinehanwer.com/estrenos/" ))
     itemlist.append( Item(channel=__channel__, action="search"  , title="Buscar..."            , url="http://cinehanwer.com/estrenos/" ))
+    itemlist.append( Item(channel=__channel__, action="series"  , title="Series"            , url="http://series.cinehanwer.com" ))
+      
+    return itemlist
+    
+def series(item):
+    logger.info("pelisalacarta.channels.cinehanwer series")
+
+    itemlist = []
+    itemlist.append( Item(channel=__channel__, action="series_new"  , title="Novedades Series"            , url="http://series.cinehanwer.com" ))
+    itemlist.append( Item(channel=__channel__, action="series_list"  , title="Listado Series"            , url="http://series.cinehanwer.com/series/" ))
+    itemlist.append( Item(channel=__channel__, action="search"  , title="Buscar..."            , url="http://series.cinehanwer.com" ))
   
     return itemlist
 
@@ -85,7 +97,7 @@ def generos(item):
         itemlist.append( Item(channel=__channel__, action="peliculas" , title=title , url=url, thumbnail=thumbnail, plot=plot, fulltitle=title))
 
     return itemlist
-
+'''
 def search(item,texto):
     logger.info("pelisalacarta.channels.cinehanwer search")
 
@@ -105,7 +117,40 @@ def search(item,texto):
         for line in sys.exc_info():
             logger.error( "%s" % line )
         return []
+'''
 
+def search(item,texto):
+    logger.info("pelisalacarta.channels.cinehanwer search")
+    texto = texto.replace(" ","-")
+    if item.url=="":
+        item.url="http://cinehanwer.com/estrenos/"
+    if item.url=="http://cinehanwer.com/estrenos/":
+        # Mete el referer en item.extra
+        item.extra = item.url
+        #item.url = item.url+"search/query/"+texto+"/years/1950/on/undefined/showlist/all"
+	item.url = "http://cinehanwer.com/buscar/?q="+texto
+        try:
+            #return buscar(item)
+	    return peliculas(item)
+        # Se captura la excepción, para no interrumpir al buscador global si un canal falla
+        except:
+            import sys
+            for line in sys.exc_info():
+                logger.error( "%s" % line )
+            return []
+    if item.url=="http://series.cinehanwer.com":
+        item.extra = item.url
+        item.url = "http://series.cinehanwer.com/wp-admin/admin-ajax.php?action=dwls_search&s="+texto
+        try:
+            return series_buscar(item)
+        # Se captura la excepción, para no interrumpir al buscador global si un canal falla
+        except:
+            import sys
+            for line in sys.exc_info():
+                logger.error( "%s" % line )
+            return []
+
+        
 def buscar(item):
     logger.info("pelisalacarta.channels.cinehanwer buscar")
 
@@ -158,6 +203,34 @@ def buscar(item):
 
     return itemlist
 
+def series_buscar(item):
+    logger.info("pelisalacarta.channels.cinehanwer series_buscar")
+
+    # Descarga la pagina
+    headers = DEFAULT_HEADERS[:]
+    headers.append(["Referer",item.extra])
+    headers.append(["X-Requested-With","XMLHttpRequest"])
+    data = scrapertools.cache_page(item.url,headers=headers)
+    logger.info("data="+data)
+
+    # Extrae las entradas (carpetas)  
+    '''
+    {"searchTerms":"yes","results":[{"ID":4501,"post_author":"1","post_date":"mayo 23, 2014","post_date_gmt":"2014-05-23 17:56:47","post_title":"4x06 - Leyes de dioses y hombres","post_excerpt":"<p>La historia de Canci\u00f3n de Hielo y Fuego se sit\u00faa en un mundo ficticio medieval. Hay tres l\u00edneas [...]<\/p>\n","post_status":"publish","comment_status":"open","ping_status":"open","post_password":"","post_name":"4x06-leyes-de-dioses-y-hombres","to_ping":"","pinged":"","post_modified":"2014-05-23 19:56:47","post_modified_gmt":"2014-05-23 17:56:47","post_content_filtered":"","post_parent":0,"guid":"http:\/\/series.cinehanwer.com\/?p=4501","menu_order":0,"post_type":"post","post_mime_type":"","comment_count":"0","filter":"raw","post_author_nicename":"admin","permalink":"http:\/\/series.cinehanwer.com\/4x06-leyes-de-dioses-y-hombres\/","attachment_thumbnail":"http:\/\/series.cinehanwer.com\/wp-content\/uploads\/2013\/04\/\u00edndice-150x150.jpg","show_more":true},{"ID":4424,"post_author":"1","post_date":"mayo 16, 2014","post_date_gmt":"2014-05-16 09:02:06","post_title":"1x20 - El hacedor de reyes","post_excerpt":"<p>El criminal m\u00e1s buscado del mundo, Thomas Raymond Reddington (James Spader, se entrega [...]<\/p>\n","post_status":"publish","comment_status":"open","ping_status":"open","post_password":"","post_name":"1x20-el-hacedor-de-reyes","to_ping":"","pinged":"","post_modified":"2014-05-16 11:02:06","post_modified_gmt":"2014-05-16 09:02:06","post_content_filtered":"","post_parent":0,"guid":"http:\/\/series.cinehanwer.com\/?p=4424","menu_order":0,"post_type":"post","post_mime_type":"","comment_count":"0","filter":"raw","post_author_nicename":"admin","permalink":"http:\/\/series.cinehanwer.com\/1x20-el-hacedor-de-reyes\/","attachment_thumbnail":"http:\/\/series.cinehanwer.com\/wp-content\/uploads\/2014\/01\/The-Blacklist-128x128.jpeg","show_more":true}],"displayPostMeta":true}
+    '''
+    json_object = jsontools.load_json(data)
+    logger.info("results="+json_object["results"])
+    data = json_object["results"]
+    
+    for entries in data:
+        title = scrapertools.htmlclean(entries["post_title"])
+        thumbnail = scrapertools.htmlclean(entries["attachment_thumbnail"])
+        url = scrapertools.htmlclean(entries["permalink"])
+        plot = ""
+   
+        itemlist.append( Item(channel=__channel__, action="findvideos_series" , title=title , url=url, thumbnail=thumbnail, plot=plot, fulltitle=title, viewmode="movie"))
+ 
+    return itemlist    
+    
 def peliculas(item):
     logger.info("pelisalacarta.channels.cinehanwer peliculas")
 
@@ -194,8 +267,116 @@ def peliculas(item):
     #</b></span></a></li[^<]+<li><a href="?page=2">
     next_page = scrapertools.find_single_match(data,'</b></span></a></li[^<]+<li><a href="([^"]+)">')
     if next_page!="":
-        itemlist.append( Item(channel=__channel__, action="peliculas" , title=">> Página siguiente" , url=item.url+next_page, folder=True))
+    #    itemlist.append( Item(channel=__channel__, action="peliculas" , title=">> Página siguiente" , url=item.url+next_page, folder=True))
+        itemlist.append( Item(channel=__channel__, action="peliculas" , title=">> Página siguiente" , url=urlparse.urljoin(item.url,next_page), folder=True))
+      
+    return itemlist
+    
+def series_new(item):
+    logger.info("pelisalacarta.channels.cinehanwer series_new")
 
+    # Descarga la pagina
+    data = scrapertools.cache_page(item.url)
+    logger.info("data="+data)
+
+    # Extrae las entradas
+
+    patron = '<div class="show-thumbnail">[^<]+<a href="([^"]+)">[\s\S]+?<img src="([^"]+)"[\s\S]+?<h3><a[\s\S]+?title="([^"]+?)"'
+    matches = re.compile(patron,re.DOTALL).findall(data)
+    itemlist = []
+    
+    for scrapedurl,scrapedthumbnail,scrapedtitle in matches:
+        #title = unicode( scrapedtitle, "iso-8859-1" , errors="replace" ).encode("utf-8")
+        title = scrapedtitle
+        title = title.strip()
+        title = scrapertools.htmlclean(title)
+        thumbnail = urlparse.urljoin(item.url,scrapedthumbnail)
+        plot = ""
+        url = urlparse.urljoin(item.url,scrapedurl)
+        if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
+        itemlist.append( Item(channel=__channel__, action="findvideos_series" , title=title , url=url, thumbnail=thumbnail, plot=plot, fulltitle=title, viewmode="movie"))
+      
+    return itemlist
+    
+def series_list(item):
+    logger.info("pelisalacarta.channels.cinehanwer series_list")
+
+    # Descarga la pagina
+    data = scrapertools.cache_page(item.url)
+    logger.info("data="+data)
+
+    # Extrae las entradas
+
+    patron = '<li><a href="([^"]+)">([^"]+)<\/a><\/li>'
+    matches = re.compile(patron,re.DOTALL).findall(data)
+    itemlist = []
+    
+    for scrapedurl, scrapedtitle in matches:
+        #title = unicode( scrapedtitle, "iso-8859-1" , errors="replace" ).encode("utf-8")
+        title = scrapedtitle
+        title = title.strip()
+        title = scrapertools.htmlclean(title)
+        thumbnail = ""
+        plot = ""
+        url = "http://series.cinehanwer.com/wp-content/themes/bueno/ajax/seriesajaxresp_get.php?serie="+scrapedurl+"&status=0"
+        if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
+        itemlist.append( Item(channel=__channel__, action="series_seasons"  , title=title ,  url=url, thumbnail=thumbnail, plot=plot, fulltitle=title))
+        #itemlist.append( Item(channel=__channel__, action="findvideos_series" , title=title , url=url, thumbnail=thumbnail, plot=plot, fulltitle=title, viewmode="movie"))
+      
+    return itemlist
+    
+def series_seasons(item):
+    logger.info("pelisalacarta.channels.cinehanwer series_seasons")
+
+    # Descarga la pagina
+    data = scrapertools.cache_page(item.url)
+    logger.info("data="+data)
+
+    # Extrae las entradas
+
+    patron = '<li><a href="([^"]+)">([^"]+)<\/a><\/li>'
+    matches = re.compile(patron,re.DOTALL).findall(data)
+    itemlist = []
+    
+    for scrapedurl, scrapedtitle in matches:
+        #title = unicode( scrapedtitle, "iso-8859-1" , errors="replace" ).encode("utf-8")
+        title = scrapedtitle
+        title = title.strip()
+        title = scrapertools.htmlclean(title)
+        thumbnail = ""
+        plot = ""
+        url = "http://series.cinehanwer.com/wp-content/themes/bueno/ajax/seriesajaxresp_get.php?serie="+scrapedurl+"&status=1"
+        if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
+        itemlist.append( Item(channel=__channel__, action="series_chapters"  , title=title ,  url=url, thumbnail=thumbnail, plot=plot, fulltitle=title))
+        #itemlist.append( Item(channel=__channel__, action="findvideos_series" , title=title , url=url, thumbnail=thumbnail, plot=plot, fulltitle=title, viewmode="movie"))
+      
+    return itemlist
+    
+def series_chapters(item):
+    logger.info("pelisalacarta.channels.cinehanwer series_chapters")
+
+    # Descarga la pagina
+    data = scrapertools.cache_page(item.url)
+    logger.info("data="+data)
+
+    # Extrae las entradas
+
+    patron = '<li><a href="([^"]+)">([^"]+)<\/a><\/li>'
+    matches = re.compile(patron,re.DOTALL).findall(data)
+    itemlist = []
+    
+    for scrapedurl, scrapedtitle in matches:
+        #title = unicode( scrapedtitle, "iso-8859-1" , errors="replace" ).encode("utf-8")
+        title = scrapedtitle
+        title = title.strip()
+        title = scrapertools.htmlclean(title)
+        thumbnail = ""
+        plot = ""
+        url = "http://series.cinehanwer.com/wp-content/themes/bueno/ajax/seriesajaxresp_get.php?id="+scrapedurl+"&status=2"
+        if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
+        itemlist.append( Item(channel=__channel__, action="findvideos_series"  , title=title ,  url=url, thumbnail=thumbnail, plot=plot, fulltitle=title))
+        #itemlist.append( Item(channel=__channel__, action="findvideos_series" , title=title , url=url, thumbnail=thumbnail, plot=plot, fulltitle=title, viewmode="movie"))
+      
     return itemlist
 
 
@@ -234,6 +415,42 @@ def findvideos(item):
 
     return itemlist
 
+def findvideos_series(item):
+    logger.info("pelisalacarta.channels.cinehanwer findvideos_series")
+
+    # Descarga la pagina
+    data = scrapertools.cache_page(item.url)
+    #logger.info("data="+data)
+
+    # Extrae las entradas (carpetas)  
+    patron  = '<div class="download_buttton">[\s\S]+?<a href="([^"<]+)[\S\s]+?<img border="0" src="">[\s\S]+?<br>([^"<]+)'
+    matches = re.compile(patron,re.DOTALL).findall(data)
+    itemlist = []
+    
+    for scrapedurl, title in matches:
+        if (title == "") : title = scapedurl 
+        title = title.strip()
+        url = scrapedurl
+        thumbnail = ""
+        plot = ""
+        if (DEBUG): logger.info("title=["+title+"], url=["+url+"]")
+        itemlist.append( Item(channel=__channel__, action="play" , title=title , url=url, thumbnail=thumbnail, plot=plot, folder=False))
+        
+    # Extrae las entradas (links)
+    patron  = '<iframe src="([^"<]+)'
+    matches = re.compile(patron,re.DOTALL).findall(data)    
+    # Extra las entradas dentro de un iframe
+    for scrapedurl in matches:
+        title = "Ver en "+ scrapedurl 
+        title = title.strip()
+        url = scrapedurl
+        thumbnail = ""
+        plot = ""
+        if (DEBUG): logger.info("title=["+title+"], url=["+url+"]")
+        itemlist.append( Item(channel=__channel__, action="play" , title=title , url=url, thumbnail=thumbnail, plot=plot, folder=False))
+    
+    return itemlist
+    
 
 def play(item):
     logger.info("pelisalacarta.channels.cinehanwer play url="+item.url)
