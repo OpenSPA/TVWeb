@@ -305,8 +305,11 @@ def findvideos(item):
 def play(item):
     logger.info("[seriespepito.py] play")
     itemlist=[]
-    
-    mediaurl = get_server_link_series(item.url)
+
+    ## 28-07-2014
+    try: mediaurl = get_server_url(item.url)
+    except: mediaurl = get_server_link_series(item.url)
+
     # Busca el vídeo
     videoitemlist = servertools.find_video_items(data=mediaurl)
     i=1
@@ -320,6 +323,57 @@ def play(item):
             i=i+1
 
     return itemlist
+
+## 28-07-2014
+def get_server_url(url):
+
+    cookie = scrapertools.get_header_from_response(url, header_to_get="set-cookie", headers = ENLACESPEPITO_REQUEST_HEADERS)
+
+    import base64
+    cookies = cookie.split("enlacespepito.com, ")
+
+    index_charchange_class_v = base64.decodestring(cookies[3].split(";")[0].split("=")[1].replace("%2B","+").replace("%3D","=")).split(",")
+
+    class_v = index_charchange_class_v[2]
+    index = index_charchange_class_v[0] 
+    charchange = index_charchange_class_v[1] 
+
+    patron_class = '=."([^"]+)","([^"]+)","([^"]+)".;'
+    patron_href = '=.*?=."([^"]+)","([^"]+)","([^"]+)".;'
+
+    cookie6 = base64.decodestring(cookies[6].split(";")[0].split("=")[1].replace("%2B","+").replace("%3D","="))
+    cookie7 = base64.decodestring(cookies[7].split(";")[0].split("=")[1].replace("%2B","+").replace("%3D","="))
+
+    class1 = scrapertools.get_match(cookie6,patron_class); href1 = scrapertools.get_match(cookie6,patron_href)
+    class2 = scrapertools.get_match(cookie7,patron_class); href2 = scrapertools.get_match(cookie7,patron_href)
+
+    href_v = ""
+    n = 0
+    for temp in class1:
+        if temp == class_v:
+            i = 0
+            for char in href1[n]:
+                if int(index) == i: href_v += charchange
+                else: href_v += char
+                i += 1
+            break
+        n = n+1
+    n = 0
+    for temp in class2:
+        if temp == class_v:
+            i = 0
+            for char in href2[n]:
+                if int(index) == i: href_v += charchange
+                else: href_v += char
+                i += 1
+            break
+        n = n+1
+
+
+    posible_url = "http://www.enlacespepito.com/"+href_v+".html"
+    url = scrapertools.get_header_from_response(posible_url, header_to_get="location", headers = ENLACESPEPITO_REQUEST_HEADERS)
+
+    return url
 
 def get_cookie(html):
     import cookielib

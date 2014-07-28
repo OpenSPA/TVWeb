@@ -7,13 +7,16 @@
 import urlparse,urllib2,urllib,re
 import os, sys
 import hashlib
-#import xbmc, xbmcgui
 
 from core import logger
 from core import config
 from core import scrapertools
 from core.item import Item
 from servers import servertools
+
+if config.get_platform().startswith("xbmc") or config.get_platform().startswith("boxee"):
+    import xbmc, xbmcgui
+    from pelisalacarta import buscador
 
 __channel__ = "peliculaspepito"
 __category__ = "F"
@@ -50,14 +53,14 @@ def mainlist(item):
     itemlist.append( Item(channel=__channel__, action="listalfabetico"   , title="Listado alfabético"))
     itemlist.append( Item(channel=__channel__, action="lomasvisto"    , title="Lo mas visto",    url="http://www.peliculaspepito.com/"))
     itemlist.append( Item(channel=__channel__, action="allserieslist"    , title="Listado completo"))
-    itemlist.append( Item(channel=__channel__, action="search"        , title="Buscador", url="http://www.peliculaspepito.com/"))
+    itemlist.append( Item(channel=__channel__, action="buscar"        , title="Buscador", url="http://www.peliculaspepito.com/"))
     
     return itemlist
 
-def search(item,busqueda):
-#    keyboard = xbmc.Keyboard()
-#    keyboard.doModal()
-#    busqueda=keyboard.getText()
+def buscar(item):
+    keyboard = xbmc.Keyboard()
+    keyboard.doModal()
+    busqueda=keyboard.getText()
     data = scrapertools.cachePage("http://www.peliculaspepito.com/buscador/" + busqueda + "/")
     data = scrapertools.get_match(data,'<ul class="lp">(.*?)</ul>')
     patron  = '<li>'
@@ -337,9 +340,9 @@ def episodios(item):
 
         itemlist.append( Item(channel=__channel__, action="findvideos" , title=title , url=url, thumbnail=thumbnail, plot=plot, show=item.show, viewmode="movie_with_plot"))
 
-#    if (config.get_platform().startswith("xbmc") or config.get_platform().startswith("boxee")) and len(itemlist)>0:
-#        itemlist.append( Item(channel=item.channel, title="Añadir esta serie a la biblioteca de XBMC", url=item.url, action="add_serie_to_library", extra="episodios", show=item.show))
-#        itemlist.append( Item(channel=item.channel, title="Descargar todos los episodios de la serie", url=item.url, action="download_all_episodes", extra="episodios", show=item.show))
+    if (config.get_platform().startswith("xbmc") or config.get_platform().startswith("boxee")) and len(itemlist)>0:
+        itemlist.append( Item(channel=item.channel, title="Añadir esta serie a la biblioteca de XBMC", url=item.url, action="add_serie_to_library", extra="episodios", show=item.show))
+        itemlist.append( Item(channel=item.channel, title="Descargar todos los episodios de la serie", url=item.url, action="download_all_episodes", extra="episodios", show=item.show))
 
     return itemlist
 
@@ -395,34 +398,37 @@ def findvideos(item):
 
     return itemlist
 
-#def file_cine_library(item):
-#    import os
-#    from platformcode.xbmc import library
-#    librarypath = os.path.join(config.get_library_path(),"CINE")
-#    archivo = library.title_to_folder_name(item.title.strip())
-#    strmfile = archivo+".strm"
-#    strmfilepath = os.path.join(librarypath,strmfile)
+def file_cine_library(item):
+    import os
+    from platformcode.xbmc import library
+    librarypath = os.path.join(config.get_library_path(),"CINE")
+    archivo = library.title_to_folder_name(item.title.strip())
+    strmfile = archivo+".strm"
+    strmfilepath = os.path.join(librarypath,strmfile)
 
-#    if not os.path.exists(strmfilepath):
-#        itemlist.append( Item(channel=item.channel, title=">> Añadir a la biblioteca...", url=item.url, action="add_file_cine_library", extra="episodios", show=archivo) )
+    if not os.path.exists(strmfilepath):
+        itemlist = []
+        itemlist.append( Item(channel=item.channel, title=">> Añadir a la biblioteca...", url=item.url, action="add_file_cine_library", extra="episodios", show=archivo) )
 
-#    return itemlist
+    return itemlist
 
-#def add_file_cine_library(item):
-#    from platformcode.xbmc import library, xbmctools
-#    library.savelibrary( titulo=item.show , url=item.url , thumbnail=item.thumbnail , server=item.server , plot=item.plot , canal=item.channel , category="Cine" , Serie="" , verbose=False, accion="play_from_library", pedirnombre=False, subtitle=item.subtitle )
+def add_file_cine_library(item):
+    from platformcode.xbmc import library, xbmctools
+    library.savelibrary( titulo=item.show , url=item.url , thumbnail=item.thumbnail , server=item.server , plot=item.plot , canal=item.channel , category="Cine" , Serie="" , verbose=False, accion="play_from_library", pedirnombre=False, subtitle=item.subtitle )
 
-#    itemlist = []
-#    itemlist.append(Item(title='El vídeo '+item.show+' se ha añadido a la biblioteca'))
-#    xbmctools.renderItems(itemlist, "", "", "")
+    itemlist = []
+    itemlist.append(Item(title='El vídeo '+item.show+' se ha añadido a la biblioteca'))
+    xbmctools.renderItems(itemlist, "", "", "")
 
-#    return
+    return
 
 def play(item):
     logger.info("[seriespepito.py] play")
     itemlist=[]
 
-    mediaurl = get_server_link_peliculas(item.url)
+    ## 28-07-2014
+    try: mediaurl = get_server_url(item.url)
+    except: mediaurl = get_server_link_peliculas(item.url)
 
     # Busca el vídeo
     videoitemlist = servertools.find_video_items(data=mediaurl)
@@ -437,6 +443,57 @@ def play(item):
             i=i+1
 
     return itemlist
+
+## 28-07-2014
+def get_server_url(url):
+
+    cookie = scrapertools.get_header_from_response(url, header_to_get="set-cookie", headers = ENLACESPEPITO_REQUEST_HEADERS)
+
+    import base64
+    cookies = cookie.split("enlacespepito.com, ")
+
+    index_charchange_class_v = base64.decodestring(cookies[3].split(";")[0].split("=")[1].replace("%2B","+").replace("%3D","=")).split("@")
+
+    class_v = index_charchange_class_v[1]
+    index = index_charchange_class_v[0].split("-")[0] 
+    charchange = index_charchange_class_v[0].split("-")[1] 
+
+    patron_class = '=."([^"]+)","([^"]+)","([^"]+)".;'
+    patron_href = '=.*?=."([^"]+)","([^"]+)","([^"]+)".;'
+
+    cookie6 = base64.decodestring(cookies[6].split(";")[0].split("=")[1].replace("%2B","+").replace("%3D","="))
+    cookie7 = base64.decodestring(cookies[7].split(";")[0].split("=")[1].replace("%2B","+").replace("%3D","="))
+
+    class1 = scrapertools.get_match(cookie6,patron_class); href1 = scrapertools.get_match(cookie6,patron_href)
+    class2 = scrapertools.get_match(cookie7,patron_class); href2 = scrapertools.get_match(cookie7,patron_href)
+
+    href_v = ""
+    n = 0
+    for temp in class1:
+        if temp == class_v:
+            i = 0
+            for char in href1[n]:
+                if int(index) == i: href_v += charchange
+                else: href_v += char
+                i += 1
+            break
+        n = n+1
+    n = 0
+    for temp in class2:
+        if temp == class_v:
+            i = 0
+            for char in href2[n]:
+                if int(index) == i: href_v += charchange
+                else: href_v += char
+                i += 1
+            break
+        n = n+1
+
+
+    posible_url = "http://www.enlacespepito.com/"+href_v+".html"
+    url = scrapertools.get_header_from_response(posible_url, header_to_get="location", headers = ENLACESPEPITO_REQUEST_HEADERS)
+
+    return url
 
 def get_cookie(html):
     import cookielib
@@ -516,10 +573,6 @@ def get_server_link_series(first_link):
 def get_server_link_peliculas(first_link):
 
     return get_server_link(first_link, PELICULAS_PEPITO)
-
-
-
-
 
 # Verificación automática de canales: Esta función debe devolver "True" si está ok el canal.
 def test():
