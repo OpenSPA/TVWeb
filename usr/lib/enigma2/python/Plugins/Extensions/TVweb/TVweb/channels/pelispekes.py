@@ -78,7 +78,7 @@ def novedades(item):
             itemlist.append( Item(channel=item.channel , action="findvideos"   , title=scrapedtitle , url=scrapedurl , thumbnail=scrapedthumbnail, fanart=scrapedthumbnail, plot=scrapedplot , viewmode="movie_with_plot"))
     
     # Extrae la pagina siguiente
-    patron  = "class='current'>[^<]+</span><a href='([^']+)'"
+    patron  = '<a class="nextpostslink" href="([^"]+)"'
     matches = re.compile(patron,re.DOTALL).findall(data)
 
     for match in matches:
