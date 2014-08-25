@@ -30,8 +30,8 @@ def mainlist(item):
     logger.info("[newpct.py] mainlist")
 
     itemlist = []
-    itemlist.append( Item(channel=__channel__, action="submenu" , title="Películas", url="http://www.newpct1.com/include.inc/load.ajax/load.topbar.php?userName=", extra="Peliculas" ))
-    itemlist.append( Item(channel=__channel__, action="submenu" , title="Series"   , url="http://www.newpct1.com/include.inc/load.ajax/load.topbar.php?userName=", extra="Series" ))
+    itemlist.append( Item(channel=__channel__, action="submenu" , title="Películas", url="http://www.newpct.com/include.inc/load.ajax/load.topbar.php?userName=", extra="Peliculas" ))
+    itemlist.append( Item(channel=__channel__, action="submenu" , title="Series"   , url="http://www.newpct.com/include.inc/load.ajax/load.topbar.php?userName=", extra="Series" ))
     #itemlist.append( Item(channel=__channel__, action="search"    , title="Buscar" ))
   
     return itemlist
@@ -80,9 +80,9 @@ def listado(item):
     
     '''
     <li>
-    <a href='http://www.newpct1.com/descargar-pelicula/la-pequena-venecia/'>
+    <a href='http://www.newpct.com/descargar-pelicula/la-pequena-venecia/'>
     <div class='boxgrid captionb'>
-    <img src='http://images.newpct1.com/banco_de_imagenes/destacados/038707/la-pequeña-venecia--dvdrip--ac3-5-1-español-castellano--2012-.jpg'  alt='Descargar Peliculas Castellano &raquo; Películas RIP La Pequeña Venecia [DVDrip][AC3 5.1 Español Castellano][2012]' />
+    <img src='http://images.newpct.com/banco_de_imagenes/destacados/038707/la-pequeña-venecia--dvdrip--ac3-5-1-español-castellano--2012-.jpg'  alt='Descargar Peliculas Castellano &raquo; Películas RIP La Pequeña Venecia [DVDrip][AC3 5.1 Español Castellano][2012]' />
     <div class='cover boxcaption'>
     <h3>La Pequeña Venecia </h3>
     <p>Peliculas Castellano<br/>
@@ -96,9 +96,9 @@ def listado(item):
     <div id='bot-desc'>
     <div id='tinfo'>
     <a class='youtube' href='#' rel='gx9EKDC0UFQ' title='Ver Trailer' alt='Ver Trailer'>
-    <img style='width:25px;' src='http://www.newpct1.com/images.inc/images/playm2.gif'></a>
+    <img style='width:25px;' src='http://www.newpct.com/images.inc/images/playm2.gif'></a>
     </div>
-    <div id='tdescargar' ><a class='atdescargar' href='http://www.newpct1.com/descargar-pelicula/la-pequena-venecia/'>DESCARGAR</a></div>
+    <div id='tdescargar' ><a class='atdescargar' href='http://www.newpct.com/descargar-pelicula/la-pequena-venecia/'>DESCARGAR</a></div>
     </div>
     </li>
     '''
@@ -127,13 +127,13 @@ def listado(item):
     # Página siguiente
     '''
     GET /include.inc/ajax.php/orderCategory.php?type=todo&leter=&sql=SELECT+DISTINCT+++%09%09%09%09%09%09torrentID%2C+++%09%09%09%09%09%09torrentCategoryID%2C+++%09%09%09%09%09%09torrentCategoryIDR%2C+++%09%09%09%09%09%09torrentImageID%2C+++%09%09%09%09%09%09torrentName%2C+++%09%09%09%09%09%09guid%2C+++%09%09%09%09%09%09torrentShortName%2C++%09%09%09%09%09%09torrentLanguage%2C++%09%09%09%09%09%09torrentSize%2C++%09%09%09%09%09%09calidad+as+calidad_%2C++%09%09%09%09%09%09torrentDescription%2C++%09%09%09%09%09%09torrentViews%2C++%09%09%09%09%09%09rating%2C++%09%09%09%09%09%09n_votos%2C++%09%09%09%09%09%09vistas_hoy%2C++%09%09%09%09%09%09vistas_ayer%2C++%09%09%09%09%09%09vistas_semana%2C++%09%09%09%09%09%09vistas_mes++%09%09%09%09++FROM+torrentsFiles+as+t+WHERE++(torrentStatus+%3D+1+OR+torrentStatus+%3D+2)++AND+(torrentCategoryID+IN+(1537%2C+758%2C+1105%2C+760%2C+1225))++++ORDER+BY+torrentDateAdded++DESC++LIMIT+0%2C+50&pag=3&tot=&ban=3&cate=1225 HTTP/1.1
-    Host: www.newpct1.com
+    Host: www.newpct.com
     User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:19.0) Gecko/20100101 Firefox/19.0
     Accept: */*
     Accept-Language: es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3
     Accept-Encoding: gzip, deflate
     X-Requested-With: XMLHttpRequest
-    Referer: http://www.newpct1.com/peliculas-castellano/peliculas-rip/
+    Referer: http://www.newpct.com/peliculas-castellano/peliculas-rip/
     Cookie: adbooth_popunder=5%7CSat%2C%2009%20Mar%202013%2018%3A23%3A22%20GMT
     Connection: keep-alive
     '''
@@ -227,9 +227,9 @@ def findvideos(item):
     itemlist=[]
 
     data = scrapertools.cache_page(item.url)
-    torrent_id = scrapertools.get_match(data,"'torrentID'\s*\:\s*'(\d+)'")
+    #torrent_id = scrapertools.get_match(data,"'torrentID'\s*\:\s*'(\d+)'")
     
-    data = data + scrapertools.cache_page("http://www.newpct1.com/include.inc/ajax.php/update.links.php?userID=&torrentID="+torrent_id)
+    #data = data + scrapertools.cache_page("http://www.newpct.com/include.inc/ajax.php/update.links.php?userID=&torrentID="+torrent_id)
 
     from servers import servertools
     itemlist.extend(servertools.find_video_items(data=data))
@@ -237,6 +237,6 @@ def findvideos(item):
         videoitem.channel=__channel__
         videoitem.action="play"
         videoitem.folder=False
-        videoitem.title = "["+videoitem.server+"]"
+        videoitem.title = item.title + "["+videoitem.server+"]"
 
     return itemlist
