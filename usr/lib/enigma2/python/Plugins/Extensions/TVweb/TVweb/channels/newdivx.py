@@ -36,7 +36,7 @@ def mainlist(item):
     itemlist.append( Item(channel=__channel__, title="VOS", action="peliculas", url="http://www.newdivx.net/peliculas-vos/"))
     itemlist.append( Item(channel=__channel__, title="English", action="peliculas", url="http://www.newdivx.net/english/"))
     itemlist.append( Item(channel=__channel__, title="720p HD", action="peliculas", url="http://www.newdivx.net/hd/"))
-    #itemlist.append( Item(channel=__channel__, title="Buscar...", action="search") )
+    itemlist.append( Item(channel=__channel__, title="Buscar...", action="search") )
     return itemlist
 
 def search(item,texto):
@@ -69,14 +69,14 @@ def peliculas(item):
     <div class="custom-label">DVDRip</div>
     <div class="custom-update">ESP 
     '''
-    patronvideos  = '<div class="main-news-content">[^<]+<a href="([^"]+)"[^<]+<img src="([^"]+)".*?'
-    patronvideos += '<span class="god">([^<]+).*?'
-    patronvideos += '<span class="kachestvo">([^<]+)</span>.*?'
-    patronvideos += '<h2><[^>]+>([^<]+)</a>'
+    patronvideos  = '<a href="([^"]+)"[^<]+<img src="([^"]+)"[^<]+'
+    patronvideos += '<div class="custom-text2">([^<]+)</div></a[^<]+'
+    patronvideos += '<div class="custom-label">([^<]+)</div[^<]+'
+    patronvideos += '<div class="custom-update">([^<]+)<'
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     # Añade las entradas encontradas
-    for url,thumbnail,idioma,calidad,title in matches:
+    for url,thumbnail,title,calidad,idioma in matches:
         scrapedtitle = title
         scrapedtitle = unicode( scrapedtitle, "iso-8859-1" , errors="replace" ).encode("utf-8")
         scrapedtitle = scrapertools.htmlclean(scrapedtitle)
@@ -90,8 +90,7 @@ def peliculas(item):
 
     #Extrae la marca de siguiente página
     #<span>1</span> <a href="http://www.newdivx.net/peliculas-online/animacion/page/2/">2</a>
-    #patronvideos  = '</span> <a href="(http://www.newdivx.net.*?page/[^"]+)"'
-    patronvideos  = '<a href="([^"]+)"><span class="thide pnext">'
+    patronvideos  = '</span> <a href="(http://www.newdivx.net.*?page/[^"]+)"'
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
@@ -110,7 +109,7 @@ def categorias(item):
 
     # Descarga la página
     data = scrapertools.cachePage(item.url)
-    data = scrapertools.get_match(data,'<h4>Genero</h4>(.*?)</div>')
+    data = scrapertools.get_match(data,'li[^<]+<a href=".">Category</a[^<]+<ul>(.*?)</ul>')
     patron = '<a href="([^"]+)">([^<]+)</a>'
     matches = re.compile(patron,re.DOTALL).findall(data)
 
