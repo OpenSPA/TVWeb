@@ -412,7 +412,7 @@ def play(item):
     	cyphertext = ""
     try:
     	key = data.split('#')[1]
-    	key = key[1:270]         ## extrae la clave
+    	key = key[1:]         ## extrae la clave
 	clave = ""
 	for x in key:
 		if x.isdigit():
