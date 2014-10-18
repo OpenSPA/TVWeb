@@ -270,7 +270,7 @@ def episodios(item):
     patron += '<span class="col_tit" id="([^"]+)"[^>]+>[^<]+'
     patron += '<a href="([^"]+)">(.*?)</a>[^<]+'
     patron += '</span>[^<]+'
-    patron += '<span class="col_tip">([^<]+)</span>[^<]+'
+    patron += '<span class="col_tip">(.*?)'
     patron += '<span class="col_dur">([^<]+)</span>.*?'
     patron += '<span class="col_fec">([^<]+)</span>.*?'
     patron += '<span class="detalle">([^>]+)</span>'
