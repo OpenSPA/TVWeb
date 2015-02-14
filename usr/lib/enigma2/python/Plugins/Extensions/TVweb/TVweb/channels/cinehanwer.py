@@ -64,8 +64,7 @@ def calidades(item):
     itemlist = []
     
     for scrapedurl,scrapedtitle in matches:
-        title = unicode( scrapedtitle, "iso-8859-1" , errors="replace" ).encode("utf-8")
-        title = title.strip()
+        title = scrapedtitle.strip()
         thumbnail = ""
         plot = ""
         url = urlparse.urljoin(item.url,scrapedurl)
@@ -88,8 +87,7 @@ def generos(item):
     itemlist = []
     
     for scrapedurl,scrapedtitle in matches:
-        title = unicode( scrapedtitle, "iso-8859-1" , errors="replace" ).encode("utf-8")
-        title = title.strip()
+        title = scrapedtitle.strip()
         thumbnail = ""
         plot = ""
         url = urlparse.urljoin(item.url,scrapedurl)
@@ -124,11 +122,11 @@ def search(item,texto):
     texto = texto.replace(" ","-")
     if item.url=="":
         item.url="http://cinehanwer.com/estrenos/"
-    if item.url=="http://cinehanwer.com/estrenos/":
+    if item.url=="http://www.cinehanwer.com/estrenos" or item.url=="http://cinehanwer.com/estrenos/":
         # Mete el referer en item.extra
         item.extra = item.url
-        #item.url = item.url+"search/query/"+texto+"/years/1950/on/undefined/showlist/all"
-	item.url = "http://cinehanwer.com/buscar/?q="+texto
+        #item.url = item.url+"/search/query/"+texto+"/years/1950/on/undefined/showlist/all"
+	item.url = "http://www.cinehanwer.com/buscar/?q="+texto
         try:
             #return buscar(item)
 	    return peliculas(item)
@@ -255,8 +253,7 @@ def peliculas(item):
     itemlist = []
     
     for scrapedurl,scrapedtitle,scrapedthumbnail,scrapedplot in matches:
-        title = unicode( scrapedtitle, "iso-8859-1" , errors="replace" ).encode("utf-8")
-        title = title.strip()
+        title = scrapedtitle.strip()
         title = scrapertools.htmlclean(title)
         thumbnail = urlparse.urljoin(item.url,scrapedthumbnail)
         plot = scrapertools.htmlclean(scrapedplot)
