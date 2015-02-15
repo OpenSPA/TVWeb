@@ -73,7 +73,8 @@ def programas(item):
         if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
         itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="episodios" , url=scrapedurl, thumbnail=scrapedthumbnail, fanart=scrapedthumbnail, plot=scrapedplot , show=scrapedtitle, viewmode="movie_with_plot") )
 
-    next_page = scrapertools.find_single_match(data,'<a href="([^"]+)"  class="enlace siguiente"')
+    #<a href="http://www.canalsuralacarta.es/television/listado/todos/2" class="enlace siguiente" rel="contenido_main#program_list">siguiente</a>
+    next_page = scrapertools.find_single_match(data,'<a href="([^"]+)"\s+class="enlace siguiente"')
     if next_page!="":
         itemlist.append( Item(channel=CHANNELNAME, title=">> Página siguiente" , action="programas" , url=urlparse.urljoin(item.url,next_page), folder=True ))
 
