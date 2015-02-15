@@ -29,7 +29,7 @@ logger.info("[scrapertools.py] init")
 
 # True - Muestra las cabeceras HTTP en el log
 # False - No las muestra
-DEBUG_LEVEL = True
+DEBUG_LEVEL = False
 
 CACHE_ACTIVA = "0"  # Automatica
 CACHE_SIEMPRE = "1" # Cachear todo
@@ -883,8 +883,6 @@ def htmlclean(cadena):
     cadena = cadena.replace("</cite>","")
     cadena = cadena.replace("<em>","")
     cadena = cadena.replace("</em>","")
-    cadena = cadena.replace("<b>","")
-    cadena = cadena.replace("</b>","")
     cadena = cadena.replace("<u>","")
     cadena = cadena.replace("</u>","")
     cadena = cadena.replace("<li>","")
@@ -894,14 +892,18 @@ def htmlclean(cadena):
     cadena = cadena.replace("<tr>","")
     cadena = cadena.replace("</tr>","")
     cadena = cadena.replace("<![CDATA[","")
-    cadena = cadena.replace("<Br />","")
-    cadena = cadena.replace("<BR />","")
-    cadena = cadena.replace("<Br>","")
+    cadena = cadena.replace("<Br />"," ")
+    cadena = cadena.replace("<BR />"," ")
+    cadena = cadena.replace("<Br>"," ")
+    cadena = re.compile("<br[^>]*>",re.DOTALL).sub(" ",cadena)
 
     cadena = re.compile("<script.*?</script>",re.DOTALL).sub("",cadena)
 
     cadena = re.compile("<option[^>]*>",re.DOTALL).sub("",cadena)
     cadena = cadena.replace("</option>","")
+
+    cadena = re.compile("<button[^>]*>",re.DOTALL).sub("",cadena)
+    cadena = cadena.replace("</button>","")
 
     cadena = re.compile("<i[^>]*>",re.DOTALL).sub("",cadena)
     cadena = cadena.replace("</iframe>","")
@@ -918,6 +920,9 @@ def htmlclean(cadena):
     
     cadena = re.compile("<dd[^>]*>",re.DOTALL).sub("",cadena)
     cadena = cadena.replace("</dd>","")
+
+    cadena = re.compile("<b[^>]*>",re.DOTALL).sub("",cadena)
+    cadena = cadena.replace("</b>","")
 
     cadena = re.compile("<font[^>]*>",re.DOTALL).sub("",cadena)
     cadena = cadena.replace("</font>","")
@@ -956,8 +961,6 @@ def htmlclean(cadena):
     
     cadena = re.compile("<img[^>]*>",re.DOTALL).sub("",cadena)
     
-    cadena = re.compile("<br[^>]*>",re.DOTALL).sub("",cadena)
-
     cadena = re.compile("<object[^>]*>",re.DOTALL).sub("",cadena)
     cadena = cadena.replace("</object>","")
     cadena = re.compile("<param[^>]*>",re.DOTALL).sub("",cadena)
