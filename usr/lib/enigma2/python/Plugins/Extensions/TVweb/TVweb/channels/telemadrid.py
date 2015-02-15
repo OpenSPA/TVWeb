@@ -14,7 +14,7 @@ from core.item import Item
 
 DEBUG = False
 CHANNELNAME = "telemadrid"
-MAIN_URL = "http://www.telemadrid.es/?q=tv_a_la_carta/listado_de_programas"
+MAIN_URL = "http://www.telemadrid.es/tv_a_la_carta/listado_de_programas/"
 
 def isGeneric():
     return True
@@ -28,7 +28,7 @@ def mainlist(item):
     data = scrapertools.cache_page(MAIN_URL)
     
     # Limita la página al bloque con las categorías
-    data = scrapertools.get_match(data,'<div class="anclas"><h1 class="programasOnline">Todos los programas de online</h1>(.*?)</div>')
+    data = scrapertools.get_match(data,'<div class="anclas"><h1 class="programasOnline">Por temática</h1>(.*?)</div>')
 
     # Extrae las categorias
     patron = '<h2><a href="\#(portProgr[^"]+)">([^<]+)</a></h2>'
@@ -52,12 +52,19 @@ def programas(item):
     
     # Limita la página al bloque con la categoría elegida (va en la url)
     data = scrapertools.get_match(data,'<div id="'+item.url+'">(.*?)</ul>')
+
+    '''
+    <li class="views-row views-row-1 views-row-odd views-row-first">    
+    <a href="/tv_a_la_carta/listado_de_programas/566" class="imagen">
+    <img src="http://www.telemadrid.es/sites/default/files/images/logo_micamara_2012.destacado.jpg" alt="Logo Mi Cámara y Yo 2012" title="Logo Mi Cámara y Yo 2012"  class="image image-destacado " width="128" height="106" /></a>    
+    <a href="/tv_a_la_carta/listado_de_programas/566" class="titulo">Mi cámara y yo</a> <p><P>Cada semana, un reportero del programa recorre la Comunidad de Madrid con una minicámara, interfiriendo lo menos posible en el relato, para ofrecer la parte más desconocida y más cercana de la realidad, tratando siempre de ver las cosas desde otro ángulo, entrando con la cámara en la vida cotidiana de los espectadores.
+    '''
     
     # Extrae programas
     patron  = '<li[^<]+'
     patron += '<a href="([^"]+)"[^<]+'
     patron += '<img src="([^"]+)"[^<]+</a[^<]+'
-    patron += '<a[^>]+>([^<]+)</a[^<]+<p><p>([^<]+)<'
+    patron += '<a[^>]+>([^<]+)</a[^<]+<p><.>([^<]+)<'
     matches = re.compile(patron,re.DOTALL).findall(data)
     for scrapedurl,scrapedthumbnail,scrapedtitle,scrapedplot in matches:
         title = scrapedtitle.strip()
@@ -111,3 +118,16 @@ def get_video_detail(item):
     item.plot = scrapertools.get_match(data,'"descs"\: \["([^"]+)"\]')
 
     return item
+
+# Verificación automática de canales: Esta función debe devolver "True" si todo está ok en el canal.
+def test():
+
+    # Comprueba que la primera opción tenga algo
+    categorias_items = mainlist(Item())
+    programas_items = programas(categorias_items[0])
+    episodios_items = episodios(programas_items[0])
+
+    if len(episodios_items)>0:
+        return True
+
+    return False
