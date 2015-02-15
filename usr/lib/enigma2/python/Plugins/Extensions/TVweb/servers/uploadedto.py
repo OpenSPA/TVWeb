@@ -108,13 +108,13 @@ def find_videos(data):
     devuelve = []
     
     # http://uploaded.net/file/1haty8nt
-    patronvideos  = '(uploaded.net/file/[a-zA-Z0-9]+)'
+    patronvideos  = 'uploaded.net/file/([a-zA-Z0-9]+)'
     logger.info("[uploadedto.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
         titulo = "[uploaded.to]"
-        url = "http://"+match
+        url = "http://uploaded.net/file/"+match
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'uploadedto' ] )
@@ -123,13 +123,13 @@ def find_videos(data):
             logger.info("  url duplicada="+url)
             
     # http://uploaded.to/file/1haty8nt
-    patronvideos  = 'uploaded.to(/file/[a-zA-Z0-9]+)'
+    patronvideos  = 'uploaded.to/file/([a-zA-Z0-9]+)'
     logger.info("[uploadedto.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
         titulo = "[uploaded.to]"
-        url = "http://uploaded.net"+match
+        url = "http://uploaded.net/file/"+match
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'uploadedto' ] )
@@ -138,13 +138,13 @@ def find_videos(data):
             logger.info("  url duplicada="+url)
 
     # http://ul.to/file/y2y6nzep
-    patronvideos  = 'ul.to(/file/[a-zA-Z0-9]+)'
+    patronvideos  = 'ul.to/file/([a-zA-Z0-9]+)'
     logger.info("[uploadedto.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
         titulo = "[uploaded.to]"
-        url = "http://uploaded.net"+match
+        url = "http://uploaded.net/file/"+match
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'uploadedto' ] )

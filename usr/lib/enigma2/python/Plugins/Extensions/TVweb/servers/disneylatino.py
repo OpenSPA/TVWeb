@@ -17,23 +17,13 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     logger.info("servers.disneylatino get_video_url(page_url='%s')" % page_url)
     video_urls = []
 
+    #"bitrate":4138,"format":"mp4","id":"545a7c5d75d2a8495b000060","width":"1920","height":"1080","security_profile":["progressive","rtmpe","encrypted_hls"],"url":"http://media.disneyinternational.com/emea/kaltura/content/r71v1/entry/data/375/859/1_0cpytbx
     data = scrapertools.cache_page(page_url)
-    data = scrapertools.find_single_match(data,'<script type="text/javascript">this.Grill.Grill.burger\=(.*?)\:\(function\(\)')
-    data_json = jsontools.load_json(data)
+    patron = '"bitrate"\:(\d+),"format":"[^"]+","id":"[^"]+","width":"(\d+)","height":"(\d+)","security_profile":\[[^\]]+\],"url":"([^"]+)"'
+    matches = re.compile(patron,re.DOTALL).findall(data)
 
-    calidades = data_json["stack"][0]["data"][0]["flavors"]
-    for calidad in calidades:
-        title = calidad["width"]+"x"+calidad["height"]+" (Formato "+calidad["format"].upper()+" a "+str(calidad["bitrate"])+"Kbps)"
-        url = calidad["url"]
-        thumbnail = ""
-        plot = ""
-
-        if calidad["format"]=="unknown-3gp":
-            video_urls.reverse()
-            video_urls.append( [ title+" [disneylatino]" , url ] )
-            video_urls.reverse()
-        else:
-            video_urls.append( [ title+" [disneylatino]" , url ] )
+    for calidad,ancho,alto,url in matches:
+        video_urls.append( [ ancho+"x"+alto+" ("+calidad+"bps) [disneylatino]" , url ] )
 
     for video_url in video_urls:
         logger.info("servers.disneylatino %s - %s" % (video_url[0],video_url[1]))

@@ -25,7 +25,9 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     #Url:'/programas/cumbresdelmundo/2012/videos/cumbres_100313_c.mp4',
     stream = scrapertools.get_match(data,"AutoStart:true,\s+Url\:'([^']+)'")
     #http://wow3.tvn.cl:1935/mediacache/_definst_/mp4://programas/cumbresdelmundo/2012/videos/cumbres_100313_c.mp4/playlist.m3u8
-    url = "http://wow3.tvn.cl:1935/mediacache/_definst_/mp4:/"+stream+"/playlist.m3u8"
+    #url = "http://wow3.tvn.cl:1935/mediacache/_definst_/mp4:/"+stream+"/playlist.m3u8"
+    #http://edge-30-tvn.edge.mdstrm.com/mediacache/_definst_/mp4://teleseries/elamorlomanejoyo/videos/cap44-elamorlomanejoyo-capitulo.mp4/playlist.m3u8
+    url = "http://edge-30-tvn.edge.mdstrm.com/mediacache/_definst_/mp4:/"+stream+"/playlist.m3u8"
     logger.info("url="+url)
 
     video_urls.append( [ "[tvn.cl]" , url ] )

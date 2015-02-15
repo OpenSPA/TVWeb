@@ -4,9 +4,6 @@
 # Conector para dailymotion
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Basado en el resolver hecho por Shailesh Ghimire para su plugin "canadanepal"
-# http://code.google.com/p/canadanepal-xbmc-plugin/source/browse/script.module.urlresolver/lib/urlresolver/plugins/dailymotion.py?name=Version_0.0.1
-#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 import urlparse,urllib2,urllib,re
 import os
 
@@ -14,28 +11,36 @@ from core import scrapertools
 from core import logger
 from core import config
 
+DEFAULT_HEADERS = []
+DEFAULT_HEADERS.append( [ "User-Agent" , "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25" ] )
+
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
     logger.info("pelisalacarta.dailymotion get_video_url(page_url='%s')" % page_url)
     video_urls = []
-    
-    data = scrapertools.cache_page(page_url)
-    data = scrapertools.get_match(data,'<param name="flashvars" value="(.*?)"')
-    #logger.info("pelisalacarta.dailymotion data="+data)
 
-    #logger.info("data="+data)
-    sequence = scrapertools.get_match(data,"sequence=(.*?)$")
-    #logger.info("pelisalacarta.dailymotion sequence="+sequence)
+    '''
+    <meta property="og:url" content="http://www.dailymotion.com/video/x25ewpy_akame10_shortfilms" />    
+    http://www.dailymotion.com/embed/video/x25ewpy_akame10_shortfilms?api=postMessage&autoplay=1&id=container_player_main&info=0&origin=http%3A%2F%2Fwww.dailymotion.com
+    '''
 
-    sequence = urllib.unquote(sequence)
-    #logger.info("pelisalacarta.dailymotion sequence="+sequence)
+    data = scrapertools.cache_page(page_url,headers=DEFAULT_HEADERS)
+    logger.info("pelisalacarta.dailymotion data="+data)
 
-    mediaurl = scrapertools.get_match(sequence,'"video_url"\:"([^"]+)"')
-    #logger.info("pelisalacarta.dailymotion mediaurl="+mediaurl)
+    unique_url = scrapertools.find_single_match(data,'<meta property="og.url" content="([^"]+)"')
+    logger.info("pelisalacarta.dailymotion unique_url="+unique_url)
 
-    mediaurl = urllib.unquote(mediaurl)
-    logger.info("pelisalacarta.dailymotion mediaurl="+mediaurl)
+    unique_url = unique_url.replace("/video/","/embed/video/")
+    logger.info("pelisalacarta.dailymotion unique_url="+unique_url)
 
-    video_urls.append( [ "mp4 [dailymotion]", mediaurl ] )
+    url = unique_url+"?api=postMessage&autoplay=1&id=container_player_main&info=0&origin=http%3A%2F%2Fwww.dailymotion.com"
+    DEFAULT_HEADERS.append( ["Referer","page_url"] )
+    data = scrapertools.cache_page(url,headers=DEFAULT_HEADERS)
+    logger.info("pelisalacarta.dailymotion data="+data)
+
+    patron = '"stream_([a-z_0-9]+)_url"\:"([^"]+)"'
+    matches = re.compile(patron,re.DOTALL).findall(data)
+    for stream_name,stream_url in matches:
+        video_urls.append( [ stream_name+" [dailymotion]", stream_url.replace("\\/","/") ] )
 
     for video_url in video_urls:
         logger.info("pelisalacarta.dailymotion %s - %s" % (video_url[0],video_url[1]))

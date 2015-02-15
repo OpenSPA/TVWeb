@@ -35,50 +35,13 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     logger.info("[allmyvideos.py] url="+page_url)
 
     # Normaliza la URL
-    try:
-        if page_url.startswith("http://allmyvideos.net/embed-"):
-            videoid = scrapertools.get_match(page_url,"allmyvideos.net/embed-([a-z0-9A-Z]+).html")
-            page_url = "http://allmyvideos.net/"+videoid
-    except:
-        import traceback
-        logger.info(traceback.format_exc())
+    videoid = scrapertools.get_match(page_url,"http://allmyvideos.net/([a-z0-9A-Z]+)")
+    page_url = "http://allmyvideos.net/embed-"+videoid+"-728x400.html"
+    data = scrapertools.cache_page(page_url)
 
-    # Lo pide una vez
-    headers = [['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14']]
-    data = scrapertools.cache_page( page_url , headers=headers )
-    logger.info("data="+data)
-    
-    try:     
-        '''
-        <input type="hidden" name="op" value="download1">
-        <input type="hidden" name="usr_login" value="">
-        <input type="hidden" name="id" value="d6fefkzvjc1z">
-        <input type="hidden" name="fname" value="coriolanus.dvdr.mp4">
-        <input type="hidden" name="referer" value="">
-        <input type="hidden" name="method_free" value="1">
-        <input type="image"  id="submitButton" src="/images/continue-to-video.png" value="method_free" />
-        '''
-        op = scrapertools.get_match(data,'<input type="hidden" name="op" value="([^"]+)"')
-        usr_login = ""
-        id = scrapertools.get_match(data,'<input type="hidden" name="id" value="([^"]+)"')
-        fname = scrapertools.get_match(data,'<input type="hidden" name="fname" value="([^"]+)"')
-        referer = scrapertools.get_match(data,'<input type="hidden" name="referer" value="([^"]*)"')
-        method_free = scrapertools.get_match(data,'<input type="hidden" name="method_free" value="([^"]*)"')
-        submitbutton = scrapertools.get_match(data,'<input type="image"  id="submitButton".*?value="([^"]+)"').replace(" ","+")
-        
-        import time
-        time.sleep(10)
-        
-        # Lo pide una segunda vez, como si hubieras hecho click en el banner
-        #op=download1&usr_login=&id=d6fefkzvjc1z&fname=coriolanus.dvdr.mp4&referer=&method_free=1&x=109&y=17
-        post = "op="+op+"&usr_login="+usr_login+"&id="+id+"&fname="+fname+"&referer="+referer+"&method_free="+method_free+"&x=109&y=17"
-        headers.append(["Referer",page_url])
-        data = scrapertools.cache_page( page_url , post=post, headers=headers )
-        logger.info("data="+data)
-    except:
-        import traceback
-        logger.info(traceback.format_exc())
-    
+    if "File was banned" in data:
+        data = scrapertools.cache_page(page_url,post="op=download1&usr_login=&id="+videoid+"&fname=&referer=&method_free=1&x=147&y=25")
+
     # Extrae la URL
     match = re.compile('"file" : "(.+?)",').findall(data)
     media_url = ""
@@ -93,6 +56,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     video_urls = []
 
     if media_url!="":
+        media_url+= "&direct=false"
         video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [allmyvideos]",media_url])
 
     for video_url in video_urls:
@@ -138,50 +102,65 @@ def find_videos(data):
 
     devuelve = []
 
-    # http://allmyvideos.net/embed-d6fefkzvjc1z.html 
-    patronvideos  = 'allmyvideos.net/embed-([a-z0-9]+)\.html'
-    logger.info("[allmyvideos.py] find_videos #"+patronvideos+"#")
-    matches = re.compile(patronvideos,re.DOTALL).findall(data)
-
-    for match in matches:
-        titulo = "[allmyvideos]"
-        url = "http://allmyvideos.net/"+match
-        if url not in encontrados and url!="http://allmyvideos.net/embed":
-            logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'allmyvideos' ] )
-            encontrados.add(url)
-        else:
-            logger.info("  url duplicada="+url)
-
-    # http://allmyvideos.net/6lgjjav5cymi
+    # http://allmyvideos.net/3sw6tewl21sn
     patronvideos  = 'allmyvideos.net/([a-z0-9]+)'
     logger.info("[allmyvideos.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
+    if len(matches)>0:
+        for match in matches:
+            titulo = "[allmyvideos]"
+            url = "http://allmyvideos.net/"+match
+            if url not in encontrados and "embed" not in match:
+                logger.info("  url="+url)
+                devuelve.append( [ titulo , url , 'allmyvideos' ] )
+                encontrados.add(url)
+            else:
+                logger.info("  url duplicada="+url)
 
-    for match in matches:
-        titulo = "[allmyvideos]"
-        url = "http://allmyvideos.net/"+match
-        if url not in encontrados and not url.startswith("embed"):
-            logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'allmyvideos' ] )
-            encontrados.add(url)
-        else:
-            logger.info("  url duplicada="+url)
+    # http://allmyvideos.net/embed-3sw6tewl21sn.html
+    patronvideos  = 'allmyvideos.net/embed-([a-z0-9]+).html'
+    logger.info("[allmyvideos.py] find_videos #"+patronvideos+"#")
+    matches = re.compile(patronvideos,re.DOTALL).findall(data)
+    if len(matches)>0:
+        for match in matches:
+            titulo = "[allmyvideos]"
+            url = "http://allmyvideos.net/"+match
+            if url not in encontrados and "-728x400" not in match:
+                logger.info("  url="+url)
+                devuelve.append( [ titulo , url , 'allmyvideos' ] )
+                encontrados.add(url)
+            else:
+                logger.info("  url duplicada="+url)
 
-    #http://www.cinetux.org/video/allmyvideos.php?id=gntpo9m3mifj
+    # http://allmyvideos.net/embed-3sw6tewl21sn-728x400.html
+    patronvideos  = 'allmyvideos.net/embed-([a-z0-9]+)-728x400.html'
+    logger.info("[allmyvideos.py] find_videos #"+patronvideos+"#")
+    matches = re.compile(patronvideos,re.DOTALL).findall(data)
+    if len(matches)>0:
+        for match in matches:
+            titulo = "[allmyvideos]"
+            url = "http://allmyvideos.net/"+match
+            if url not in encontrados:
+                logger.info("  url="+url)
+                devuelve.append( [ titulo , url , 'allmyvideos' ] )
+                encontrados.add(url)
+            else:
+                logger.info("  url duplicada="+url)
+
+    # http://www.cinetux.org/video/allmyvideos.php?id=3sw6tewl21sn
     patronvideos  = 'allmyvideos.php\?id\=([a-z0-9]+)'
     logger.info("[allmyvideos.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
-
-    for match in matches:
-        titulo = "[allmyvideos]"
-        url = "http://allmyvideos.net/"+match
-        if url not in encontrados and not url.startswith("embed"):
-            logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'allmyvideos' ] )
-            encontrados.add(url)
-        else:
-            logger.info("  url duplicada="+url)
+    if len(matches)>0:
+        for match in matches:
+            titulo = "[allmyvideos]"
+            url = "http://allmyvideos.net/"+match
+            if url not in encontrados:
+                logger.info("  url="+url)
+                devuelve.append( [ titulo , url , 'allmyvideos' ] )
+                encontrados.add(url)
+            else:
+                logger.info("  url duplicada="+url)
 
     return devuelve
 

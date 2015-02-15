@@ -16,6 +16,12 @@ from core import unpackerjs
 def test_video_exists( page_url ):
     logger.info("pelisalacarta.gamovideo test_video_exists(page_url='%s')" % page_url)
     
+    headers = [['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14']]
+    data = scrapertools.cache_page( page_url , headers=headers )
+    
+    if "is no longer available" in data:
+        return False,"El vídeo ha sido borrado"
+
     return True,""
 
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):

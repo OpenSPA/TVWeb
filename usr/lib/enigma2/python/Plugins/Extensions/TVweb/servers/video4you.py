@@ -63,8 +63,8 @@ def find_videos(data):
     encontrados.add("http://video4you.me/embed-tos.html")
     devuelve = []
 
-    #http://video4you.me/z3nnqbspjyne
-    patronvideos  = 'video4you.me/([a-z0-9A-Z]+)'
+    #http://video4you.me/embed-z3nnqbspjyne
+    patronvideos  = 'video4you.me/embed-([a-z0-9A-Z]+)'
     logger.info("[video4you.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
@@ -78,7 +78,8 @@ def find_videos(data):
         else:
             logger.info("  url duplicada="+url)
 
-    patronvideos  = 'video4you.me/embed-([a-z0-9A-Z]+)'
+    #http://video4you.me/z3nnqbspjyne
+    patronvideos  = 'video4you.me/([a-z0-9A-Z]+)'
     logger.info("[video4you.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 

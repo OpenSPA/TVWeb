@@ -20,8 +20,8 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     data = scrapertools.cache_page(page_url)
 
     # Esquema normal
-    bloque = scrapertools.get_match(data,'playlist.*?sources(.*?)\]')
-    patron = "file\s*\:\s*'([^']+)'"
+    bloque = scrapertools.get_match(data,'sources(.*?)\]')
+    patron = '"file"\s*\:\s*"([^"]+)"'
     matches = re.compile(patron,re.DOTALL).findall(bloque)
     scrapertools.printMatches(matches)
 

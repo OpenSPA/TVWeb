@@ -16,20 +16,30 @@ from core import config
 def get_video_url( page_url , premium = False , user="" , password="" , video_password="" ):
     logger.info("[videoweed.py] get_video_url(page_url='%s')" % page_url)
 
-    data = scrapertools.cache_page(page_url)
-    patron = 'flashvars.file="(.*?)";'
-    matches = re.compile(patron).findall(data)
-    for match in matches:
-        logger.info("File = "+match)
-    flashvarsfile = match
-    patron = 'flashvars.filekey="(.*?)";'
-    matches = re.compile(patron).findall(data)
-    for match in matches:
-        logger.info("Key = "+match)
-    flashvarsfilekey = match
-    post="key="+flashvarsfilekey+"&user=undefined&codes=1&pass=undefined&file="+flashvarsfile
-    url = "http://www.videoweed.es/api/player.api.php?"+post
-    data = scrapertools.cache_page(url, post=post)
+    headers = []
+    headers.append( [ "User-Agent" , "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36" ] )
+    headers.append( [ "Accept-Encoding","gzip,deflate,sdch" ] )
+    data = scrapertools.cache_page(page_url,headers=headers)
+    logger.info("data="+data)
+
+    file_parameter = scrapertools.find_single_match(data,'flashvars\.file="([^"]+)"')
+    logger.info("file_parameter="+file_parameter)
+
+    filekey_parameter = scrapertools.find_single_match(data,'flashvars.filekey\="([^"]+)"')
+    logger.info("filekey_parameter="+filekey_parameter)
+    if filekey_parameter=="":
+        filekey_parameter = scrapertools.find_single_match(data,'fkz="([^"]+)"')
+        logger.info("filekey_parameter="+filekey_parameter)
+    #88%2E0%2E189%2E203%2Dd3cb0515a1ed66e5b297da999ed23b42%2D
+    filekey_parameter = filekey_parameter.replace(".","%2E")
+    filekey_parameter = filekey_parameter.replace("-","%2D")
+    logger.info("filekey_parameter="+filekey_parameter)
+
+    # http://www.videoweed.es/api/player.api.php?cid=undefined&cid2=undefined&file=31f8c26a80d23&cid3=undefined&key=88%2E0%2E189%2E203%2Dd3cb0515a1ed66e5b297da999ed23b42%2D&numOfErrors=0&user=undefined&pass=undefined 
+    parameters="cid=undefined&cid2=undefined&file="+file_parameter+"&cid3=undefined&key="+filekey_parameter+"&numOfErrors=0&user=undefined&pass=undefined"
+    url = "http://www.videoweed.es/api/player.api.php?"+parameters
+    headers.append(["Referer",page_url])
+    data = scrapertools.cache_page(url,headers=headers)
     logger.info(data)
     patron = 'url=(.*?)&title='
     matches = re.compile(patron).findall(data)

@@ -35,7 +35,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     for device,url in matches:
 
         if url not in encontrados:
-            video_urls.append( [ device+" [acbtv]" , url ] )
+            video_urls.append( [ "para "+device+" [acbtv]" , url ] )
             encontrados.add(url)
 
     patron = '"([^"]+)"'
@@ -44,7 +44,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     for url in matches:
 
         if url not in encontrados:
-            video_urls.append( [ "WEB [acbtv]" , url ] )
+            video_urls.append( [ "para Web [acbtv]" , url ] )
             encontrados.add(url)
 
     for video_url in video_urls:

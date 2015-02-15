@@ -12,26 +12,29 @@ from core import scrapertools
 from core import logger
 from core import config
 
+
 USER_AGENT="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:18.0) Gecko/20100101 Firefox/18.0"
 
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
     logger.info("[rapidvideo.py] url="+page_url)
     video_urls=[]
+    from lib import mechanize
+    br = mechanize.Browser()
+    br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
+    br.set_handle_robots(False)
+    res = br.open(page_url)
+    print res.read()
+    for form in br.forms():
+        br.form = form    
+    res = br.submit(name='imhuman')
+    page = res.read()
+    page = page.split('mp4|')
+    idLink = page[1].split('|')
+    ip2 = idLink[2]
+    ip3 = idLink[3]
 
-    data = scrapertools.cache_page(page_url)
-    data = scrapertools.get_match(data,'<div style="text-align:center; font-family: arial; font-size:11px; line-height:20px; border-bottom:1px solid #333; color:#FFF;">Quality<br/></div>(.*?)</div></div>')
-
-    patron  = "<div.*?jw_set\('([^']+)'[^>]+>(.*?)<br/></div>"
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    scrapertools.printMatches(matches)
-    if len(matches)==0: return []
-
-    for url,quality in matches:
-        video_urls.append( [ scrapertools.get_filename_from_url(url)[-4:]+" ["+scrapertools.htmlclean(quality).strip()+"][rapidvideo]",url+"?start=0"] )
-
-    for video_url in video_urls:
-        logger.info("[rapidvideo.py] %s - %s" % (video_url[0],video_url[1]))
-
+    video_urls.append(["[rapidvideo]","http://50.7."+ip3+"."+ip2+":8777/"+idLink[0]+"/v.mp4"])
+    
     return video_urls
 
 # Encuentra vídeos de este servidor en el texto pasado
@@ -39,32 +42,21 @@ def find_videos(text):
     encontrados = set()
     devuelve = []
             
-    # http://www.rapidvideo.com/embed/sy6wen17
-    patronvideos  = 'rapidvideo.com/embed/([A-Za-z0-9]+)'
-    logger.info("[rapidvideo.py] find_videos #"+patronvideos+"#")
-    matches = re.compile(patronvideos,re.DOTALL).findall(text)
-
-    for match in matches:
-        titulo = "[rapidvideo]"
-        url = "http://www.rapidvideo.com/view/"+match
-        if url not in encontrados:
-            logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'rapidvideo' ] )
-            encontrados.add(url)
-        else:
-            logger.info("  url duplicada="+url)
-
     #http://www.rapidvideo.com/view/YK7A0L7FU3A
-    patronvideos  = 'rapidvideo.com/view/([A-Za-z0-9]+)'
+    patronvideos  = 'rapidvideo.org/([A-Za-z0-9]+)/'
     logger.info("[rapidvideo.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(text)
 
     for match in matches:
         titulo = "[rapidvideo]"
-        url = "http://www.rapidvideo.com/view/"+match
+        url = "http://www.rapidvideo.org/"+match
+        d = scrapertools.cache_page(url)
+        ma = scrapertools.find_single_match(d,'"fname" value="([^<]+)"')
+        ma=titulo+" "+ma
         if url not in encontrados:
             logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'rapidvideo' ] )
+            devuelve.append( [ ma , url , 'rapidvideo' ] )
+
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)

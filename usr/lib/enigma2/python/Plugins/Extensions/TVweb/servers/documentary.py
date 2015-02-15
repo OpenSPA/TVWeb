@@ -52,7 +52,7 @@ def find_videos(data):
     devuelve = []
 
     # <iframe src="http://documentary.es/2321-mundos-invisibles-1x02-mas-alla-de-nuestra-vision-720p?embed"
-    patronvideos  = 'documentary.es/([a-z0-9\-]+)'
+    patronvideos  = 'http://documentary.es/(\d+[a-z0-9\-]+)'
     logger.info("documentary find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 

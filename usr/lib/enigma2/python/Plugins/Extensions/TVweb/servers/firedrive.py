@@ -49,24 +49,19 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     logger.info("data="+data)
     
     # URL del descriptor
-    #url = scrapertools.find_single_match(data,"file\: '([^']+)'")
-    url = scrapertools.find_single_match(data,"file: loadURL\('([^']+)'")
+    url = scrapertools.find_single_match(data,"file\: loadURL\('([^']+)'")
     logger.info("url="+url)
 
-    # URL del vídeo
-    #media_url = scrapertools.get_header_from_response(url,header_to_get="location")
-    video_urls.append( [ "FLV(SD)" + " [firedrive]",url ] )
-    url = url.replace('stream','hd')
-    video_urls.append( [ "FLV(HD)" + " [firedrive]",url ] )
-    url = url.replace('stream','key')
-    video_urls.append( [ "MP4" + " [firedrive]",url ] )
+    # URL del vÃ­deo
+    media_url = scrapertools.get_header_from_response(url,header_to_get="location")
+    video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:] + " [firedrive]",media_url ] )    
 
     for video_url in video_urls:
         logger.info("[firedrive.py] %s - %s" % (video_url[0],video_url[1]))
 
     return video_urls
 
-# Encuentra vídeos de este servidor en el texto pasado
+# Encuentra vÃ­deos de este servidor en el texto pasado
 def find_videos(text):
     encontrados = set()
     devuelve = []
@@ -180,6 +175,6 @@ def find_videos(text):
 
 def test():
 
-    video_urls = get_video_url("http://www.firedrive.com/embed/E89565C3A0C6183E")
+    video_urls = get_video_url("http://www.firedrive.com/embed/C31F4FD09113E884")
 
     return len(video_urls)>0

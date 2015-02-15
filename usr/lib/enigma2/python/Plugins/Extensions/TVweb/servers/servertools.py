@@ -23,7 +23,7 @@ FREE_SERVERS.extend(['jumbofiles','nowvideo','streamcloud', 'zinwa', 'dailymotio
 FREE_SERVERS.extend(['vureel','nosvideo','videopremium','movreel','flashx','upafile'])
 FREE_SERVERS.extend(['fileflyer','playedto','tunepk','powvideo','videomega','mega','vidspot','netutv','rutube'])
 FREE_SERVERS.extend(['videozed','documentary','hugefiles', 'firedrive','videott','tumitv','gamovideo'])
-FREE_SERVERS.extend(['torrent','video4you','mailru'])
+FREE_SERVERS.extend(['torrent','video4you','mailru','streaminto','backin','akstream', 'speedvideo', 'junkyvideo', 'rapidvideo'])
 
 # Lista de TODOS los servidores que funcionan con cuenta premium individual
 PREMIUM_SERVERS = ['uploadedto','nowvideo']
@@ -117,8 +117,12 @@ def findvideos(data):
     # Ejecuta el findvideos en cada servidor
     for serverid in ALL_SERVERS:
         try:
-            exec "from servers import "+serverid
-            exec "devuelve.extend("+serverid+".find_videos(data))"
+            # Sustituye el código por otro "Plex compatible"
+            #exec "from servers import "+serverid
+            #exec "devuelve.extend("+serverid+".find_videos(data))"
+            servers_module = __import__("servers."+serverid)
+            server_module = getattr(servers_module,serverid)
+            devuelve.extend( server_module.find_videos(data) )
         except ImportError:
             logger.info("No existe conector para "+serverid)
         except:
@@ -133,6 +137,21 @@ def findvideos(data):
                     logger.error(line_split)
 
     return devuelve
+
+def get_video_urls(server,url):
+    '''
+    servers_module = __import__("servers."+server)
+    server_module = getattr(servers_module,server)
+    return server_module.get_video_url( page_url=url)
+    '''
+
+    video_urls,puede,motivo = resolve_video_urls_for_playing(server,url)
+    return video_urls
+
+def get_channel_module(channel_name):
+    channels_module = __import__("channels."+channel_name)
+    channel_module = getattr(channels_module,channel_name)
+    return channel_module
 
 def get_server_from_url(url):
     encontrado = findvideos(url)
@@ -180,7 +199,11 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
                 progreso = xbmcgui.DialogProgress()
                 progreso.create( "pelisalacarta" , "Conectando con "+server)
 
-            exec "from servers import "+server+" as server_connector"
+            # Sustituye el código por otro "Plex compatible"
+            #exec "from servers import "+server+" as server_connector"
+            servers_module = __import__("servers."+server)
+            server_connector = getattr(servers_module,server)
+
             logger.info("[servertools.py] servidor de "+server+" importado")
             if muestra_dialogo:
                 progreso.update( 20 , "Conectando con "+server)
@@ -224,7 +247,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
                 if muestra_dialogo:
                     progreso.update( 40 , "Conectando con Filenium")
     
-                exec "from servers import filenium as gen_conector"
+                from servers import filenium as gen_conector
                 
                 video_gen = gen_conector.get_video_url( page_url=url , premium=(config.get_setting("fileniumpremium")=="true") , user=config.get_setting("fileniumuser") , password=config.get_setting("fileniumpassword"), video_password=video_password )
                 extension = gen_conector.get_file_extension(video_gen)
@@ -238,7 +261,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
                 if muestra_dialogo:
                     progreso.update( 60 , "Conectando con Real-Debrid")
 
-                exec "from servers import realdebrid as gen_conector"
+                from servers import realdebrid as gen_conector
                 video_gen = gen_conector.get_video_url( page_url=url , premium=(config.get_setting("realdebridpremium")=="true") , user=config.get_setting("realdebriduser") , password=config.get_setting("realdebridpassword"), video_password=video_password )
                 logger.info("[xbmctools.py] realdebrid url="+video_gen)
                 if not "REAL-DEBRID" in video_gen:
@@ -256,7 +279,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
                 if muestra_dialogo:
                     progreso.update( 80 , "Conectando con All-Debrid")
 
-                exec "from servers import alldebrid as gen_conector"
+                from servers import alldebrid as gen_conector
                 video_gen = gen_conector.get_video_url( page_url=url , premium=(config.get_setting("alldebridpremium")=="true") , user=config.get_setting("alldebriduser") , password=config.get_setting("alldebridpassword"), video_password=video_password )
                 logger.info("[xbmctools.py] alldebrid url="+video_gen)
                 if video_gen.startswith("http"):

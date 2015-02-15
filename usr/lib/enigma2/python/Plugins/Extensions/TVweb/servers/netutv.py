@@ -79,6 +79,7 @@ def find_videos(data):
 
 def test():
 
-    video_urls = get_video_url("http://netu.tv/watch_video.php?v=82U4BRSOB4UU")
+    #http://www.peliculasid.net/player/netu.php?id=NA44292KD53O
+    video_urls = get_video_url("http://netu.tv/watch_video.php?v=NA44292KD53O")
 
     return len(video_urls)>0

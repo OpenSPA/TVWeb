@@ -24,14 +24,11 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     logger.info("[rutube.py] url="+page_url)
     video_urls = []
 
-    try:
-        code = scrapertools.get_match(page_url,"http://rutube.ru/video/embed/(\d+)")
-    except:
-        return []
+    code = scrapertools.get_match(page_url,"http://rutube.ru/video/embed/(\d+)")
     logger.info("code="+code)
 
-    #http://rutube.ru/api/play/trackinfo/6577213/?format=json&referer=&signed_referer=&p=
-    url = "http://rutube.ru/api/play/trackinfo/"+code+"/?format=json&referer=&signed_referer=&p="
+    #http://rutube.ru/play/embed/6481197?skinColor=22547a&sTitle=false&sAuthor=false
+    url = "http://rutube.ru/play/embed/"+code+"?skinColor=22547a&sTitle=false&sAuthor=false"
     data = scrapertools.cache_page( url )
     logger.info("data="+data)
 

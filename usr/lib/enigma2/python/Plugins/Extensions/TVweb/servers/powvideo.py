@@ -80,6 +80,21 @@ def find_videos(data):
     encontrados = set()
     devuelve = []
 
+    # http://powvideo.net/embed-sbb9ptsfqca2
+    patronvideos  = 'powvideo.net/embed-([a-z0-9]+)'
+    logger.info("pelisalacarta.powvideo find_videos #"+patronvideos+"#")
+    matches = re.compile(patronvideos,re.DOTALL).findall(data)
+
+    for match in matches:
+        titulo = "[powvideo]"
+        url = "http://powvideo.net/"+match
+        if url not in encontrados:
+            logger.info("  url="+url)
+            devuelve.append( [ titulo , url , 'powvideo' ] )
+            encontrados.add(url)
+        else:
+            logger.info("  url duplicada="+url)
+
     # http://powvideo.net/auoxxtvyoy
     patronvideos  = 'powvideo.net/([a-z0-9]+)'
     logger.info("pelisalacarta.powvideo find_videos #"+patronvideos+"#")
@@ -89,21 +104,6 @@ def find_videos(data):
         titulo = "[powvideo]"
         url = "http://powvideo.net/"+match
         if url not in encontrados and match!="embed":
-            logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'powvideo' ] )
-            encontrados.add(url)
-        else:
-            logger.info("  url duplicada="+url)
-            
-    # http://powvideo.net/embed-sbb9ptsfqca2-588x360.html
-    patronvideos  = 'powvideo.net/embed-([a-z0-9]+)'
-    logger.info("pelisalacarta.powvideo find_videos #"+patronvideos+"#")
-    matches = re.compile(patronvideos,re.DOTALL).findall(data)
-
-    for match in matches:
-        titulo = "[powvideo]"
-        url = "http://powvideo.net/"+match
-        if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'powvideo' ] )
             encontrados.add(url)
