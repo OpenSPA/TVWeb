@@ -164,8 +164,10 @@ def capitulos(item):
     return itemlist
 
 def play(item):
-    data = scrapertools.cache_page("http://web.pydowntv.com/api?url="+item.url)
-    url = scrapertools.get_match(data,'"url_video"\: \["([^"]+)"\]')
+    #data = scrapertools.cache_page("http://web.pydowntv.com/api?url="+item.url)
+    #url = scrapertools.get_match(data,'"url_video"\: \["([^"]+)"\]')
+    data = scrapertools.cache_page("http://www.descargavideos.tv/?web="+item.url)
+    url = scrapertools.get_match(data,'linkHtml.*?\'(.*?)\',')
     itemlist=[]
     itemlist.append( Item(channel=item.channel, action="play", title=item.title, url=url, thumbnail=item.thumbnail, plot=item.plot, category=item.category, show=item.show, folder=False ))
     return itemlist
