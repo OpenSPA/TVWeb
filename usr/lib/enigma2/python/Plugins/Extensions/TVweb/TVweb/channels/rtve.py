@@ -418,13 +418,15 @@ def play(item):
 		if x.isdigit():
 			clave = clave + x
 		else:
-			continue
+			break
     except:
 	clave = ""
 
     try:
     	intermediate_cyphertext = first_pass(cyphertext)    ## primer paso: extrae el texto intermediario
     	url = second_pass (clave, intermediate_cyphertext)  ## segundo paso: decodifica la url
+	if url.endswith("mp4"):
+		url = url.replace("http://flash1.akamaihd.net.rtve.es/resources/TE_NGVA","http://mvod1.akcdn.rtve.es/resources/TE_GLUCA")
     except:
 	url= ""
     #################################################################################
