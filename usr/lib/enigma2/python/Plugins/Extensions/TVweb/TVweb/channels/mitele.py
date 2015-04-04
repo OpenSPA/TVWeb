@@ -155,21 +155,12 @@ def capitulos(item):
         scrapedplot = capitulo['post_content'].replace("<!--more-->","")
         scrapedplot = scrapertools.htmlclean(scrapedplot)
 
-        itemlist.append( Item(channel=item.channel, action="play", title=scrapedtitle, url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot, category=item.category, show=item.show, folder=False ))
+        itemlist.append( Item(channel=item.channel, action="play", server="mitele", title=scrapedtitle, url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot, category=item.category, show=item.show, folder=False ))
     
     if capitulos_json['hasNext']:
         item.extra = str(int(item.extra)+1)
         itemlist.extend( capitulos(item) )
     
-    return itemlist
-
-def play(item):
-    #data = scrapertools.cache_page("http://web.pydowntv.com/api?url="+item.url)
-    #url = scrapertools.get_match(data,'"url_video"\: \["([^"]+)"\]')
-    data = scrapertools.cache_page("http://www.descargavideos.tv/?web="+item.url)
-    url = scrapertools.get_match(data,'linkHtml.*?\'(.*?)\',')
-    itemlist=[]
-    itemlist.append( Item(channel=item.channel, action="play", title=item.title, url=url, thumbnail=item.thumbnail, plot=item.plot, category=item.category, show=item.show, folder=False ))
     return itemlist
 
 def capitulo(item):
@@ -290,7 +281,7 @@ def directo (item):
                     scrapedtitle = matches2[0]
                 scrapedthumbnail = match[1]
                 scrapedplot = ""
-                itemlist.append( Item(channel=__channel__, action="playdirecto" , title=scrapedtitle,  fulltitle=scrapedtitle, url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot, show=scrapedtitle))
+                itemlist.append( Item(channel=__channel__, action="playdirecto" , server="mitele", title=scrapedtitle,  fulltitle=scrapedtitle, url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot, show=scrapedtitle))
     else:
         return []
     return itemlist
@@ -381,7 +372,7 @@ def playvideo(item, data):
             matches = re.compile(patron,re.DOTALL).findall(data)
             file = unescape(matches[0])
         
-        itemlist.append( Item(channel=__channel__, action="play" , title="play video", url=file, thumbnail=item.thumbnail, plot="", server="directo", extra="", category=item.category, fanart=item.thumbnail, folder=False))
+        itemlist.append( Item(channel=__channel__, action="play" , server="mitele", title="play video", url=file, thumbnail=item.thumbnail, plot="", extra="", category=item.category, fanart=item.thumbnail, folder=False))
     except:
         import sys
         for line in sys.exc_info():
@@ -431,7 +422,7 @@ def playrtmptoken2(item, data):
     
         xbmcrtmp = rtmp0 + " playpath=" + file+rtmp1 + " swfUrl=\"http://static1.tele-cinco.net/comun/swf/playerMitele.swf\" pageUrl=\"" + item.url + "\" live=true"
         
-        itemlist.append( Item(channel=__channel__, action="play" , title="play rtmp", url=xbmcrtmp, thumbnail=item.thumbnail, plot="", server="directo", extra="", category=item.category, fanart=item.thumbnail, folder=False))
+        itemlist.append( Item(channel=__channel__, action="play" , server="mitele", title="play rtmp", url=xbmcrtmp, thumbnail=item.thumbnail, plot="", extra="", category=item.category, fanart=item.thumbnail, folder=False))
     except:
         import sys
         for line in sys.exc_info():
@@ -460,7 +451,7 @@ def playrtmptoken3(item, data):
     
         xbmcrtmp = stream + " playpath=" + file + " swfUrl=\"http://static1.tele-cinco.net/comun/swf/playerMitele.swf\" pageUrl=\"" + item.url + "\" live=true"
         
-        itemlist.append( Item(channel=__channel__, action="play" , title="play rtmp", url=xbmcrtmp, thumbnail=item.thumbnail, plot="", server="directo", extra="", category=item.category, fanart=item.thumbnail, folder=False))
+        itemlist.append( Item(channel=__channel__, action="play" , server="mitele", title="play rtmp", url=xbmcrtmp, thumbnail=item.thumbnail, plot="", extra="", category=item.category, fanart=item.thumbnail, folder=False))
     except:
         import sys
         for line in sys.exc_info():
