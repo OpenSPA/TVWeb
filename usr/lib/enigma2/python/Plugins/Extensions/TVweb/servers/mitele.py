@@ -27,10 +27,15 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     #Se obtiene el id para la busqueda de url tokenizada
     xml_info = urllib2.urlopen(url_info).read()
-    id_token = xml_info[xml_info.find('<link start="0" end="0">') + 24:]
-    id_token = id_token[:id_token.find('</link>')]
-    logger.info("[mitele.py] id_token=" + id_token )
-	
+    id_token=re.findall(re.compile(ur'<link.*?="0".*?>([^<]+)'),xml_info)[0]
+    '''
+    EJEMPLO: 'http://www.mitele.es/programas-tv/sopa-de-gansos/temporada-1/sopa-de-gansos-instant-6/'
+    <link end="0" start="0">
+    /nogeo/ms/QQ/msQQlXWAy8yCPNjFJX6VA1/SqHWM8PTK4833tKHuC4az.1100.mp4
+    </link>
+    '''
+    logger.info("[mitele.py] id_token=" + id_token );
+
     #Se obtiene el elemento json con la url del video
     json_url = urllib2.urlopen('http://token.mitele.es/?id=' + id_token).read()
     url = json_url[json_url.find('"tokenizedUrl":"') + 16:]
