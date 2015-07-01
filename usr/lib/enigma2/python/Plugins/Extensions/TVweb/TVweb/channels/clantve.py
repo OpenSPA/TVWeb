@@ -157,6 +157,6 @@ def play(item):
     url=urlVideo
     logger.info("url="+url)
 
-    itemlist.append( Item(channel="rtve", title=title , action="play" , url=url, thumbnail=thumbnail, fanart=thumbnail, show=item.show , plot=plot ,folder=False) )
+    itemlist.append( Item(channel="rtve", title=item.title , action="play" , url=url, thumbnail=item.thumbnail, fanart=item.thumbnail, show=item.show , plot=item.plot ,folder=False) )
 
     return itemlist
