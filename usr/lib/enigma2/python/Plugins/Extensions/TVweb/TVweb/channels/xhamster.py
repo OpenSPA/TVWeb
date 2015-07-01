@@ -151,7 +151,7 @@ def play(item):
     data = scrapertools.cachePage(item.url)
     #logger.debug(data)
 
-    url = scrapertools.get_match(data,'<video poster="[^"]+" controls type=\'video/mp4\' file="([^"]+)"')
+    url = scrapertools.get_match(data,'<video poster="[^"]+" type=\'video/mp4\' file="([^"]+)"')
     logger.debug("url="+url)
     itemlist.append( Item(channel=__channel__, action="play" , title=item.title, fulltitle=item.fulltitle , url=url, thumbnail=item.thumbnail, plot=item.plot, show=item.title, server="directo", folder=False))
     return itemlist
