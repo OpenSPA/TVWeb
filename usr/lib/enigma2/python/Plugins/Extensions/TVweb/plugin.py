@@ -68,7 +68,7 @@ config.plugins.TVweb.imagecache = ConfigEnableDisable(default=True)
 config.plugins.TVweb.showadultcontent = ConfigYesNo(default=False)
 config.plugins.TVweb.showsecretcontent = ConfigYesNo(default=False)
 config.plugins.TVweb.downloadimages = ConfigYesNo(default=True)
-config.plugins.TVweb.version = NoSave(ConfigText(default="1.0.16"))
+config.plugins.TVweb.version = NoSave(ConfigText(default="1.0.17"))
 config.plugins.TVweb.resolution = ConfigSelection(default="360p", choices = ["240p", "360p", "480p", "720p", "1080p"])
 config.plugins.TVweb.freemem = ConfigInteger(default=10, limits=(1, 60))
 
@@ -2090,11 +2090,11 @@ class PlayMovie(Screen):
         self["key_green"] = Button(_("Play now"))
         self["key_red"] = Button(_("Cancel"))
 
-        self["label_filename"] = StaticText("File: %s" % (self.filename))
-        self["label_destination"] = StaticText("Destination: %s" % (config.plugins.TVweb.storagepath.value))
-        self["label_progress"] = StaticText("Progress: N/A")
-        self["label_speed"] = StaticText("Speed: N/A")
-        self["label_timeleft"] = StaticText("Time left: N/A")
+        self["label_filename"] = StaticText(_("File: %s") % (self.filename))
+        self["label_destination"] = StaticText(_("Destination: %s") % (config.plugins.TVweb.storagepath.value))
+        self["label_progress"] = StaticText(_("Progress: N/A"))
+        self["label_speed"] = StaticText(_("Speed: N/A"))
+        self["label_timeleft"] = StaticText(_("Time left: N/A"))
 
         self["actions"] = ActionMap(["OkCancelActions", "ColorActions"],
         {
@@ -2152,9 +2152,9 @@ class PlayMovie(Screen):
 
         self.lastlocalsize = self.localsize
 
-        self["label_speed"].setText("Speed: " + str(transferspeed) + " KBit/s")
-        self["label_progress"].setText("Progress: " + str(round(((self.localsize / 1024.0) / 1024.0), 2)) + "MB of " + str(round(((self.filesize / 1024.0) / 1024.0), 2)) + "MB (" + str(self.progressperc) + "%)")
-        self["label_timeleft"].setText("Time left: " + str(timeleft) + " Minutes")
+        self["label_speed"].setText(_("Speed: ") + str(transferspeed) + " KBit/s")
+        self["label_progress"].setText(_("Progress: ") + str(round(((self.localsize / 1024.0) / 1024.0), 2)) + _("MB of ") + str(round(((self.filesize / 1024.0) / 1024.0), 2)) + "MB (" + str(self.progressperc) + "%)")
+        self["label_timeleft"].setText(_("Time left: ") + str(timeleft) + _(" Minutes"))
         self.StatusTimer.start(5000, True)
 
 
@@ -2222,7 +2222,7 @@ class PlayMovie(Screen):
 
     def copyfinished(self,retval):
         self.streamactive = False
-        self["label_progress"].setText("Progress: 100%")
+        self["label_progress"].setText(_("Progress: 100%"))
         self["activityslider"].setValue(100)
 	self.tfreemem.stop()
         self.playfile()
