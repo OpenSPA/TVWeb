@@ -18,35 +18,33 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     video_urls = []
 
-    # Lee el player
+    ## Carga la página
+    ## Nueva url al final de los datos
     data = scrapertools.cache_page(page_url)
-    logger.info("data="+data)
 
-    # Lee los metadatos
-    json_url = scrapertools.get_match(data,'"metadataUrl"."([^"]+)"')
-    logger.info("json_url="+json_url)
+    ## Carga los nuevos datos de la nueva url
+    #<a href="http://r.mail.ru/clb15944866/my.mail.ru/mail/gottsu04/video/_myvideo/709.html?from=watchonmailru" class="b-player__button" target="_blank">Watch video</a>
+    url = scrapertools.get_match(data,'<a href="([^"]+)" class="b-player__button" target="_blank">Watch video</a>')
+    data = scrapertools.cache_page(url)
 
-    json_data = scrapertools.cache_page(json_url)
-    logger.info("json_data="+json_data)
+    ## API ##
+    ## Se necesita la id del vídeo para formar la url de la API
+    #<link rel="image_src" href="http://filed9-14.my.mail.ru/pic?url=http%3A%2F%2Fvideoapi.my.mail.ru%2Ffile%2Fsc03%2F3450622080461046469&mw=&mh=&sig=5d50e747aa59107d805263043e3efe64" />
+    id_api_video = scrapertools.get_match(data,'sc\d+%2F([^&]+)&mw')
+    url = "http://videoapi.my.mail.ru/videos/" + id_api_video + ".json"
+    ## Carga los datos y los headers
+    data, headers = scrapertools.read_body_and_headers(url)
+    data = jsontools.load_json( data )
 
-    json_object = jsontools.load_json(json_data)
-    logger.info("json_object="+repr(json_object))
+    ## La cookie video_key necesaria para poder visonar el video
+    for cookie in headers:
+        if 'set-cookie' in cookie: break
+    cookie_video_key = scrapertools.get_match(cookie[1], '(video_key=[a-f0-9]+)')
 
-    # Descarga el poster para conseguir la cookie
-    poster_url = json_object["meta"]["poster"]
-    logger.info("poster_url="+poster_url)
+    ## Formar url del video + cookie video_key
+    media_url = data['videos'][0]['url'] + "|Cookie=" + cookie_video_key
 
-    poster_location = scrapertools.get_header_from_response(poster_url,header_to_get="location")
-    logger.info("poster_location="+poster_location)
-
-    #http://cdn29.my.mail.ru/sc04/52395649.jpg?sign=570be2ff6b48fc78868a11e23a5fbc90533391da&slave[]=s%3Ahttp%3A%2F%2F127.0.0.1%3A5010%2F52395649-sc04.jpg&p=f&video_key=c039fe28e1d0747b05297d9329c6a6496442e824&expire_at=1419886800&touch=1419721905
-    video_key = scrapertools.get_match(poster_location,'video_key=([^\&]+)\&')
-    logger.info("video_key="+video_key)
-
-    for video in json_object["videos"]:
-        video_quality = video["key"]
-        media_url = video["url"]+"|Cookie=video_key="+video_key
-        video_urls.append( [ video_quality + " " + scrapertools.get_filename_from_url(media_url)[-4:] + " [mail.ru]",media_url ] )
+    video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:] + " [mail.ru]", media_url ] )
 
     for video_url in video_urls:
         logger.info("[mail.ru] %s - %s" % (video_url[0],video_url[1]))
@@ -58,7 +56,7 @@ def find_videos(data):
     logger.info("[mailru.py] find_videos") #(data='%s')" % (data))
     encontrados = set()
     devuelve = []
-    
+
     # http://videoapi.my.mail.ru/videos/embed/mail/bartos1100/_myvideo/1136.html
     patronvideos  = 'videoapi.my.mail.ru/videos/embed/mail/([a-zA-Z0-9]+)/_myvideo/(\d+).html'
     logger.info("[mailru.py] find_videos #"+patronvideos+"#")
@@ -73,29 +71,5 @@ def find_videos(data):
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)
-
-    '''
-    titulo = "[mail.ru]"
-    if "http://api.video.mail.ru/videos/embed/" in data:
-        #http://api.video.mail.ru/videos/embed/gmail.com/un.usuario/2/2816.html
-        url = scrapertools.find_single_match(data,"(http.//api.video.mail.ru/videos/embed/.*?.html)")
-        url = url.replace("embed/","").replace(".html",".json")
-    else:
-        #http://videoapi.my.mail.ru/videos/embed/mail/bartos1100/_myvideo/1136.html
-        id_page_url = scrapertools.get_match(data,'/_myvideo/(\d+).html')
-        author_name = scrapertools.find_single_match(data,'/video/mail([^/]+)/')
-        if author_name=="":
-            author_name = scrapertools.find_single_match(data,'/videos/embed/mail/([^/]+)/')
-
-        #http://videoapi.my.mail.ru/videos/mail/bartos1100/_myvideo/1136.json
-        url = "http://videoapi.my.mail.ru/videos/mail/%s/_myvideo/%s.json" % (author_name,id_page_url)
-
-    if url not in encontrados:
-        logger.info("  url=%s" % (url))
-        devuelve.append( [ titulo , url , 'mailru' ] )
-        encontrados.add(url)
-    else:
-        logger.info("  url duplicada=%s" % (url))
-    '''
 
     return devuelve

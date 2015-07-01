@@ -6,8 +6,10 @@
 #------------------------------------------------------------
 #LvX Edited Patched
 import re,sys
+import urllib2
 
 from core import scrapertools
+#from core import jsontools
 from core import config
 from core import logger
 
@@ -23,20 +25,16 @@ FREE_SERVERS.extend(['jumbofiles','nowvideo','streamcloud', 'zinwa', 'dailymotio
 FREE_SERVERS.extend(['vureel','nosvideo','videopremium','movreel','flashx','upafile'])
 FREE_SERVERS.extend(['fileflyer','playedto','tunepk','powvideo','videomega','mega','vidspot','netutv','rutube'])
 FREE_SERVERS.extend(['videozed','documentary','hugefiles', 'firedrive','videott','tumitv','gamovideo'])
-FREE_SERVERS.extend(['torrent','video4you','mailru','streaminto','backin','akstream', 'speedvideo', 'junkyvideo', 'rapidvideo'])
+FREE_SERVERS.extend(['torrent','video4you','mailru','streaminto','backin','akstream', 'speedvideo', 'junkyvideo', 'rapidvideo', 'realvid', 'cloudzilla', 'fakingstv'])
+FREE_SERVERS.extend(['meuvideos', 'cumlouder','v4y','streamable','videostoring','youwatch'])
 
 # Lista de TODOS los servidores que funcionan con cuenta premium individual
 PREMIUM_SERVERS = ['uploadedto','nowvideo']
 
 # Lista de TODOS los servidores soportados por Filenium
+#FILENIUM_SERVERS = jsontools.load_json(urllib2.urlopen('http://filenium.com/domainsxbmc'))
 FILENIUM_SERVERS = []
-FILENIUM_SERVERS.extend(['linkto','uploadedto','gigasize','youtube','filepost','hotfile','rapidshare','turbobit','mediafire','bitshare','depositfiles'])
-FILENIUM_SERVERS.extend(['oron','allmyvideos','novamov','videoweed','movshare','letitbit','shareonline','shareflare','rapidgator'])
-FILENIUM_SERVERS.extend(['filefactory','netload','nowdownload','filevelocity','freakshare','userporn','divxstage','putlocker','extabit','vidxden'])
-FILENIUM_SERVERS.extend(['vimeo','dailymotion','jumbofiles','zippyshare','glumbouploads','bayfiles','twoshared', 'fourshared','crocko','fiberupload'])
-FILENIUM_SERVERS.extend(['ifile','megashares','slingfile','uploading','vipfile','filenium','movreel','one80upload','flashx','nowvideo','vk','moevideos'])
-FILENIUM_SERVERS.extend(['cloudzer','filecloudio','luckyshare','lumfile','playedto','ryushare','streamcloud','videozed','xenubox','filesmonster'])
-#wupload,fileserve
+FILENIUM_SERVERS.extend(["nitroflare","lolabits","1fichier","dl","dl","mega","allmyvideos","allmyvideos","cliphunter","dailymotion","divxstage","facebook","filefactory","filepost","filesmonster","firedrive","gigasize","justin","k2s","keep2share","keep2share","letitbit","mediafire","metacafe","mitele","moevideos","netload","nowvideo","nowvideo","nowvideo","oboom","played","pornhub","rapidgator","rg","shareflare","streamcloud","turbobit","uploadable","uploaded","uploaded","ul","userporn","videoweed","vidspot","vimeo","vk","xenubox","youngpornvideos","youtube","zippyshare","lix","safelinking","linkto","2shared","4shared","hugefiles","nowdownload","nowdownload","tusfiles","uploading","uptobox"]);
 
 # Lista de TODOS los servidores soportados por Real-Debrid
 REALDEBRID_SERVERS = ['one80upload','tenupload','onefichier','onehostclick','twoshared','fourfastfile','fourshared','abc','asfile','badongo','bayfiles','bitshare','cbscom','cloudzer','cramit','crocko','cwtv','dailymotion','dateito',
@@ -56,8 +54,27 @@ ALLDEBRID_SERVERS = ['one80upload','onefichier','twoshared','fourfastfile','four
                    'userporn','vimeo','vipfile','youporn','youtube','yunfile','zippyshare','lumfile','ultramegabit','filesmonster']
     
 # Lista completa de todos los servidores soportados por pelisalacarta, usada para buscar patrones
-ALL_SERVERS = list( set(FREE_SERVERS) | set(FILENIUM_SERVERS) | set(REALDEBRID_SERVERS) | set(ALLDEBRID_SERVERS) )
-ALL_SERVERS.sort()
+#ALL_SERVERS = list( set(FREE_SERVERS) | set(FILENIUM_SERVERS) | set(REALDEBRID_SERVERS) | set(ALLDEBRID_SERVERS) )
+#ALL_SERVERS.sort()
+
+# Lista de servidores activos en funcion de: Configuracion/Cuentas
+if config.get_setting("hidepremium")=="false":
+    ENABLED_SERVERS= list( set(FREE_SERVERS) | set(FILENIUM_SERVERS) | set(REALDEBRID_SERVERS) | set(ALLDEBRID_SERVERS) )
+else:
+    ENABLED_SERVERS= set(FREE_SERVERS)
+    if config.get_setting("uploadedtopremium")=="true":
+        ENABLED_SERVERS.add('uploadedto')
+    if config.get_setting("nowvideopremium")=="true":
+        ENABLED_SERVERS.add('nowvideo')
+    if config.get_setting("fileniumpremium")=="true":
+        ENABLED_SERVERS= ENABLED_SERVERS | set(FILENIUM_SERVERS)
+    if config.get_setting("realdebridpremium")=="true":
+        ENABLED_SERVERS= ENABLED_SERVERS | set(REALDEBRID_SERVERS)
+    if config.get_setting("alldebridpremium")=="true":
+        ENABLED_SERVERS= ENABLED_SERVERS | set(ALLDEBRID_SERVERS)
+    ENABLED_SERVERS= list (ENABLED_SERVERS)
+ENABLED_SERVERS.sort()
+
 
 # Función genérica para encontrar vídeos en una página
 def find_video_items(item=None, data=None, channel=""):
@@ -115,7 +132,8 @@ def findvideos(data):
     devuelve = []
 
     # Ejecuta el findvideos en cada servidor
-    for serverid in ALL_SERVERS:
+    #for serverid in ALL_SERVERS:
+    for serverid in ENABLED_SERVERS:
         try:
             # Sustituye el código por otro "Plex compatible"
             #exec "from servers import "+serverid
@@ -195,9 +213,8 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
         try:
             # Muestra un diálogo de progreso
             if muestra_dialogo:
-                import xbmcgui
-                progreso = xbmcgui.DialogProgress()
-                progreso.create( "pelisalacarta" , "Conectando con "+server)
+                from core import guitools
+                progreso = guitools.Dialog_Progress("pelisalacarta" , "Conectando con "+server)
 
             # Sustituye el código por otro "Plex compatible"
             #exec "from servers import "+server+" as server_connector"
@@ -206,7 +223,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
 
             logger.info("[servertools.py] servidor de "+server+" importado")
             if muestra_dialogo:
-                progreso.update( 20 , "Conectando con "+server)
+                progreso.Actualizar( 20 , "Conectando con "+server)
 
             # Si tiene una función para ver si el vídeo existe, lo comprueba ahora
             if hasattr(server_connector, 'test_video_exists'):
@@ -216,7 +233,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
                 # Si la funcion dice que no existe, fin
                 if not puedes:
                     logger.info("[servertools.py] test_video_exists dice que el video no existe")
-                    if muestra_dialogo: progreso.close()
+                    if muestra_dialogo: progreso.Cerrar()
                     return video_urls,puedes,motivo
                 else:
                     logger.info("[servertools.py] test_video_exists dice que el video SI existe")
@@ -228,7 +245,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
                 
                 # Si no se encuentran vídeos en modo free, es porque el vídeo no existe
                 if len(video_urls)==0:
-                    if muestra_dialogo: progreso.close()
+                    if muestra_dialogo: progreso.Cerrar()
                     return video_urls,False,"No se puede encontrar el vídeo en "+server
 
             # Obtiene enlaces premium si tienes cuenta en el server
@@ -237,7 +254,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
                 
                 # Si no se encuentran vídeos en modo premium directo, es porque el vídeo no existe
                 if len(video_urls)==0:
-                    if muestra_dialogo: progreso.close()
+                    if muestra_dialogo: progreso.Cerrar()
                     return video_urls,False,"No se puede encontrar el vídeo en "+server
     
             # Obtiene enlaces filenium si tienes cuenta
@@ -245,7 +262,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
     
                 # Muestra un diálogo de progreso
                 if muestra_dialogo:
-                    progreso.update( 40 , "Conectando con Filenium")
+                    progreso.Actualizar( 40 , "Conectando con Filenium")
     
                 from servers import filenium as gen_conector
                 
@@ -259,7 +276,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
     
                 # Muestra un diálogo de progreso
                 if muestra_dialogo:
-                    progreso.update( 60 , "Conectando con Real-Debrid")
+                    progreso.Actualizar( 60 , "Conectando con Real-Debrid")
 
                 from servers import realdebrid as gen_conector
                 video_gen = gen_conector.get_video_url( page_url=url , premium=(config.get_setting("realdebridpremium")=="true") , user=config.get_setting("realdebriduser") , password=config.get_setting("realdebridpassword"), video_password=video_password )
@@ -267,7 +284,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
                 if not "REAL-DEBRID" in video_gen:
                     video_urls.append( [ "."+video_gen.rsplit('.',1)[1]+" [realdebrid]", video_gen ] )
                 else:
-                    if muestra_dialogo: progreso.close()
+                    if muestra_dialogo: progreso.Cerrar()
                     # Si RealDebrid da error pero tienes un enlace válido, no te dice nada
                     if len(video_urls)==0:
                         return video_urls,False,video_gen
@@ -277,7 +294,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
     
                 # Muestra un diálogo de progreso
                 if muestra_dialogo:
-                    progreso.update( 80 , "Conectando con All-Debrid")
+                    progreso.Actualizar( 80 , "Conectando con All-Debrid")
 
                 from servers import alldebrid as gen_conector
                 video_gen = gen_conector.get_video_url( page_url=url , premium=(config.get_setting("alldebridpremium")=="true") , user=config.get_setting("alldebriduser") , password=config.get_setting("alldebridpassword"), video_password=video_password )
@@ -291,10 +308,10 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
 
             
             if muestra_dialogo:
-                progreso.update( 100 , "Proceso finalizado")
+                progreso.Actualizar( 100 , "Proceso finalizado")
 
             # Cierra el diálogo de progreso
-            if muestra_dialogo: progreso.close()
+            if muestra_dialogo: progreso.Cerrar()
 
             # Llegas hasta aquí y no tienes ningún enlace para ver, así que no vas a poder ver el vídeo
             if len(video_urls)==0:
@@ -314,7 +331,7 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
                 return video_urls,False,"Para ver un vídeo en "+server+" necesitas<br/>una cuenta en "+listapremium
 
         except:
-            if muestra_dialogo: progreso.close()
+            if muestra_dialogo: progreso.Cerrar()
             import traceback
             from pprint import pprint
             exc_type, exc_value, exc_tb = sys.exc_info()
@@ -327,3 +344,8 @@ def resolve_video_urls_for_playing(server,url,video_password="",muestra_dialogo=
             return video_urls,False,"Se ha producido un error en<br/>el conector con "+server
 
     return video_urls,True,""
+    
+def is_server_enabled (server):
+    server=scrapertools.find_single_match(server,'([^\.]+)')
+    return server in ENABLED_SERVERS
+  

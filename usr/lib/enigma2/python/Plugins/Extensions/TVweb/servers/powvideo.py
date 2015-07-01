@@ -22,20 +22,18 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     logger.info("pelisalacarta.powvideo get_video_url(page_url='%s')" % page_url)
 
     # Lo pide una vez
-    headers = [['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14']]
+    if not "embed" in page_url:
+      page_url = page_url.replace("http://powvideo.net/","http://powvideo.net/embed-") + "-640x360.html"
+      
+    headers = [['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14'],['Referer',page_url]]
+    page_url= page_url.replace("embed","iframe")
+    
     data = scrapertools.cache_page( page_url , headers=headers )
     #logger.info("data="+data)
     
+    #Quitado porque funciona mas rapido asi y no veo necesidad de esto:
+    '''
     try:
-        '''
-        <input type="hidden" name="op" value="download1">
-        <input type="hidden" name="usr_login" value="">
-        <input type="hidden" name="id" value="auoxxtvyquoy">
-        <input type="hidden" name="fname" value="Star.Trek.Into.Darkness.2013.HD.m720p.LAT.avi">
-        <input type="hidden" name="referer" value="">
-        <input type="hidden" name="hash" value="1624-83-46-1377796069-b5e6b8f9759d080a3667adad637f00ac">
-        <input type="submit" name="imhuman" value="Continue to Video" id="btn_download">
-        '''
         op = scrapertools.get_match(data,'<input type="hidden" name="op" value="(down[^"]+)"')
         usr_login = ""
         id = scrapertools.get_match(data,'<input type="hidden" name="id" value="([^"]+)"')
@@ -45,7 +43,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
         submitbutton = scrapertools.get_match(data,'<input type="submit" name="imhuman" value="([^"]+)"').replace(" ","+")
 
         import time
-        time.sleep(5)
+        time.sleep(30)
 
         # Lo pide una segunda vez, como si hubieras hecho click en el banner
         #op=download1&usr_login=&id=auoxxtvyquoy&fname=Star.Trek.Into.Darkness.2013.HD.m720p.LAT.avi&referer=&hash=1624-83-46-1377796019-c2b422f91da55d12737567a14ea3dffe&imhuman=Continue+to+Video
@@ -57,13 +55,10 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     except:
         import traceback
         traceback.print_exc()
-    
+    '''
     # Extrae la URL
-    logger.info("data="+data)
     data = scrapertools.find_single_match(data,"<script type='text/javascript'>(.*?)</script>")
-    logger.info("data="+data)
     data = jsunpack.unpack(data)
-    logger.info("data="+data)
     data = data.replace("\\","")
 
     media_url = scrapertools.find_single_match(data,"file:'([^']+)'")
