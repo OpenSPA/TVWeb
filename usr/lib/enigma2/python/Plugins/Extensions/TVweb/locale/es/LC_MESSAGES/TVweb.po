@@ -1,26 +1,187 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: TvWeb\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-15 11:30+0100\n"
-"PO-Revision-Date: 2012-08-15 11:30+0100\n"
-"Last-Translator: morser\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2015-06-30 23:05+0100\n"
+"Last-Translator: pe.tardo <pe.thardo@gmail.com>\n"
+"Language-Team: openspa <openspa.info>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-SearchPath-0: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb\n"
+"X-Poedit-SourceCharset: iso-8859-1\n"
+"X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: Spain\n"
+"X-Poedit-SearchPath-0: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/"
+"lib/enigma2/python/Plugins/Extensions/TVweb\n"
 
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:122
+msgid " Minutes"
+msgstr " Minutos"
+
+msgid "Bookmark"
+msgstr "Añadir a marcador"
+
+msgid "Bookmark added!"
+msgstr "Marcador añadido!"
+
+msgid "Bookmark selected category"
+msgstr "Añadir a marcadores esta categoria"
+
+msgid "Bookmark selected movie"
+msgstr "Añadir a marcadores esta película"
+
+msgid "Bookmarks"
+msgstr "Marcadores"
+
+msgid "Bookmarks from your favorite Movies"
+msgstr "Marcadores de tus pelis favoritas"
+
+msgid "Cache Folder:"
+msgstr "Carpeta de cache:"
+
+msgid "Cached Play"
+msgstr "Ver con cache"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Default Resolution:"
+msgstr "Resolución por defecto:"
+
+msgid "Delete selected bookmark"
+msgstr "Borrar marcador seleccionado"
+
+msgid "Destination: %s"
+msgstr "Destino: %s"
+
+msgid "Direct Play"
+msgstr "Ver video"
+
+msgid "Download Directory:"
+msgstr "Directorio de descargas:"
+
+msgid "Download Images?:"
+msgstr "Descargar imágenes?"
+
 msgid "Download Movie"
 msgstr "Descargar película"
 
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:209
-#, python-format
+msgid "Enter Search Term:"
+msgstr "Introduce el termino a buscar:"
+
+msgid "Enter pin code"
+msgstr "Introduce el pin"
+
+msgid ""
+"Error downloading file:\n"
+"%s"
+msgstr ""
+"Error descargando archivo:\n"
+"%s"
+
+msgid "File: %s"
+msgstr "Archivo: %s"
+
+msgid "In downloads, Memory free every (min):"
+msgstr "En las descargas, liberar memoria cada (min):"
+
+msgid "MB of "
+msgstr "MB de "
+
+msgid "No"
+msgstr "No"
+
+msgid "No Default Server configured in VLC Settings"
+msgstr "No hay configurado un servidor por defecto en la configuracion de VLC"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Play now"
+msgstr "Viendo ahora"
+
+msgid "Please enter the correct pin code"
+msgstr "Por favor, introduce el pin correcto"
+
+msgid "Progress: "
+msgstr "Progreso: "
+
+msgid "Progress: 100%"
+msgstr "Progreso: 100%"
+
+msgid "Progress: N/A"
+msgstr "Progreso: N/A"
+
+msgid "Save on HDD"
+msgstr "Guardar en HDD"
+
+msgid "Show Adult Content:"
+msgstr "Ver contenido adulto:"
+
+msgid ""
+"Sorry, this Video can not get saved on HDD.\n"
+"Only HTTP, FTP and RTMP streams can get saved on HDD!"
+msgstr ""
+"Lo sentimos, este video no se puede guardar en el HDD.\n"
+"Sólo streams HTTP, FTP y RTMP pueden guardarse"
+
+msgid "Speed: "
+msgstr "Velocidad: "
+
+msgid "Speed: N/A"
+msgstr "Velocidad: N/A"
+
+msgid "Stop playing this movie?"
+msgstr "Parar la pelicula?"
+
+msgid "TVweb Settings"
+msgstr "Configuración de TVweb"
+
+msgid ""
+"TVweb plugin successfully updated!\n"
+"Do you want to restart GUI now?"
+msgstr ""
+"El plugin TVweb ha sido actualizado correctamente!\n"
+"Quieres reiniciar GUi ahora?"
+
+msgid "This STB can't decode %s streams!"
+msgstr "Este equipo no puede decodificar streams %s!"
+
+msgid ""
+"This stream can not get saved on HDD\n"
+"Protocol %s not supported :("
+msgstr ""
+"Este stream no puede guardarse en HDD\n"
+"Protocolo %s no soportado :("
+
+msgid "Thumbnail Caching:"
+msgstr "Cache de imágenes:"
+
+msgid "Time left: "
+msgstr "Restante: "
+
+msgid "Time left: N/A"
+msgstr "Restante: N/A"
+
+msgid ""
+"Unexpected Error:\n"
+"%s"
+msgstr ""
+"Error inesperado:\n"
+"%s"
+
+msgid "VLC Plugin Error"
+msgstr "Erro de plugin VLC"
+
+msgid "VLC Plugin Error: %s"
+msgstr "Error de Plugin VLC: %s"
+
 msgid ""
 "Video Download Failed!\n"
 "\n"
@@ -32,8 +193,6 @@ msgstr ""
 "Archivodescargado corrupto:\n"
 "%s"
 
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:210
-#, python-format
 msgid ""
 "Video Download Failed!\n"
 "\n"
@@ -45,8 +204,6 @@ msgstr ""
 "No se puede leer el paquete RTMP:\n"
 "%s"
 
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:211
-#, python-format
 msgid ""
 "Video Download Failed!\n"
 "\n"
@@ -58,8 +215,6 @@ msgstr ""
 "error de segmentación:\n"
 "%s"
 
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:212
-#, python-format
 msgid ""
 "Video Download Failed!\n"
 "\n"
@@ -71,8 +226,6 @@ msgstr ""
 "El servidor devuelve error:\n"
 "%s"
 
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:213
-#, python-format
 msgid ""
 "Video Download Failed!\n"
 "\n"
@@ -84,29 +237,22 @@ msgstr ""
 "error desconocido:\n"
 "%s"
 
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:243
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:258
+msgid "View Bookmarks"
+msgstr "Ver Marcadores"
+
+msgid "View Downloads"
+msgstr "Ver descargas"
+
 msgid "Yes"
 msgstr "Si"
 
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:243
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:258
-msgid "No"
-msgstr "No"
+msgid ""
+"Your STB can't decode this video stream!\n"
+"%s"
+msgstr ""
+"Tu equipo no puede decodificar este stream de video!\n"
+"%s"
 
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:244
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:259
-msgid "Stop playing this movie?"
-msgstr "Parar la pelicula?"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:269
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:275
-#, python-format
-msgid "This STB can't decode %s streams!"
-msgstr "Este equipo no puede decodificar streams %s!"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:282
-#, python-format
 msgid ""
 "Your STB can't decode this video stream!\n"
 "%s\n"
@@ -115,191 +261,3 @@ msgstr ""
 "Tu equipo no puede decodificar este stream de video!\n"
 "%s\n"
 "Quieres hacerlo via servidor VLC desde tu PC?"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:284
-#, python-format
-msgid ""
-"Your STB can't decode this video stream!\n"
-"%s"
-msgstr ""
-"Tu equipo no puede decodificar este stream de video!\n"
-"%s"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:411
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:436
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:852
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1036
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1046
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1459
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1469
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1471
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2014
-msgid "Bookmarks"
-msgstr "Marcadores"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:494
-msgid ""
-"TVweb plugin successfully updated!\n"
-"Do you want to restart GUI now?"
-msgstr ""
-"El plugin TVweb ha sido actualizado correctamente!\n"
-"Quieres reiniciar GUi ahora?"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:852
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1471
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2014
-msgid "Bookmarks from your favorite Movies"
-msgstr "Marcadores de tus pelis favoritas"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1447
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1449
-msgid "Enter Search Term:"
-msgstr "Introduce el termino a buscar:"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1529
-msgid "Save on HDD"
-msgstr "Guardar en HDD"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1530
-msgid "Direct Play"
-msgstr "Ver video"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1531
-msgid "Cached Play"
-msgstr "Ver con cache"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1532
-msgid "Bookmark"
-msgstr "Añadir a marcador"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1605
-msgid "Bookmark added!"
-msgstr "Marcador añadido!"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1628
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1652
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1936
-msgid "No Default Server configured in VLC Settings"
-msgstr "No hay configurado un servidor por defecto en la configuracion de VLC"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1632
-msgid "VLC Plugin Error"
-msgstr "Erro de plugin VLC"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1702
-msgid ""
-"Sorry, this Video can not get saved on HDD.\n"
-"Only HTTP, FTP and RTMP streams can get saved on HDD!"
-msgstr ""
-"Lo sentimos, este video no se puede guardar en el HDD.\n"
-"Sólo streams HTTP, FTP y RTMP pueden guardarse"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1714
-#, python-format
-msgid ""
-"Unexpected Error:\n"
-"%s"
-msgstr ""
-"Error inesperado:\n"
-"%s"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1779
-msgid "Play now"
-msgstr "Viendo ahora"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1780
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2120
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1885
-#, python-format
-msgid ""
-"This stream can not get saved on HDD\n"
-"Protocol %s not supported :("
-msgstr ""
-"Este stream no puede guardarse en HDD\n"
-"Protocolo %s no soportado :("
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1926
-#, python-format
-msgid ""
-"Error downloading file:\n"
-"%s"
-msgstr ""
-"Error descargando archivo:\n"
-"%s"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1940
-#, python-format
-msgid "VLC Plugin Error: %s"
-msgstr "Error de Plugin VLC: %s"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1977
-msgid "Delete selected bookmark"
-msgstr "Borrar marcador seleccionado"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1979
-msgid "Bookmark selected movie"
-msgstr "Añadir a marcadores esta película"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1981
-msgid "Bookmark selected category"
-msgstr "Añadir a marcadores esta categoria"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1982
-msgid "View Bookmarks"
-msgstr "Ver Marcadores"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1983
-msgid "View Downloads"
-msgstr "Ver descargas"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:1984
-msgid "TVweb Settings"
-msgstr "Configuración de TVweb"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2063
-msgid "Close"
-msgstr "Cerrar"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2121
-msgid "OK"
-msgstr "OK"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2139
-msgid "Thumbnail Caching:"
-msgstr "Cache de imágenes:"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2140
-msgid "Show Adult Content:"
-msgstr "Ver contenido adulto:"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2141
-msgid "Download Images?:"
-msgstr "Descargar imágenes?"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2142
-msgid "Download Directory:"
-msgstr "Directorio de descargas:"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2143
-msgid "Cache Folder:"
-msgstr "Carpeta de cache:"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2144
-msgid "Default Resolution:"
-msgstr "Resolución por defecto:"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2145
-msgid "In downloads, Memory free every (min):"
-msgstr "En las descargas, liberar memoria cada (min):"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2153
-msgid "Please enter the correct pin code"
-msgstr "Por favor, introduce el pin correcto"
-
-#: /home/morser/Azbox/OpenSPA/parches/append_TVweb/usr/lib/enigma2/python/Plugins/Extensions/TVweb/plugin.py:2153
-msgid "Enter pin code"
-msgstr "Introduce el pin"
-
