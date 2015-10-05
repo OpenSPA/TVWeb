@@ -422,24 +422,24 @@ if esHD():
 			  <convert type="ServiceName">Name</convert>
 		</widget>
 		<widget source="titlemessage" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="60,997" size="1530,37" font="Regular; 19" foregroundColor="#00777777" backgroundColor="white" noWrap="1" />
-		<widget source="titletext" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="873,100" size="826,39" font="Regular; 20" backgroundColor="black" foregroundColor="#00dddefa" noWrap="1" />	   
-	"""
+ 		<widget source="titletext" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="873,100" size="826,39" font="Regular; 20" backgroundColor="black" foregroundColor="#00dddefa" noWrap="1" />	   
+ 	   """
 	BASESKIN2=""" 
-		<widget source="session.VideoPicture" render="Pig" position="79,145" size="630,354" backgroundColor="transparent" zPosition="-10" /> 
-		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/fondoHD-fs8.png" position="0,0" size="1921,1081" zPosition="-4" alphatest="blend" />
-		<ePixmap pixmap=\""""+logo+"""\" zPosition="2" position="315,55" size="231,58" alphatest="blend" /> 		
-		<widget source="version" transparent="1" render="Label" zPosition="2" valign="center" halign="right" position="150,100" size="150,39" font="Regular; 18" backgroundColor="black" foregroundColor="#00dddefa" noWrap="1" />	   
-		<widget source="global.CurrentTime" render="Label" position="1483,15" size="376,82" backgroundColor="black" foregroundColor="#00ffffff" transparent="1" zPosition="2" font="Regular;24" valign="center" halign="right" shadowColor="#000000" shadowOffset="-2,-2"> 
-		<convert type="ClockToText">Format:%-H:%M</convert> 
-		</widget> 
-		<widget source="global.CurrentTime" render="Label" position="1410,45" size="450,82" backgroundColor="black" foregroundColor="#00ffffff" transparent="1" zPosition="2" font="Regular;16" valign="center" halign="right" shadowColor="#000000" shadowOffset="-2,-2"> 
-		<convert type="ClockToText">Date</convert>  
-		</widget>  
-		<widget source="session.CurrentService" render="Label" position="87,151" size="615,30" font="Regular; 17" transparent="0" valign="center" zPosition="1" backgroundColor="#aa000000" foregroundColor="#00ffffa0" noWrap="1" halign="left" borderColor="black" borderWidth="1">
-			<convert type="ServiceName">Name</convert>
-		</widget>
-		<widget source="Title" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="873,100" size="826,39" font="Regular; 20" backgroundColor="black" foregroundColor="#00dddefa" noWrap="1" />	   
-	"""
+ 		<widget source="session.VideoPicture" render="Pig" position="79,145" size="630,354" backgroundColor="transparent" zPosition="-10" /> 
+ 		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/fondoHD-fs8.png" position="0,0" size="1921,1081" zPosition="-4" alphatest="blend" />
+ 		<ePixmap pixmap=\""""+logo+"""\" zPosition="2" position="315,55" size="231,58" alphatest="blend" /> 		
+ 		<widget source="version" transparent="1" render="Label" zPosition="2" valign="center" halign="right" position="150,100" size="150,39" font="Regular; 18" backgroundColor="black" foregroundColor="#00dddefa" noWrap="1" />	   
+ 		<widget source="global.CurrentTime" render="Label" position="1483,15" size="376,82" backgroundColor="black" foregroundColor="#00ffffff" transparent="1" zPosition="2" font="Regular;24" valign="center" halign="right" shadowColor="#000000" shadowOffset="-2,-2"> 
+ 		<convert type="ClockToText">Format:%-H:%M</convert> 
+ 		</widget> 
+ 		<widget source="global.CurrentTime" render="Label" position="1410,45" size="450,82" backgroundColor="black" foregroundColor="#00ffffff" transparent="1" zPosition="2" font="Regular;16" valign="center" halign="right" shadowColor="#000000" shadowOffset="-2,-2"> 
+ 		<convert type="ClockToText">Date</convert>  
+ 		</widget>  
+ 		<widget source="session.CurrentService" render="Label" position="87,151" size="615,30" font="Regular; 17" transparent="0" valign="center" zPosition="1" backgroundColor="#aa000000" foregroundColor="#00ffffa0" noWrap="1" halign="left" borderColor="black" borderWidth="1">
+ 			  <convert type="ServiceName">Name</convert>
+	        </widget>
+ 		<widget source="Title" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="873,100" size="826,39" font="Regular; 20" backgroundColor="black" foregroundColor="#00dddefa" noWrap="1" />	   
+ 	   """
 else:
 	BASESKIN=""" 
 		<widget source="session.VideoPicture" render="Pig" position=\""""+BASEX+""",97" size="420,236" backgroundColor="transparent" zPosition="-10" /> 
@@ -455,9 +455,10 @@ else:
 		<widget source="session.CurrentService" render="Label" position="58,101" size="410,20" font="Regular; 17" transparent="0" valign="center" zPosition="1" backgroundColor="#aa000000" foregroundColor="#00ffffa0" noWrap="1" halign="left" borderColor="black" borderWidth="1">
 			  <convert type="ServiceName">Name</convert>
 		</widget>
-		<widget source="titlemessage" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="40,665" size="1020,25" font="Regular; 19" foregroundColor="#00777777" backgroundColor="white" noWrap="1" />
+
+	        <widget source="titlemessage" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="40,665" size="1020,25" font="Regular; 19" foregroundColor="#00777777" backgroundColor="white" noWrap="1" />
 		<widget source="titletext" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="582,67" size="551,26" font="Regular; 20" backgroundColor="black" foregroundColor="#00dddefa" noWrap="1" />	   
-	"""
+	   """
 # -- mpiero para settings y task ---
 	BASESKIN2=""" 
 		<widget source="session.VideoPicture" render="Pig" position="53,97" size="420,236" backgroundColor="transparent" zPosition="-10" /> 
@@ -474,7 +475,7 @@ else:
 			  <convert type="ServiceName">Name</convert>
 			</widget>
 		<widget source="Title" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="582,67" size="551,26" font="Regular; 20" backgroundColor="black" foregroundColor="#00dddefa" noWrap="1" />	   
-	"""
+	   """
 class TVweb(Screen):
     def __init__(self, session, feedurl="http://www.dreambox-plugins.de/feeds/mediathek/main.xml", feedtitle="Secciones", feedtext="", extra=""):
         print "[TVweb] __init__ (feedurl="+feedurl+")"
@@ -490,13 +491,6 @@ class TVweb(Screen):
             self.spaceY = fhd(12)
             self.picX = fhd(240)
             self.picY = fhd(120)
-
-
-
-
-
-
-
 
         # Workaround for UserAgent Settings when MediaPlayer not installed
         try:
@@ -549,11 +543,11 @@ class TVweb(Screen):
                 <widget name=\"down\"    position=\"1242,995\"   zPosition=\"6\" size=\"75,45\" pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/Down.png\" transparent=\"1\" alphatest=\"blend\" /> \
                 <widget name=\"key_blue\" position=\""+ str(size_w-315+60) +",1000\" zPosition=\"3\" size=\"210,36\" font=\"Regular;19\" halign=\"left\" backgroundColor=\"#1f771f\" transparent=\"1\" foregroundColor=\"#00000000\" /> \
                 <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blueHD.png\" zPosition=\"2\" position=\""+ str(size_w-300) +",998\" size=\"210,36\" alphatest=\"blend\" /> \
- 	        <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineaHD-fs8.png\" zPosition=\"2\" position=\"861,365\" size=\"827,3\" alphatest=\"blend\" /> \
+                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineaHD-fs8.png\" zPosition=\"2\" position=\"861,365\" size=\"827,3\" alphatest=\"blend\" /> \
                 <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineaHD-fs8.png\" zPosition=\"2\" position=\"861,560\" size=\"827,3\" alphatest=\"blend\" /> \
- 	        <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineaHD-fs8.png\" zPosition=\"2\" position=\"861,761\" size=\"827,3\" alphatest=\"blend\" /> \
- 	        <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineavHD-fs8.png\" zPosition=\"2\" position=\"1274,150\" size=\"3,833\" alphatest=\"blend\" /> \
- 	        <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/logospzfs8HD.png\" zPosition=\"2\" position=\"258,642\" size=\"269,117\" alphatest=\"blend\" /> \
+                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineaHD-fs8.png\" zPosition=\"2\" position=\"861,761\" size=\"827,3\" alphatest=\"blend\" /> \
+                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineavHD-fs8.png\" zPosition=\"2\" position=\"1274,150\" size=\"3,833\" alphatest=\"blend\" /> \
+                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/logospzfs8HD.png\" zPosition=\"2\" position=\"258,642\" size=\"269,117\" alphatest=\"blend\" /> \
                 <widget name=\"frame\" position=\"" + str(size_w) + "," + str(size_h) + "\" size=\"" + str(self.picX - 10) + ","  + str((self.textsize*2)+10) + "\" pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/seleccionHD.png\" zPosition=\"4\" alphatest=\"blend\" />"  + skincontent + "</screen>"
         else:
             self.skin = "<screen position=\"0,0\" size=\"" + str(size_w) + "," + str(size_h) + "\" flags=\"wfNoBorder\" title=\"TVweb\"> "+BASESKIN+" \
@@ -561,11 +555,11 @@ class TVweb(Screen):
                 <widget name=\"down\"    position=\"828,663\"   zPosition=\"6\" size=\"33,20\" pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/Down.png\" transparent=\"1\" alphatest=\"blend\" /> \
                 <widget name=\"key_blue\" position=\""+ str(size_w-225+60) +",665\" zPosition=\"3\" size=\"140,24\" font=\"Regular;19\" halign=\"left\" backgroundColor=\"#1f771f\" transparent=\"1\" foregroundColor=\"#00000000\" /> \
                 <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blue.png\" zPosition=\"2\" position=\""+ str(size_w-200) +",665\" size=\"140,24\" alphatest=\"blend\" /> \
-	        <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png\" zPosition=\"2\" position=\"574,243\" size=\"551,2\" alphatest=\"blend\" /> \
+                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png\" zPosition=\"2\" position=\"574,243\" size=\"551,2\" alphatest=\"blend\" /> \
                 <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png\" zPosition=\"2\" position=\"574,373\" size=\"551,2\" alphatest=\"blend\" /> \
-	        <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png\" zPosition=\"2\" position=\"574,507\" size=\"551,2\" alphatest=\"blend\" /> \
-	        <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineav-fs8.png\" zPosition=\"2\" position=\"849,100\" size=\"2,555\" alphatest=\"blend\" /> \
-	        <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/logospzfs8.png\" zPosition=\"2\" position=\"172,428\" size=\"179,78\" alphatest=\"blend\" /> \
+                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png\" zPosition=\"2\" position=\"574,507\" size=\"551,2\" alphatest=\"blend\" /> \
+                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineav-fs8.png\" zPosition=\"2\" position=\"849,100\" size=\"2,555\" alphatest=\"blend\" /> \
+                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/logospzfs8.png\" zPosition=\"2\" position=\"172,428\" size=\"179,78\" alphatest=\"blend\" /> \
                 <widget name=\"frame\" position=\"" + str(size_w) + "," + str(size_h) + "\" size=\"" + str(self.picX - 10) + ","  + str((self.textsize*2)+10) + "\" pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/seleccion.png\" zPosition=\"4\" alphatest=\"blend\" />"  + skincontent + "</screen>"
 
         Screen.__init__(self, session)
@@ -1175,7 +1169,9 @@ def tvlistEntry(entry):
 	textoposx=35
 	if png is not None:
 		# mpiero TYPE_PIXMAP_ALPHABLEND para fundido icono
-		res.append((eListboxPythonMultiContent.TYPE_PIXMAP_ALPHABLEND, fhd(5), fhd(3), fhd(24), fhd(24), png))
+		#res.append((eListboxPythonMultiContent.TYPE_PIXMAP_ALPHABLEND, fhd(5), fhd(3), fhd(24), fhd(24), png))
+		res.append(MultiContentEntryPixmapAlphaBlend(pos=(fhd(5), fhd(3)), size=(fhd(24), fhd(24)), png=png, flags=BT_SCALE | BT_KEEP_ASPECT_RATIO))
+
 	else:
 		textoposx=3
 	res.append((eListboxPythonMultiContent.TYPE_TEXT,textoposx,fhd(4),fhd(640),fhd(30),fhd(0),RT_HALIGN_LEFT,entry[0]))
@@ -1218,15 +1214,15 @@ class TVweb2(Screen):
         if esHD():
             self.skin = "<screen position=\"0,0\" size=\"" + str(size_w) + "," + str(size_h) + "\" flags=\"wfNoBorder\" title=\"TVweb\">"+BASESKIN+" \
                 <widget name=\"image1\" position=\"744,35\" size=\"119,110\" zPosition=\"4\" transparent=\"1\" alphatest=\"blend\" /> \
-		<ePixmap name=\"linea4\" position=\"87,732\" size=\"615,3\" pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png\" alphatest=\"blend\" /> \
-		<ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/marcotvHD-fs8.png\" zPosition=\"5\" position=\"735,24\" size=\"134,126\" alphatest=\"blend\" /> \
+                <ePixmap name=\"linea4\" position=\"87,732\" size=\"615,3\" pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png\" alphatest=\"blend\" /> \
+                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/marcotvHD-fs8.png\" zPosition=\"5\" position=\"735,24\" size=\"134,126\" alphatest=\"blend\" /> \
                 <widget name=\"thumbnail\" position=\"95,513\" size=\"243,209\" zPosition=\"4\" transparent=\"1\" alphatest=\"blend\" /> \
-	        <widget name=\"seltitle\" position=\"345,513\" size=\"345,209\" zPosition=\"5\" valign=\"center\" halign=\"left\" backgroundColor=\"#00e0e0e0\" font=\"Regular;19\" transparent=\"1\" foregroundColor=\"#00134270\" /> \
-	        <widget name=\"selplot\" position=\"95,744\" size=\"596,215\" zPosition=\"5\" backgroundColor=\"#00e0e0e0\" font=\"Regular;17\" transparent=\"1\" foregroundColor=\"" + self.textcolor + "\" /> \
+                <widget name=\"seltitle\" position=\"345,513\" size=\"345,209\" zPosition=\"5\" valign=\"center\" halign=\"left\" backgroundColor=\"#00e0e0e0\" font=\"Regular;19\" transparent=\"1\" foregroundColor=\"#00134270\" /> \
+                <widget name=\"selplot\" position=\"95,744\" size=\"596,215\" zPosition=\"5\" backgroundColor=\"#00e0e0e0\" font=\"Regular;17\" transparent=\"1\" foregroundColor=\"" + self.textcolor + "\" /> \
                 <widget name=\"key_blue\" position=\""+ str(size_w-225+60) +",998\" zPosition=\"3\" size=\"210,36\" font=\"Regular;19\" halign=\"left\" backgroundColor=\"#1f771f\" transparent=\"1\" foregroundColor=\"#00000000\" /> \
                 <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blue.png\" zPosition=\"2\" position=\""+ str(size_w-200) +",998\" size=\"210,36\" alphatest=\"blend\" /> \
-		<ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/scrollHD-fs8.png\" zPosition=\"3\" position=\"1649,147\" size=\"38,837\" alphatest=\"blend\" /> \
-	        <widget name=\"listado\" transparent=\"1\" position=\"863,147\" zPosition=\"2\" size=\"824,837\" scrollbarMode=\"showAlways\" foregroundColor=\"#000000\" backgroundColor=\"#00e0e0e0\" foregroundColorSelected=\"#00dddefa\"/> \
+                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/scrollHD-fs8.png\" zPosition=\"3\" position=\"1649,147\" size=\"38,837\" alphatest=\"blend\" /> \
+                <widget name=\"listado\" transparent=\"1\" position=\"863,147\" zPosition=\"2\" size=\"824,837\" scrollbarMode=\"showAlways\" foregroundColor=\"#000000\" backgroundColor=\"#00e0e0e0\" foregroundColorSelected=\"#00dddefa\"/> \
                </screen>"
 
         else:
@@ -1839,223 +1835,218 @@ class TVweb2(Screen):
 #------------------------------------------------------------------------------------------
 
 class MovieInfoScreen(Screen):
-    if esHD():
-        skin = """<screen name="MovieInfoScreen" position="0,0" size="1920,1080" flags="wfNoBorder" title="TVweb" backgroundColor="black">"""+BASESKIN + """
-                <widget name="image1" position="744,35" size="119,110" zPosition="4" transparent="1" alphatest="blend" /> 
-	        <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/marcotvHD-fs8.png" zPosition="5" position="735,24" size="134,126" alphatest="blend" /> 
-	        <widget name="trailerimg" position="881,215" zPosition="3" size="456,308" transparent="1" alphatest="blend" /> 
-                <widget source="trailertitle" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="881,159" size="792,39" font="Regular; 19" backgroundColor="white" foregroundColor="#00134270" noWrap="1" /> 
-		<widget source="message" transparent="1" render="Label" zPosition="2" position="1356,215" size="317,165" font="Regular;18" backgroundColor="white" foregroundColor="#00555555" halign="right" /> 
-		<widget source="urltitle" transparent="1" render="Label" zPosition="2" position="880,876" size="69,30" font="Regular;18" backgroundColor="white" foregroundColor="#00777777" noWrap="1" halign="left" /> 
- 		<widget source="url" transparent="1" render="Label" zPosition="2" position="880,906" size="799,64" font="Regular;17" backgroundColor="white" foregroundColor="black" /> 
- 		<widget source="trailertext" transparent="1" render="Label" zPosition="2" valign="top" halign="left" position="880,547" size="798,307" font="Regular; 20" backgroundColor="white" foregroundColor="black" /> 
-     	        <widget name="key_green" position="172,577" zPosition="3" size="417,36" font="Regular; 20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
- 		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/green.png" zPosition="2" position="127,577" size="36,36" alphatest="blend" /> 
- 		<widget name="key_yellow" position="172,667" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
- 		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/yellow.png" zPosition="2" position="127,667" size="36,36" alphatest="blend" /> 
- 		<widget name="key_blue" position="172,757" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
- 		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blueHD.png" zPosition="2" position="127,757" size="36,36" alphatest="blend" /> 
- 		<widget name="key_red" position="172,847" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
- 		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/red.png" zPosition="2" position="127,847" size="36,36" alphatest="blend" /> 
- 		<ePixmap name="linea" position="862,534" size="822,3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineaHD-fs8.png" alphatest="blend" />
- 		<ePixmap name="linea2" position="862,204" size="822,15" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineaHD-fs8.png" alphatest="blend" />
- 		<ePixmap name="linea3" position="862,864" size="822,3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineaHD-fs8.png" alphatest="blend" />
- 	</screen>
-    """
-    else:
-        skin = """<screen name="MovieInfoScreen" position="0,0" size="1280,720" flags="wfNoBorder" title="TVweb" backgroundColor="black">"""+BASESKIN + """
-                <widget name="image1" position="496,23" size="79,73" zPosition="4" transparent="1" alphatest="blend" /> 
-	        <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/marcotv-fs8.png" zPosition="5" position="490,16" size="89,84" alphatest="blend" /> 
-	        <widget name="trailerimg" position="587,143" zPosition="3" size="304,205" transparent="1" alphatest="blend" /> 
-                <widget source="trailertitle" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="587,106" size="528,26" font="Regular; 19" backgroundColor="white" foregroundColor="#00134270" noWrap="1" /> 
-		<widget source="message" transparent="1" render="Label" zPosition="2" position="904,143" size="211,110" font="Regular;18" backgroundColor="white" foregroundColor="#00555555" halign="right" /> 
-		<widget source="urltitle" transparent="1" render="Label" zPosition="2" position="587,584" size="46,20" font="Regular;18" backgroundColor="white" foregroundColor="#00777777" noWrap="1" halign="left" /> 
-		<widget source="url" transparent="1" render="Label" zPosition="2" position="587,604" size="533,43" font="Regular;17" backgroundColor="white" foregroundColor="black" /> 
-		<widget source="trailertext" transparent="1" render="Label" zPosition="2" valign="top" halign="left" position="587,365" size="532,205" font="Regular; 20" backgroundColor="white" foregroundColor="black" /> 
-    	         
-		<widget name="key_green" position="115,385" zPosition="3" size="278,24" font="Regular; 20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/green.png" zPosition="2" position="85,385" size="24,24" alphatest="blend" /> 
-		<widget name="key_yellow" position="115,445" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/yellow.png" zPosition="2" position="85,445" size="24,24" alphatest="blend" /> 
-		<widget name="key_blue" position="115,505" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blue.png" zPosition="2" position="85,505" size="24,24" alphatest="blend" /> 
-		<widget name="key_red" position="115,565" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/red.png" zPosition="2" position="85,565" size="24,24" alphatest="blend" /> 
-				
-		<ePixmap name="linea" position="575,356" size="548,2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png" alphatest="blend" />
-		<ePixmap name="linea2" position="575,136" size="548,10" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png" alphatest="blend" />
-		<ePixmap name="linea3" position="575,576" size="548,2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png" alphatest="blend" />
-	</screen>
-    """
-    def __init__(self, session, movieurl, item, fileimage, name, img1=None, message="", tipo=""):
-        print "[TVweb] MovieInfoScreen.__init__(movieurl="+movieurl+", fileimage="+fileimage+", name="+name+")"
-        Screen.__init__(self, session, item)
-
-        size_w = 1280
-        size_h = 720
-
-        self["trailertitle"] = StaticText(name)
-        self["trailertext"] = StaticText(item.plot)
-        self["trailerimg"] = Pixmap()
-	self["image1"] = Pixmap()
-        self["titlemessage"] = StaticText(message)
-        self["message"] = StaticText(tipo)
-	url = movieurl
-	###### pasa imgurl a utf8
- 	try:
-		url = url.decode("utf-8").encode("utf-8")
-	except:
-		try:
-			url = url.decode("iso-8859-1").encode("utf-8")
-		except:
-			pass
-        self["url"] = StaticText(url)
-        self["urltitle"] = StaticText("Url:")
-        self["version"] = StaticText(config.plugins.TVweb.version.value)
-
-        self["key_red"] = Button(_("Save on HDD"))
-        self["key_green"] = Button(_("Direct Play"))
-        self["key_yellow"] = Button(_("Cached Play"))
-        self["key_blue"] = Button(_("Bookmark"))
-
-    	try:
-		name = name.decode("utf-8").encode("utf-8")
-	except:
-		try:
-			name = name.decode("iso-8859-1").encode("utf-8")
-		except:
-			pass
- 
-        self.url = movieurl
-	self.title = name
-	self.item = item
-        self.action = None
-	if "flv" in movieurl.lower() or "flv" in message.lower():
-		ext = 'flv'
-	elif "mp4" in movieurl.lower() or "mp4" in message.lower():
-		ext = 'mp4'
-	elif len(movieurl.split('.')[-1].lower().replace("'","")) == 3:
-		ext = movieurl.split('.')[-1].lower().replace("'","")
+	if esHD():
+		skin = """<screen name="MovieInfoScreen" position="0,0" size="1920,1080" flags="wfNoBorder" title="TVweb" backgroundColor="black">"""+BASESKIN + """
+			<widget name="image1" position="744,35" size="119,110" zPosition="4" transparent="1" alphatest="blend" /> 
+			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/marcotvHD-fs8.png" zPosition="5" position="735,24" size="134,126" alphatest="blend" /> 
+			<widget name="trailerimg" position="881,215" zPosition="3" size="456,308" transparent="1" alphatest="blend" /> 
+			<widget source="trailertitle" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="881,159" size="792,39" font="Regular; 19" backgroundColor="white" foregroundColor="#00134270" noWrap="1" /> 
+			<widget source="message" transparent="1" render="Label" zPosition="2" position="1356,215" size="317,165" font="Regular;18" backgroundColor="white" foregroundColor="#00555555" halign="right" /> 
+			<widget source="urltitle" transparent="1" render="Label" zPosition="2" position="880,876" size="69,30" font="Regular;18" backgroundColor="white" foregroundColor="#00777777" noWrap="1" halign="left" /> 
+			<widget source="url" transparent="1" render="Label" zPosition="2" position="880,906" size="799,64" font="Regular;17" backgroundColor="white" foregroundColor="black" /> 
+			<widget source="trailertext" transparent="1" render="Label" zPosition="2" valign="top" halign="left" position="880,547" size="798,307" font="Regular; 20" backgroundColor="white" foregroundColor="black" /> 
+			<widget name="key_green" position="172,577" zPosition="3" size="417,36" font="Regular; 20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/greenHD.png" zPosition="2" position="127,577" size="36,36" alphatest="blend" /> 
+			<widget name="key_yellow" position="172,667" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/yellowHD.png" zPosition="2" position="127,667" size="36,36" alphatest="blend" /> 
+			<widget name="key_blue" position="172,757" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blueHD.png" zPosition="2" position="127,757" size="36,36" alphatest="blend" /> 
+			<widget name="key_red" position="172,847" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/redHD.png" zPosition="2" position="127,847" size="36,36" alphatest="blend" /> 
+			<ePixmap name="linea" position="862,534" size="822,3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineaHD-fs8.png" alphatest="blend" />
+			<ePixmap name="linea2" position="862,204" size="822,15" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineaHD-fs8.png" alphatest="blend" />
+			<ePixmap name="linea3" position="862,864" size="822,3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/lineaHD-fs8.png" alphatest="blend" />
+		</screen>"""
 	else:
-		ext = 'avi' 
-	filename = ASCIItranslit.legacyEncode(name+"."+ext).lower().replace("'","")
-	self.movieinfo = ((name,movieurl,filename,item.thumbnail))
-	
+		skin = """<screen name="MovieInfoScreen" position="0,0" size="1280,720" flags="wfNoBorder" title="TVweb" backgroundColor="black">"""+BASESKIN + """
+			<widget name="image1" position="496,23" size="79,73" zPosition="4" transparent="1" alphatest="blend" /> 
+			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/marcotv-fs8.png" zPosition="5" position="490,16" size="89,84" alphatest="blend" /> 
+			<widget name="trailerimg" position="587,143" zPosition="3" size="304,205" transparent="1" alphatest="blend" /> 
+			<widget source="trailertitle" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="587,106" size="528,26" font="Regular; 19" backgroundColor="white" foregroundColor="#00134270" noWrap="1" /> 
+			<widget source="message" transparent="1" render="Label" zPosition="2" position="904,143" size="211,110" font="Regular;18" backgroundColor="white" foregroundColor="#00555555" halign="right" /> 
+			<widget source="urltitle" transparent="1" render="Label" zPosition="2" position="587,584" size="46,20" font="Regular;18" backgroundColor="white" foregroundColor="#00777777" noWrap="1" halign="left" /> 
+			<widget source="url" transparent="1" render="Label" zPosition="2" position="587,604" size="533,43" font="Regular;17" backgroundColor="white" foregroundColor="black" /> 
+			<widget source="trailertext" transparent="1" render="Label" zPosition="2" valign="top" halign="left" position="587,365" size="532,205" font="Regular; 20" backgroundColor="white" foregroundColor="black" /> 
+			<widget name="key_green" position="115,385" zPosition="3" size="278,24" font="Regular; 20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/green.png" zPosition="2" position="85,385" size="24,24" alphatest="blend" /> 
+			<widget name="key_yellow" position="115,445" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/yellow.png" zPosition="2" position="85,445" size="24,24" alphatest="blend" /> 
+			<widget name="key_blue" position="115,505" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blue.png" zPosition="2" position="85,505" size="24,24" alphatest="blend" /> 
+			<widget name="key_red" position="115,565" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/red.png" zPosition="2" position="85,565" size="24,24" alphatest="blend" /> 
+			<ePixmap name="linea" position="575,356" size="548,2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png" alphatest="blend" />
+			<ePixmap name="linea2" position="575,136" size="548,10" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png" alphatest="blend" />
+			<ePixmap name="linea3" position="575,576" size="548,2" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png" alphatest="blend" />
+		</screen>"""
 
-        self.useragent = "QuickTime/7.6.2 (qtver=7.6.2;os=Windows NT 5.1Service Pack 3)"
-        config.mediaplayer.useAlternateUserAgent.value = True
-        config.mediaplayer.alternateUserAgent.value = self.useragent
-        config.mediaplayer.useAlternateUserAgent.save()
-        config.mediaplayer.alternateUserAgent.save()
-        config.mediaplayer.save()
+	def __init__(self, session, movieurl, item, fileimage, name, img1=None, message="", tipo=""):
+		print "[TVweb] MovieInfoScreen.__init__(movieurl="+movieurl+", fileimage="+fileimage+", name="+name+")"
+		Screen.__init__(self, session, item)
 
-        self.moviefolder = config.plugins.TVweb.moviedir.value
-        self.imagefolder = config.plugins.TVweb.storagepath.value+"/TVweb/images"
+		size_w = 1280
+		size_h = 720
 
-        self["actions"] = ActionMap(["OkCancelActions", "ColorActions"],
-        {
-            "cancel": self.Exit,
-            "red": self.keyRed,
-            "green": self.keyGreen,
-            "yellow": self.keyYellow,
-            "blue": self.keyBlue
-        }, -1)
+		self["trailertitle"] = StaticText(name)
+		self["trailertext"] = StaticText(item.plot)
+		self["trailerimg"] = Pixmap()
+		self["image1"] = Pixmap()
+		self["titlemessage"] = StaticText(message)
+		self["message"] = StaticText(tipo)
+		url = movieurl
+	###### pasa imgurl a utf8
+		try:
+			url = url.decode("utf-8").encode("utf-8")
+		except:
+			try:
+				url = url.decode("iso-8859-1").encode("utf-8")
+			except:
+				pass
+		self["url"] = StaticText(url)
+		self["urltitle"] = StaticText("Url:")
+		self["version"] = StaticText(config.plugins.TVweb.version.value)
 
-        # Get FrameBuffer Scale for ePicLoad()
-        sc = AVSwitch().getFramebufferScale()
-        
-        # Init ePicLoad
-        self.picload = ePicLoad()
-        self.picload.PictureData.get().append(self.showPosterPixmap)
-        self.picload.setPara((310,219, sc[0], sc[1], 0, 1, "#00e0e0e0"))
-        
-        self.picload.startDecode(fileimage)
-        #self.onFirstExecBegin.append(self.GetMovieInfo)
+		self["key_red"] = Button(_("Save on HDD"))
+		self["key_green"] = Button(_("Direct Play"))
+		self["key_yellow"] = Button(_("Cached Play"))
+		self["key_blue"] = Button(_("Bookmark"))
 
-	self.picload2 = ePicLoad()
-	self.picload2.PictureData.get().append(self.paintimgs)
-	if img1 != None:
-		if fileExists(img1):
-			sc = AVSwitch().getFramebufferScale()
+		try:
+			name = name.decode("utf-8").encode("utf-8")
+		except:
+			try:
+				name = name.decode("iso-8859-1").encode("utf-8")
+			except:
+				pass
+ 
+		self.url = movieurl
+		self.title = name
+		self.item = item
+		self.action = None
+		if "flv" in movieurl.lower() or "flv" in message.lower():
+			ext = 'flv'
+		elif "mp4" in movieurl.lower() or "mp4" in message.lower():
+			ext = 'mp4'
+		elif len(movieurl.split('.')[-1].lower().replace("'","")) == 3:
+			ext = movieurl.split('.')[-1].lower().replace("'","")
+		else:
+			ext = 'avi' 
+		filename = ASCIItranslit.legacyEncode(name+"."+ext).lower().replace("'","")
+		self.movieinfo = ((name,movieurl,filename,item.thumbnail))
+
+
+		self.useragent = "QuickTime/7.6.2 (qtver=7.6.2;os=Windows NT 5.1Service Pack 3)"
+		config.mediaplayer.useAlternateUserAgent.value = True
+		config.mediaplayer.alternateUserAgent.value = self.useragent
+		config.mediaplayer.useAlternateUserAgent.save()
+		config.mediaplayer.alternateUserAgent.save()
+		config.mediaplayer.save()
+
+		self.moviefolder = config.plugins.TVweb.moviedir.value
+		self.imagefolder = config.plugins.TVweb.storagepath.value+"/TVweb/images"
+
+		self["actions"] = ActionMap(["OkCancelActions", "ColorActions"],
+		{
+			"cancel": self.Exit,
+			"red": self.keyRed,
+			"green": self.keyGreen,
+			"yellow": self.keyYellow,
+			"blue": self.keyBlue
+		}, -1)
+
+		# Get FrameBuffer Scale for ePicLoad()
+		sc = AVSwitch().getFramebufferScale()
+
+		# Init ePicLoad
+		self.picload = ePicLoad()
+		self.picload.PictureData.get().append(self.showPosterPixmap)
+		self.picload.setPara((310,219, sc[0], sc[1], 0, 1, "#00e0e0e0"))
+
+		self.picload.startDecode(fileimage)
+		#self.onFirstExecBegin.append(self.GetMovieInfo)
+
+		self.picload2 = ePicLoad()
+		self.picload2.PictureData.get().append(self.paintimgs)
+		if img1 != None:
+			if fileExists(img1):
+				sc = AVSwitch().getFramebufferScale()
 			# mpiero icono arriba tamano
-			self.picload2.setPara((79,73, sc[0], sc[1], 0, 1, "#00e0e0e0"))
-			self.picload2.startDecode(img1)
+				self.picload2.setPara((79,73, sc[0], sc[1], 0, 1, "#00e0e0e0"))
+				self.picload2.startDecode(img1)
 
 
-    def paintimgs(self, picInfo=None):
-	ptr = self.picload2.getData()
-	if ptr != None:
-		self["image1"].instance.setPixmap(ptr.__deref__())
-		self["image1"].show()
+	def paintimgs(self, picInfo=None):
+		ptr = self.picload2.getData()
+		if ptr != None:
+			self["image1"].instance.setPixmap(ptr.__deref__())
+			self["image1"].show()
 
 
-    def keyRed(self):
-        self.action = "savemovie"
-        self.movieSelectCallback(self.movieinfo)
+	def keyRed(self):
+		self.action = "savemovie"
+		self.movieSelectCallback(self.movieinfo)
 
-    def keyGreen(self):
-        self.action = "directplayback"
-        self.movieSelectCallback(self.movieinfo)
+	def keyGreen(self):
+		self.action = "directplayback"
+		self.movieSelectCallback(self.movieinfo)
 
-    def keyYellow(self):
-        self.action = "cachedplayback"
-        self.movieSelectCallback(self.movieinfo)
+	def keyYellow(self):
+		self.action = "cachedplayback"
+		self.movieSelectCallback(self.movieinfo)
 
-    def keyBlue(self):
-        url = "TVweb" + "|" + self.item.channel + "|" + self.item.action + "|" + self.item.url + "|" + self.item.server
-        if self.movieinfo is not None:
-            os_system("echo 'movie:::%s:::%s:::%s:::%s' >> /etc/enigma2/TVweb.bookmarks" % (self.movieinfo[0], url, self.movieinfo[3], self.item.plot))
-            self.session.open(MessageBox, _("Bookmark added!"), MessageBox.TYPE_INFO, timeout=5)
-
-
-    def showPosterPixmap(self, picInfo=None):
-        ptr = self.picload.getData()
-        if ptr != None:
-	    	self["trailerimg"].instance.setPixmap(ptr.__deref__())
-            	self["trailerimg"].show()
-            
-    def movieSelectCallback(self, movieinfo):
-            if self.action == "cachedplayback":
-                self.session.open(PlayMovie, movieinfo, self.url, self.useragent)
-            elif self.action == "directplayback":
-
-		str = '4097:0:0:0:0:0:0:0:0:0:%s:%s' % (quote(movieinfo[1]), quote(movieinfo[0]))
-		sref = eServiceReference(str)
-
-                sref.setName(movieinfo[0])
-                self.session.openWithCallback(self.MoviePlayerCallback, TVwebMoviePlayer, sref, movieinfo)
-            elif self.action == "vlcplayback" and VLCSUPPORT:
-                try:
-                    if vlcServerConfig.getDefaultServer() is None:
-                        self.session.open(MessageBox, _("No Default Server configured in VLC Settings"), MessageBox.TYPE_ERROR)
-                    else:
-                        vlcServerConfig.getDefaultServer().play(self.session, media=self.url, name=self.title, currentList=None, player=boundFunction(VlcPlayer))
-                except Exception, error:
-                    self.session.open(MessageBox, _("VLC Plugin Error") % error, MessageBox.TYPE_ERROR)
-
-            elif self.action == "savemovie":
-                self.saveMovie(movieinfo[0], movieinfo[1], movieinfo[2], movieinfo[3])
+	def keyBlue(self):
+		url = "TVweb" + "|" + self.item.channel + "|" + self.item.action + "|" + self.item.url + "|" + self.item.server
+		if self.movieinfo is not None:
+			os_system("echo 'movie:::%s:::%s:::%s:::%s' >> /etc/enigma2/TVweb.bookmarks" % (self.movieinfo[0], url, self.movieinfo[3], self.item.plot))
+			self.session.open(MessageBox, _("Bookmark added!"), MessageBox.TYPE_INFO, timeout=5)
 
 
-    def MoviePlayerCallback(self, response=None):
-        if response is not None:
-            tmpinfo = []
-            tmpinfo.append((response[0]))
-            tmpinfo.append((response[1]))
-            tmpinfo.append((response[2]))
-            tmpinfo.append((response[3]))
-            self.action = "vlcplayback"
-            self.movieSelectCallback(tmpinfo)
+	def showPosterPixmap(self, picInfo=None):
+		ptr = self.picload.getData()
+		if ptr != None:
+			self["trailerimg"].instance.setPixmap(ptr.__deref__())
+			self["trailerimg"].show()
 
-    def saveMovie(self, title, url, filename, fileid):
-        if '(VLC)' in title and VLCSUPPORT:
-            try:
-                if vlcServerConfig.getDefaultServer() is None:
-                    self.session.open(MessageBox, _("No Default Server configured in VLC Settings"), MessageBox.TYPE_ERROR)
-                else:
-                    url = vlcServerConfig.getDefaultServer().playFile(url, 0x44, 0x45)
-            except Exception, error:
-                self.session.open(MessageBox,("VLC Plugin Error: %s") % error, MessageBox.TYPE_ERROR)
+	def movieSelectCallback(self, movieinfo):
+		if self.action == "cachedplayback":
+			self.session.open(PlayMovie, movieinfo, self.url, self.useragent)
+		elif self.action == "directplayback":
+			str = '4097:0:0:0:0:0:0:0:0:0:%s:%s' % (quote(movieinfo[1]), quote(movieinfo[0]))
+			sref = eServiceReference(str)
+			sref.setName(movieinfo[0])
+			self.session.openWithCallback(self.MoviePlayerCallback, TVwebMoviePlayer, sref, movieinfo)
+		elif self.action == "vlcplayback" and VLCSUPPORT:
+			try:
+				if vlcServerConfig.getDefaultServer() is None:
+					self.session.open(MessageBox, _("No Default Server configured in VLC Settings"), MessageBox.TYPE_ERROR)
+				else:
+					vlcServerConfig.getDefaultServer().play(self.session, media=self.url, name=self.title, currentList=None, player=boundFunction(VlcPlayer))
+			except Exception, error:
+				self.session.open(MessageBox, _("VLC Plugin Error") % error, MessageBox.TYPE_ERROR)
+
+		elif self.action == "savemovie":
+			self.saveMovie(movieinfo[0], movieinfo[1], movieinfo[2], movieinfo[3])
+
+
+	def MoviePlayerCallback(self, response=None):
+		if response is not None:
+			tmpinfo = []
+			tmpinfo.append((response[0]))
+			tmpinfo.append((response[1]))
+			tmpinfo.append((response[2]))
+			tmpinfo.append((response[3]))
+			self.action = "vlcplayback"
+			self.movieSelectCallback(tmpinfo)
+
+	def saveMovie(self, title, url, filename, fileid):
+		if '(VLC)' in title and VLCSUPPORT:
+			try:
+				if vlcServerConfig.getDefaultServer() is None:
+					self.session.open(MessageBox, _("No Default Server configured in VLC Settings"), MessageBox.TYPE_ERROR)
+				else:
+					url = vlcServerConfig.getDefaultServer().playFile(url, 0x44, 0x45)
+			except Exception, error:
+				self.session.open(MessageBox,("VLC Plugin Error: %s") % error, MessageBox.TYPE_ERROR)
 
         #if title:
             #if fileid > 1:
@@ -2064,66 +2055,81 @@ class MovieInfoScreen(Screen):
             #    addfilenumber = ""
             #filename = ASCIItranslit.legacyEncode(title+"."+filename.split('.')[-1]).lower().replace("'","")
 
-        if url[0:4] == "http" or url[0:3] == "ftp":
-            if config.mediaplayer.useAlternateUserAgent.value:
-                useragentcmd = "--header='User-Agent: %s'" % self.useragent
-            else:
-                useragentcmd = ""
-                
-            JobManager.AddJob(downloadJob(self, "wget %s -c '%s' -O '%s/%s'" % (useragentcmd, url, self.moviefolder, filename), self.moviefolder+"/"+filename, title))
-            self.LastJobView()
-        elif url[0:4] == "rtmp":
-	    partes=url.split(" ")
-	    urlf=partes[0]
-	    if urlf[-1:] == "\"" or urlf[-1:] == "'":
-		pass
-	    else:
-		urlf = "\""+urlf+"\""
-	    playpath=""
-	    swfurl=""
-   	    pageurl=""
-	    live=""
-	    for parte in partes:
-		if "playpath=" in parte.lower():
-			playpath=parte.replace("playpath="," -y ")
-			if playpath[-1:] == "\"" or playpath[-1:] == "'":
+		if url[0:4] == "http" or url[0:3] == "ftp":
+			if config.mediaplayer.useAlternateUserAgent.value:
+				useragentcmd = "--header='User-Agent: %s'" % self.useragent
+			else:
+				useragentcmd = ""
+
+			JobManager.AddJob(downloadJob(self, "wget %s -c '%s' -O '%s/%s'" % (useragentcmd, url, self.moviefolder, filename), self.moviefolder+"/"+filename, title))
+			self.LastJobView()
+		elif url[0:4] == "rtmp":
+			partes=url.split(" ")
+			urlf=partes[0]
+			if urlf[-1:] == "\"" or urlf[-1:] == "'":
 				pass
 			else:
-				playpath = playpath[:4]+"\""+playpath[4:]+"\""
-		if "swfurl=" in parte.lower():
-			swfurl=parte.replace("swfUrl="," -s ")
-		if "pageurl=" in parte.lower():
-			pageurl=parte.replace("pageUrl="," -p ")
-		if "live=" in parte.lower():
-			live=" -v"
-	    urlf = urlf+playpath+swfurl+pageurl+live
+				urlf = "\""+urlf+"\""
+			playpath=""
+			swfurl=""
+			pageurl=""
+			live=""
+			for parte in partes:
+				if "playpath=" in parte.lower():
+					playpath=parte.replace("playpath="," -y ")
+					if playpath[-1:] == "\"" or playpath[-1:] == "'":
+						pass
+					else:
+						playpath = playpath[:4]+"\""+playpath[4:]+"\""
+				if "swfurl=" in parte.lower():
+					swfurl=parte.replace("swfUrl="," -s ")
+				if "pageurl=" in parte.lower():
+					pageurl=parte.replace("pageUrl="," -p ")
+				if "live=" in parte.lower():
+					live=" -v"
+			urlf = urlf+playpath+swfurl+pageurl+live
 
-            JobManager.AddJob(downloadJob(self, "rtmpdump -r %s -o '%s/%s' -e" % (urlf, self.moviefolder, filename), self.moviefolder+"/"+filename, title))
-            self.LastJobView()
-        else:
-            self.session.open(MessageBox, _("Sorry, this Video can not get saved on HDD.\nOnly HTTP, FTP and RTMP streams can get saved on HDD!"), MessageBox.TYPE_ERROR)
-	    #self.tfreemem.stop()
+			JobManager.AddJob(downloadJob(self, "rtmpdump -r %s -o '%s/%s' -e" % (urlf, self.moviefolder, filename), self.moviefolder+"/"+filename, title))
+			self.LastJobView()
+		else:
+			self.session.open(MessageBox, _("Sorry, this Video can not get saved on HDD.\nOnly HTTP, FTP and RTMP streams can get saved on HDD!"), MessageBox.TYPE_ERROR)
+		#self.tfreemem.stop()
 
-    def LastJobView(self):
-        currentjob = None
-        for job in JobManager.getPendingJobs():
-            currentjob = job
+	def LastJobView(self):
+		currentjob = None
+		for job in JobManager.getPendingJobs():
+			currentjob = job
 
-        if currentjob is not None:
-            self.session.open(JobView, currentjob)
+		if currentjob is not None:
+			self.session.open(JobView, currentjob)
 
-    def error(self, error):
-        self.session.open(MessageBox, _("Unexpected Error:\n%s") % (error), MessageBox.TYPE_ERROR)
+	def error(self, error):
+		self.session.open(MessageBox, _("Unexpected Error:\n%s") % (error), MessageBox.TYPE_ERROR)
 
-    def Exit(self):
-        del self.picload
-        self.close()
+	def Exit(self):
+		del self.picload
+		self.close()
 
 #------------------------------------------------------------------------------------------
 
 
 class PlayMovie(Screen):
-    skin = """
+    if esHD():
+        skin = """
+        <screen position="center,center" size="600,360" title="Caching Video ..." >
+            <widget source="label_filename" transparent="1" render="Label" zPosition="2" position="15,15" size="570,30" font="Regular;19" />
+            <widget source="label_destination" transparent="1" render="Label" zPosition="2" position="15,52" size="570,30" font="Regular;19" />
+            <widget source="label_speed" transparent="1" render="Label" zPosition="2" position="15,90" size="570,30" font="Regular;19" />
+            <widget source="label_timeleft" transparent="1" render="Label" zPosition="2" position="15,127" size="570,30" font="Regular;19" />
+            <widget source="label_progress" transparent="1" render="Label" zPosition="2" position="15,165" size="570,30" font="Regular;19" />
+            <widget name="activityslider" position="15,225" size="570,45" zPosition="3" transparent="0" />
+            <widget name="key_green" position="75,300" zPosition="1" size="210,60" font="Regular;20" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
+            <widget name="key_red" position="300,300" zPosition="1" size="210,60" font="Regular;20" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
+            <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/spazeMenu/imgvk/greenHD.png" position="75,300" size="210,60" alphatest="on" />
+            <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/spazeMenu/imgvk/redHD.png" position="300,300" size="210,60" alphatest="on" />
+        </screen>"""
+    else:
+        skin = """
         <screen position="center,center" size="400,240" title="Caching Video ..." >
             <widget source="label_filename" transparent="1" render="Label" zPosition="2" position="10,10" size="380,20" font="Regular;19" />
             <widget source="label_destination" transparent="1" render="Label" zPosition="2" position="10,35" size="380,20" font="Regular;19" />
@@ -2454,8 +2460,27 @@ class TVweb_TaskViewer(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        
-        self.skin = """
+        if esHD():
+            self.skin = """
+            <screen name="MediathekTasksScreen" position="0,0" size="1920,1080" title="TVweb - Active Downloads"  flags="wfNoBorder">"""+BASESKIN2 + """
+                <widget source="tasklist" render="Listbox" position="877,162" size="793,807" zPosition="7" scrollbarMode="showOnDemand" transparent="1" backgroundColor="#00ffffff" foregroundColor="#00000000" foregroundColorSelected="#00dddefa" backgroundColorSelected="#003d3e5a">
+                <convert type="TemplatedMultiContent">
+                  {"template": [
+                      MultiContentEntryText(pos = (0, 2), size = 300, 36), font=1, flags = RT_HALIGN_LEFT, text = 1), # index 1 is the name
+                      MultiContentEntryText(pos = (315, 2), size = (225, 36), font=1, flags = RT_HALIGN_RIGHT, text = 2), # index 2 is the state
+                      MultiContentEntryProgress(pos = (555, 2), size = (150, 36), percent = -3), # index 3 should be progress 
+                      MultiContentEntryText(pos = (720, 2), size = (150, 36), font=1, flags = RT_HALIGN_RIGHT, text = 4), # index 4 is the percentage
+                    ],
+                    "fonts": [gFont("Regular", 22),gFont("Regular", 18)],
+                    "itemHeight": 38
+                  }
+                </convert>
+                </widget>
+                <widget name="key_red" position="172,847" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/spazeMenu/imgvk/redHD.png" zPosition="2" position="127,847" size="36,36" alphatest="blend" />
+            </screen>"""
+        else:
+            self.skin = """
             <screen name="MediathekTasksScreen" position="0,0" size="1280,720" title="TVweb - Active Downloads"  flags="wfNoBorder">"""+BASESKIN2 + """
                 <widget source="tasklist" render="Listbox" position="585,108" size="529,538" zPosition="7" scrollbarMode="showOnDemand" transparent="1" backgroundColor="#00ffffff" foregroundColor="#00000000" foregroundColorSelected="#00dddefa" backgroundColorSelected="#003d3e5a">
                     <convert type="TemplatedMultiContent">
@@ -2471,7 +2496,7 @@ class TVweb_TaskViewer(Screen):
                     </convert>
                 </widget>
                  <widget name="key_red" position="115,565" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-				<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/red.png" zPosition="2" position="85,565" size="24,24" alphatest="blend" />
+                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/red.png" zPosition="2" position="85,565" size="24,24" alphatest="blend" />
             </screen>"""
         
         self["shortcuts"] = ActionMap(["SetupActions", "ColorActions"],
@@ -2528,33 +2553,27 @@ class TVweb_Settings(Screen, ConfigListScreen):
         skin = """
             <screen name="MultiMediathekSettings" position="0,0" size="1920,1080" title="TVweb - Settings"  flags="wfNoBorder" > """+BASESKIN2 + """
                 <widget name="config" position="878,162" size="794,807" transparent="1" scrollbarMode="showOnDemand"  backgroundColor="#00ffffff" foregroundColor="#00000000" backgroundColorSelected="#003d3e5a" itemHeight="42"  />
- 		<widget name="key_red" position="173,578" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/redHD.png" zPosition="2" position="128,578" size="36,36" alphatest="blend" />
- 
- 		<widget name="key_green" position="173,668" zPosition="3" size="417,36" font="Regular; 20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/greenHD.png" zPosition="2" position="128,668" size="36,36" alphatest="blend" /> 
-		
-		<widget name="key_yellow" position="173,848" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<!--<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/yellowHD.png" zPosition="2" position="128,848" size="36,36" alphatest="blend" /> -->
-		
-		<widget name="key_blue" position="173,758" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<!--<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blueHD.png" zPosition="2" position="128,758" size="36,36" alphatest="blend" /> -->
+                <widget name="key_red" position="173,578" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/redHD.png" zPosition="2" position="128,578" size="36,36" alphatest="blend" />
+                <widget name="key_green" position="173,668" zPosition="3" size="417,36" font="Regular; 20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/greenHD.png" zPosition="2" position="128,668" size="36,36" alphatest="blend" /> 
+                <widget name="key_yellow" position="173,848" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+                <!--<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/yellowHD.png" zPosition="2" position="128,848" size="36,36" alphatest="blend" /> -->
+                <widget name="key_blue" position="173,758" zPosition="3" size="420,36" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+                <!--<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blueHD.png" zPosition="2" position="128,758" size="36,36" alphatest="blend" /> -->
             </screen>"""
     else:
         skin = """
             <screen name="MultiMediathekSettings" position="0,0" size="1280,720" title="TVweb - Settings"  flags="wfNoBorder" > """+BASESKIN2 + """
                 <widget name="config" position="585,108" size="529,538" transparent="1" scrollbarMode="showOnDemand"  backgroundColor="#00ffffff" foregroundColor="#00000000" foregroundColorSelected="#00dddefa" backgroundColorSelected="#003d3e5a"  />
- 		<widget name="key_red" position="115,385" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/red.png" zPosition="2" position="85,385" size="24,24" alphatest="blend" />
- 
- 		<widget name="key_green" position="115,445" zPosition="3" size="278,24" font="Regular; 20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/green.png" zPosition="2" position="85,445" size="24,24" alphatest="blend" /> 
-		
-		<widget name="key_yellow" position="115,565" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<!--<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/yellow.png" zPosition="2" position="85,565" size="24,24" alphatest="blend" /> -->
-		
-		<widget name="key_blue" position="115,505" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
-		<!--<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blue.png" zPosition="2" position="85,505" size="24,24" alphatest="blend" /> -->
+                <widget name="key_red" position="115,385" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/red.png" zPosition="2" position="85,385" size="24,24" alphatest="blend" />
+                <widget name="key_green" position="115,445" zPosition="3" size="278,24" font="Regular; 20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+                <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/green.png" zPosition="2" position="85,445" size="24,24" alphatest="blend" /> 
+                <widget name="key_yellow" position="115,565" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+                <!--<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/yellow.png" zPosition="2" position="85,565" size="24,24" alphatest="blend" /> -->
+                <widget name="key_blue" position="115,505" zPosition="3" size="280,24" font="Regular;20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
+                <!--<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blue.png" zPosition="2" position="85,505" size="24,24" alphatest="blend" /> -->
             </screen>"""
 
     def __init__(self, session):
