@@ -207,7 +207,7 @@ def episodios(item):
 
     #<h2 class="header-subtitle">CapÃ­tulos</h2> <ul class="menu"> 
     #<h2 class="header-subtitle">Cap.*?</h2> <ul class="menu">.*?</ul>
-    matches = re.compile('<h2 class="header-subtitle">Cap.*?</h2> <ul class="menu">.*?</ul>', re.S).findall(data)
+    matches = re.compile('<h2 class="header-subtitle">Cap.*?</h2>[^<]+<ul class="menu".*?</ul>', re.S).findall(data)
     if len(matches)>0:
         data = matches[0]
     #<li.*?
@@ -238,7 +238,15 @@ def episodios(item):
 def addChapters(item):
     #<tr > <td class="episode-title"> <span class="downloads allkind" title="Disponibles enlaces a descarga directa y visualizaciones"></span>
     #<a href="/capitulo/bones/capitulo-2/2870"> <strong> 1x02 </strong> - El hombre en la unidad especial de victimas </a> </td> <td> 18/08/2007 </td> <td class="episode-lang">  <span class="flags_peq spa" title="Español"></span>  </td> <td class="score"> 8 </td> </tr>
-    matches = re.compile('<tr[^<]+<td class="episode-title.*?<a href="([^"]+)"[^<]+<strong>([^<]+)</strong>(.*?)</a>(.*?)</tr>', re.S).findall(item.extra)
+    #<tr> <td class="episode-title">
+    #<span class="downloads allkind" title="SÃ³lo disponibles enlaces a visualizaciones"></span>
+    #<a class="episodeLink p1" href="/capitulo/pretty-little-liars/Piloto/130389">
+    #<strong> 1x1 </strong> - Piloto
+    #</a>
+    #</td>
+
+#    matches = re.compile('<tr[^<]+<td class="episode-title.*?<a href="([^"]+)"[^<]+<strong>([^<]+)</strong>(.*?)</a>(.*?)</tr>', re.S).findall(item.extra)
+    matches = re.compile('<tr[^<]+<td class="episode-title.*?<a[^h]+href="([^"]+)"[^<]+<strong>([^<]+)</strong>(.*?)</a>(.*?)</tr>', re.S).findall(item.extra)
     scrapertools.printMatches(matches)
     
     itemlist=[]
