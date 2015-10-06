@@ -11,7 +11,7 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
-from core import unpackerjs
+from core import jsunpack
 
 def test_video_exists( page_url ):
     logger.info("pelisalacarta.gamovideo test_video_exists(page_url='%s')" % page_url)
@@ -24,7 +24,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     data = scrapertools.cache_page(page_url)
     data = scrapertools.find_single_match(data,"<script type='text/javascript'>(.*?)</script>")
-    data = unpackerjs.unpackjs(data)
+    data = jsunpack.unpack(data)
     
     host = scrapertools.get_match(data, 'image:"(http://[^/]+/)')
     flv_url = scrapertools.get_match(data, ',\{file:"([^"]+)"')
@@ -35,10 +35,8 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     video_urls.append([scrapertools.get_filename_from_url(flv)[-4:]+" [gamovideo]",flv])
     #video_urls.append(["RTMP [gamovideo]",rtmp_url])      
 
-
     for video_url in video_urls:
         logger.info("[gamovideo.py] %s - %s" % (video_url[0],video_url[1]))
-        
 
     return video_urls
 
@@ -48,6 +46,7 @@ def find_videos(data):
     devuelve = []
 
     # http://gamovideo.com/auoxxtvyoy
+    # http://gamovideo.com/h1gvpjarjv88
     patronvideos  = 'gamovideo.com/([a-z0-9]+)'
     logger.info("pelisalacarta.gamovideo find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)

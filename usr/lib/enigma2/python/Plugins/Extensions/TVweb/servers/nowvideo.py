@@ -112,7 +112,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
         location = scrapertools.get_match(data,'<source src="([^"]+)" type="video/flv">')
         video_urls.append( [ "[nowvideo]",location ] )
         '''
-        video_urls.append( [ "[nowvideo]",data ] )
+        video_urls.append( [ scrapertools.get_filename_from_url(data)[-4:]+" [nowvideo]",data ] )
 
     for video_url in video_urls:
         logger.info("[nowvideo.py] %s - %s" % (video_url[0],video_url[1]))

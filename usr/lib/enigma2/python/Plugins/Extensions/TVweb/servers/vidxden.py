@@ -11,7 +11,6 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
-from core import unpackerjs
 
 def test_video_exists( page_url ):
     logger.info("[vidxden.py] test_video_exists(page_url='%s')" % page_url)
@@ -57,8 +56,9 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
         return ""
     
     # Lo descifra
-    descifrado = unpackerjs.unpackjs(data)
-    
+    from core import jsunpack
+    descifrado = jsunpack.unpack(data)
+
     # Extrae la URL del vídeo
     logger.info("descifrado="+descifrado)
     # Extrae la URL

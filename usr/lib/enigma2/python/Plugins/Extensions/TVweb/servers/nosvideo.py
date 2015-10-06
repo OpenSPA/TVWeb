@@ -47,8 +47,8 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     # Saca el bloque packed y lo descifra
     packed = scrapertools.get_match(data,"(<script type='text/javascript'>eval\(function\(p,a,c,k,e,d\).*?</script>)")
-    from core import unpackerjs
-    unpacked = unpackerjs.unpackjs(packed)
+    from core import jsunpack
+    unpacked = jsunpack.unpack(packed)
     logger.info("unpacked="+unpacked)
     
     # Extrae el descriptor

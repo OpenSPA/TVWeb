@@ -32,13 +32,8 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     '''
     logger.info("[filebox.py] URL ")
     data = scrapertools.cache_page(page_url)
-    # Espera los 5 segundos
-    try:
-        from platformcode.xbmc import xbmctools
-        xbmctools.handle_wait(5,"filebox",'')
-    except:
-        import time
-        time.sleep(5)
+    import time
+    time.sleep(5)
 
     codigo = scrapertools.get_match(data,'<input type="hidden" name="id" value="([^"]+)">[^<]+')
     rand = scrapertools.get_match(data,'<input type="hidden" name="rand" value="([^"]+)">')

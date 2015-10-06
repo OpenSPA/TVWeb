@@ -20,21 +20,11 @@ def test_video_exists( page_url ):
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
     logger.info("pelisalacarta.videomega get_video_url(page_url='%s')" % page_url)
 
-    data = scrapertools.cache_page(page_url)
-
+    #data = scrapertools.cache_page(page_url)
+    data = scrapertools.downloadpage(page_url,follow_redirects=False)
     video_urls = []
-    # Descarga la página
-    headers = [ ['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'] ]
-    data = scrapertools.cache_page(page_url , headers = headers)
 
-    #document.write(unescape("%3c%73%63%72%69%70%74%20%74e"));
-    location = scrapertools.get_match(data,'document.write\(unescape\("([^"]+)"\)\)')
-    logger.info("pelisalacarta.videomega location="+location)
-    location = urllib.unquote(location)
-    logger.info("pelisalacarta.videomega location="+location)
-    location = scrapertools.get_match(location,'file\: "([^"]+)"')
-    logger.info("pelisalacarta.videomega location="+location)
-    location = location+"&start=0"
+    location = scrapertools.find_single_match(data,'<source src="([^"]+)"')
     logger.info("pelisalacarta.videomega location="+location)
 
     #http://st100.u1.videomega.tv/v/bf38b3577874d7ce424c1c87d6d1b8d9.mp4?st=kuiAz1XJ7XFzOCnaleGVxA&start=0
@@ -52,13 +42,13 @@ def find_videos(data):
     devuelve = []
 
     # http://videomega.net/auoxxtvyoy
-    patronvideos  = 'videomega.tv/iframe.php\?ref\=([A-Za-z0-9]+)'
+    patronvideos  = 'videomega.tv/([A-Za-z0-9]+)'
     logger.info("pelisalacarta.videomega find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
         titulo = "[videomega]"
-        url = "http://videomega.tv/iframe.php?ref="+match
+        url = "http://videomega.tv/view.php?ref="+match+"&width=100%&height=400"
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'videomega' ] )
@@ -73,7 +63,7 @@ def find_videos(data):
 
     for match in matches:
         titulo = "[videomega]"
-        url = "http://videomega.tv/iframe.php?ref="+match
+        url = "http://videomega.tv/view.php?ref="+match+"&width=100%&height=400"
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'videomega' ] )
@@ -88,14 +78,13 @@ def find_videos(data):
 
     for match in matches:
         titulo = "[videomega]"
-        url = "http://videomega.tv/iframe.php?ref="+match
+        url = "http://videomega.tv/view.php?ref="+match+"&width=100%&height=400"
         if url not in encontrados:
             logger.info("  url="+url)
             devuelve.append( [ titulo , url , 'videomega' ] )
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)
-            
             
     return devuelve
 

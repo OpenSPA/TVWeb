@@ -59,11 +59,19 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     # Extrae la URL
     data = scrapertools.find_single_match(data,"<script type='text/javascript'>(.*?)</script>")
     data = jsunpack.unpack(data)
+
+    data = scrapertools.find_single_match(data,"sources\=\[([^\]]+)\]")
     data = data.replace("\\","")
 
-    media_url = scrapertools.find_single_match(data,"file:'([^']+)'")
+    '''
+    {image:image,tracks:tracks,file:'rtmp://5.39.70.113:19350/vod/mp4:01/00219/dw5tbqp6dr3i_n?h=m4ohputqpiikkfn2mda7ymaimgo5n34f7uvpizy5vkjn7ifqrv6y2y6n5y',description:'dw5tbqp6dr3i'},
+    {image:image,tracks:tracks,file:'http://powvideo.net/m4ohputqpiikkfn2mda7ymaimgo5n34f7uvpizy5vkjn7ifqrv6y2y6n5y.m3u8',description:'dw5tbqp6dr3i'},{image:image,tracks:tracks,file:'http://5.39.70.113:8777/m4ohputqpiikkfn2mda7ymaimgo5n34f7uvpizy5vkjn7ifqrv6y2y6n5y/v.mp4',description:'dw5tbqp6dr3i'}
+    '''
+    patron = "file:'([^']+)'"
+    matches = re.compile(patron,re.DOTALL).findall(data)
     video_urls = []
-    video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [powvideo]",media_url])
+    for match in matches:
+        video_urls.append( [ scrapertools.get_filename_from_url(match)[-4:]+" [powvideo]",match])
 
     for video_url in video_urls:
         logger.info("[powvideo.py] %s - %s" % (video_url[0],video_url[1]))

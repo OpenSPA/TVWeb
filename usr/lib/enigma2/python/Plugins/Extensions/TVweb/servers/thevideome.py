@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------
 # pelisalacarta - XBMC Plugin
-# Conector para realvid
+# Conector para thevideo.me
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
 
@@ -14,17 +14,20 @@ from core import config
 from core import jsunpack
 
 def test_video_exists( page_url ):
-    logger.info("[realvid.py] test_video_exists(page_url='%s')" % page_url)
+    logger.info("pelisalacarta.servers.thevideome test_video_exists(page_url='%s')" % page_url)
     return True,""
 
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
-    logger.info("[realvid.py] url="+page_url)
+    logger.info("pelisalacarta.servers.thevideome url="+page_url)
     if not "embed" in page_url:
-      page_url = page_url.replace("http://realvid.net/","http://realvid.net/embed-") + ".html"
+      page_url = page_url.replace("http://vodlocker.com/","http://vodlocker.com/embed-") + ".html"
+    
     data = scrapertools.cache_page( page_url )
-    media_url = scrapertools.get_match(data,'file: "([^"]+)",')
+    media_urls = scrapertools.find_multiple_matches(data,"'label'\s*\:\s*'([^']+)'\s*\,\s*'file'\s*\:\s*'([^']+)'")
     video_urls = []
-    video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [realvid]",media_url])
+
+    for label,media_url in media_urls:
+        video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" ("+label+") [thevideo.me]",media_url])
 
     return video_urls
 
@@ -34,30 +37,30 @@ def find_videos(data):
     encontrados = set()
     devuelve = []
 
-    patronvideos  = 'realvid.net/embed-([a-z0-9A-Z]+)'
-    logger.info("[realvid.py] find_videos #"+patronvideos+"#")
+    patronvideos  = 'thevideo.me/embed-([a-z0-9A-Z]+)'
+    logger.info("pelisalacarta.servers.thevideome find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
-        titulo = "[realvid]"
-        url = "http://realvid.net/embed-"+match+".html"
+        titulo = "[thevideo.me]"
+        url = "http://thevideo.me/embed-"+match+".html"
         if url not in encontrados:
             logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'realvid' ] )
+            devuelve.append( [ titulo , url , 'thevideome' ] )
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)
             
-    patronvideos  = 'realvid.net/([a-z0-9A-Z]+)'
-    logger.info("[realvid.py] find_videos #"+patronvideos+"#")
+    patronvideos  = 'thevideo.me/([a-z0-9A-Z]+)'
+    logger.info("pelisalacarta.servers.thevideome find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
-        titulo = "[realvid]"
-        url = "http://realvid.net/embed-"+match+".html"
+        titulo = "[thevideo.me]"
+        url = "http://thevideo.me/embed-"+match+".html"
         if url not in encontrados:
             logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'realvid' ] )
+            devuelve.append( [ titulo , url , 'thevideome' ] )
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)
@@ -65,6 +68,6 @@ def find_videos(data):
 
 def test():
 
-    video_urls = get_video_url("http://realvid.net/embed-m4snvxoc2tsn.html")
+    video_urls = get_video_url("http://thevideo.me/embed-dwjga2jngh0n.html")
 
     return len(video_urls)>0

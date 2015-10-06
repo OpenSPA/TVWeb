@@ -39,7 +39,8 @@ def find_videos(data):
     devuelve = []
 
     #http://www5.zippyshare.com/v/11178679/file.html
-    patronvideos  = '([a-z0-9]+\.zippyshare.com/v/\d+/file.html)'
+    #http://www52.zippyshare.com/v/hPYzJSWA/file.html
+    patronvideos  = '([a-z0-9]+\.zippyshare.com/v/[a-zA-Z0-9]+/file.html)'
     logger.info("[zippyshare.py] find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 

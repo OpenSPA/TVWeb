@@ -127,7 +127,8 @@ def find_videos(data):
         '/netu/tv/embed_(.*?$)',
         'hqq.tv/[^=]+=([A-Z0-9]+)',
         'netu.tv/[^=]+=([A-Z0-9]+)',
-        'waaw.tv/[^=]+=([A-Z0-9]+)'
+        'waaw.tv/[^=]+=([A-Z0-9]+)',
+        'netu.php\?nt=([A-Z0-9]+)'
     ]
 
     if '/netu/tv/embed_' in data:

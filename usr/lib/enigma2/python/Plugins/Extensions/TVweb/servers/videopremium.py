@@ -46,8 +46,8 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     logger.info("packed="+packed)
 
-    from core import unpackerjs
-    unpacked = unpackerjs.unpackjs(packed)
+    from core import jsunpack
+    unpacked = jsunpack.unpack(packed)
     logger.info("unpacked="+unpacked)
     '''
     23:47:40 T:2955980800  NOTICE: unpacked=('var vast=\'\';var flashvars={"comment":"VideoPremium.NET","st":"http://videopremium.net/uplayer/styles/video156-623.txt",

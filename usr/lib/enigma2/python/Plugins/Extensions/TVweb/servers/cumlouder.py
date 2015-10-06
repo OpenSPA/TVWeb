@@ -11,7 +11,6 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
-from core import jsunpack
 
 def test_video_exists( page_url ):
     logger.info("[cumlouder.py] test_video_exists(page_url='%s')" % page_url)

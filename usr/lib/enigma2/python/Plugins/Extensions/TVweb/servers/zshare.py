@@ -11,7 +11,6 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
-from core import unpackerjs2
 
 def geturl(urlvideo):
     logger.info("[zshare.py] url="+urlvideo)
@@ -228,7 +227,8 @@ def geturl(urlvideo):
     #http://76.73.45.206:182/d/pfq3vaf2xypwtrv77uw334hb55ctx5qa5wdfa/Capitancinema.com.-El_Concierto__BrSc__Spanish_HOMIEZTEAM__2010_.avi
     
     # Lo descifra
-    descifrado = unpackerjs2.unpackjs(data)
+    from core import jsunpack
+    descifrado = jsunpack.unpack(data)
     logger.info("descifrado="+descifrado)
     
     # Extrae la URL

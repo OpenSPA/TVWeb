@@ -11,7 +11,6 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
-from core import unpackerjs
 
 def test_video_exists( page_url ):
     logger.info("[streamcloud.py] test_video_exists(page_url='%s')" % page_url)
@@ -31,14 +30,6 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     #logger.info("data="+data)
 
     logger.info("[streamcloud.py] Esperando 10 segundos...")
-
-    '''
-    Esto cuelga XBMC en algunos casos?
-    try:
-        from platformcode.xbmc import xbmctools
-        xbmctools.handle_wait(12,"streamcloud",'')
-    except:
-    '''
     import time
     time.sleep(12)
 

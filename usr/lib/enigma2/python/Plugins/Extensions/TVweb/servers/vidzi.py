@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------
 # pelisalacarta - XBMC Plugin
-# Conector para realvid
+# Conector para vidzi
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
 
@@ -14,17 +14,18 @@ from core import config
 from core import jsunpack
 
 def test_video_exists( page_url ):
-    logger.info("[realvid.py] test_video_exists(page_url='%s')" % page_url)
+    logger.info("pelisalacarta.servers.vidzi test_video_exists(page_url='%s')" % page_url)
     return True,""
 
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
-    logger.info("[realvid.py] url="+page_url)
+    logger.info("pelisalacarta.servers.vidzi url="+page_url)
     if not "embed" in page_url:
-      page_url = page_url.replace("http://realvid.net/","http://realvid.net/embed-") + ".html"
+      page_url = page_url.replace("http://vidzi.tv/","http://vidzi.tv/embed-") + ".html"
+    
     data = scrapertools.cache_page( page_url )
     media_url = scrapertools.get_match(data,'file: "([^"]+)",')
     video_urls = []
-    video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [realvid]",media_url])
+    video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [vidzi]",media_url])
 
     return video_urls
 
@@ -34,30 +35,30 @@ def find_videos(data):
     encontrados = set()
     devuelve = []
 
-    patronvideos  = 'realvid.net/embed-([a-z0-9A-Z]+)'
-    logger.info("[realvid.py] find_videos #"+patronvideos+"#")
+    patronvideos  = 'vidzi.tv/embed-([a-z0-9A-Z]+)'
+    logger.info("pelisalacarta.servers.vidzi find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
-        titulo = "[realvid]"
-        url = "http://realvid.net/embed-"+match+".html"
+        titulo = "[vidzi]"
+        url = "http://vidzi.tv/embed-"+match+".html"
         if url not in encontrados:
             logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'realvid' ] )
+            devuelve.append( [ titulo , url , 'vidzi' ] )
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)
             
-    patronvideos  = 'realvid.net/([a-z0-9A-Z]+)'
-    logger.info("[realvid.py] find_videos #"+patronvideos+"#")
+    patronvideos  = 'vidzi.tv/([a-z0-9A-Z]+)'
+    logger.info("pelisalacarta.servers.vidzi find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
     for match in matches:
-        titulo = "[realvid]"
-        url = "http://realvid.net/embed-"+match+".html"
+        titulo = "[vidzi]"
+        url = "http://vidzi.tv/embed-"+match+".html"
         if url not in encontrados:
             logger.info("  url="+url)
-            devuelve.append( [ titulo , url , 'realvid' ] )
+            devuelve.append( [ titulo , url , 'vidzi' ] )
             encontrados.add(url)
         else:
             logger.info("  url duplicada="+url)
@@ -65,6 +66,6 @@ def find_videos(data):
 
 def test():
 
-    video_urls = get_video_url("http://realvid.net/embed-m4snvxoc2tsn.html")
+    video_urls = get_video_url("http://vidzi.tv/embed-b44xh3bd3fjd.html")
 
     return len(video_urls)>0

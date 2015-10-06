@@ -11,7 +11,7 @@ import os
 from core import scrapertools
 from core import logger
 from core import config
-from core import unpackerjs
+from core import jsunpack
 import time
 
 def test_video_exists( page_url ):
@@ -44,7 +44,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     
     # Extrae la URL del vídeo
     logger.info("cifrado="+cifrado)
-    descifrado = unpackerjs.unpackjs(cifrado)
+    descifrado = jsunpack.unpack(cifrado)
     descifrado = descifrado.replace("\\","")
     logger.info("descifrado="+descifrado)
     

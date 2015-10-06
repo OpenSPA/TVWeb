@@ -20,17 +20,19 @@ def get_video_url( page_url , premium = False , user="" , password="" , video_pa
 
     media_url_xbmctorrent = "plugin://plugin.video.xbmctorrent/play/%s" % urllib.quote_plus(link)
     media_url_pulsar = "plugin://plugin.video.pulsar/play?uri=%s" % urllib.quote_plus(link)
+    media_url_stream = "plugin://plugin.video.stream/play/%s" % urllib.quote_plus(link)
 
     video_urls = [
          [ "[xbmctorrent] %s" % (name), media_url_xbmctorrent ],
-         [ "[pulsar] %s" % (name), media_url_pulsar ]
+         [ "[pulsar] %s" % (name), media_url_pulsar ],
+         [ "[stream] %s" % (name), media_url_stream ]
      ]
 
     return video_urls
 
 def from_torrent_url(url):
     import base64
-    import bencode
+    from lib import bencode
     import hashlib
     print "#### url: %s" % (url)
     torrent_data = url_get(url)
