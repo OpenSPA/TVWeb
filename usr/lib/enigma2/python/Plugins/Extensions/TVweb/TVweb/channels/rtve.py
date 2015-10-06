@@ -116,7 +116,8 @@ def secciones(item):
     data = scrapertools.cachePage(item.url)
 
     # Extrae las categorias de programas
-    patron  = '<li><a title="Seleccionar[^"]+" href="/alacarta/programas/tve/([^/]+)/1/"><span>([^<]+)</span></a></li>'
+    #patron  = '<li><a title="Seleccionar[^"]+" href="/alacarta/programas/tve/([^/]+)/1/"><span>([^<]+)</span></a></li>'
+    patron = 'href="/alacarta/programas/tve/([^/]+)/1/"[^<]+<span>([^<]+)</span></a>'
     matches = re.findall(patron,data,re.DOTALL)
     if DEBUG: scrapertools.printMatches(matches)
 
@@ -132,6 +133,8 @@ def secciones(item):
         if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
 	if "Música" in scrapedtitle: append = False  # No añade las secciones d emusica
 	if "Informativo" in scrapedtitle: append = True # añade los informativos
+	if "Documentales" in scrapedtitle: append = True
+	if "Series" in scrapedtitle: append = True
 	if scrapedtitle != "Infantiles" and append == True:  # No añade tampoco la seccion Infantil que esta en ClanTV      
 		itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="programas" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , extra = item.extra + "/" + scrapedextra + "/1" , category = scrapedtitle ) )
 
@@ -394,10 +397,13 @@ def play(item):
     #urlimg = 'http://www.rtve.es/ztnr/movil/thumbnail/mandulis/videos/'+codigo+'.png'
 
     try :        
-        from lib import simplejson
+#        from lib import simplejson
         data = scrapertools.cachePage("http://www.rtve.es/odin/loki/TW96aWxsYS81LjAgKExpbnV4OyBVOyBBbmRyb2lkIDQuMC4zOyBlcy1lczsgTlZTQkwgVk9SVEVYIEJ1aWxkL0lNTDc0SykgQXBwbGVXZWJLaXQvNTM0LjMwIChLSFRNTCwgbGlrZSBHZWNrbykgVmVyc2lvbi80LjAgTW9iaWxlIFNhZmFyaS81MzQuMzA=/")                        
-        json_data = simplejson.loads(data)
-        manager=json_data["manager"]
+#        json_data = simplejson.loads(data)
+#        manager=json_data["manager"]
+	patron = '{"manager":"([^"]+)"}'
+	matches = re.compile(patron,re.DOTALL).findall(data)
+	manager = matches[0]
     except:
 	manager="mandulis"
 
