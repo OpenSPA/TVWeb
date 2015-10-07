@@ -22,15 +22,13 @@ __language__ = "ES"
 DEBUG = config.get_setting("debug")
 
 HEADER = [
-    ["Host","www.yaske.to"],
+    ["Host","www.yaske.cc"],
     ["Connection","keep-alive"],
     ["Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"],
     ["User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36"],
-    ["Referer","http://www.yaske.to/"],
+    ["Referer","http://www.yaske.cc/"],
     ["Accept-Encoding","gzip,deflate,sdch"],
     ["Accept-Language","es-ES,es;q=0.8"],
-    ["Cookie","__cfduid=dcf14adcea14f105833e0c38de7999a861410939223081"],
-    ["Cookie","cf_clearance=2dc08b26953b29da13be0c136b312edc1280ed39-1414787651-900"]
 ]
 
 def isGeneric():
@@ -40,11 +38,11 @@ def mainlist(item):
     logger.info("pelisalacarta.yaske mainlist")
 
     itemlist = []
-    itemlist.append( Item(channel=__channel__, title="Novedades"          , action="peliculas",       url="http://www.yaske.to/"))
-    itemlist.append( Item(channel=__channel__, title="Por año"            , action="menu_buscar_contenido",      url="http://www.yaske.to/", extra="year"))
-    itemlist.append( Item(channel=__channel__, title="Por género"         , action="menu_buscar_contenido", url="http://www.yaske.to/", extra="gender"))
-    itemlist.append( Item(channel=__channel__, title="Por calidad"        , action="menu_buscar_contenido",  url="http://www.yaske.to/", extra="quality"))
-    itemlist.append( Item(channel=__channel__, title="Por idioma"         , action="menu_buscar_contenido",    url="http://www.yaske.to/", extra="language"))
+    itemlist.append( Item(channel=__channel__, title="Novedades"          , action="peliculas",       url="http://www.yaske.cc/"))
+    itemlist.append( Item(channel=__channel__, title="Por año"            , action="menu_buscar_contenido",      url="http://www.yaske.cc/", extra="year"))
+    itemlist.append( Item(channel=__channel__, title="Por género"         , action="menu_buscar_contenido", url="http://www.yaske.cc/", extra="gender"))
+    itemlist.append( Item(channel=__channel__, title="Por calidad"        , action="menu_buscar_contenido",  url="http://www.yaske.cc/", extra="quality"))
+    itemlist.append( Item(channel=__channel__, title="Por idioma"         , action="menu_buscar_contenido",    url="http://www.yaske.cc/", extra="language"))
     itemlist.append( Item(channel=__channel__, title="Buscar"             , action="search") )
 
     return itemlist
@@ -55,7 +53,7 @@ def search(item,texto):
     itemlist = []
 
     try:
-        item.url = "http://www.yaske.to/es/peliculas/search/%s"
+        item.url = "http://www.yaske.cc/es/peliculas/search/%s"
         item.url = item.url % texto
         item.extra = ""
         itemlist.extend(peliculas(item))
@@ -139,7 +137,7 @@ def menu_buscar_contenido(item):
         scrapedthumbnail = ""
         scrapedplot = ""
 
-        url = "http://www.yaske.net/es/peliculas/custom/?"+item.extra+"="+scrapedurl
+        url = "http://www.yaske.cc/es/peliculas/custom/?"+item.extra+"="+scrapedurl
 
         itemlist.append( Item(channel=__channel__, action="peliculas", title=scrapedtitle , url=url , thumbnail=scrapedthumbnail , plot=scrapedplot , folder=True) )
 
