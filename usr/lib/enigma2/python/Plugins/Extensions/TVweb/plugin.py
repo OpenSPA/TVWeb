@@ -845,7 +845,7 @@ class TVweb(Screen):
 
         self.Thumbnaillist = []
         self.itemlist = []
-	self.listado = []
+        self.listado = []
         self.currPage = -1
         self.maxPage = 0
 
@@ -1174,7 +1174,7 @@ def tvlistEntry(entry):
 
 	else:
 		textoposx=3
-	res.append((eListboxPythonMultiContent.TYPE_TEXT,textoposx,fhd(4),fhd(640),fhd(30),fhd(0),RT_HALIGN_LEFT,entry[0]))
+	res.append((eListboxPythonMultiContent.TYPE_TEXT,fhd(textoposx),fhd(4),fhd(640),fhd(30),0,RT_HALIGN_LEFT,entry[0]))
 	return res 
 
 #------------------------------------------------------------------------------------------
@@ -1206,23 +1206,23 @@ class TVweb2(Screen):
         self.textcolor = "#00000000"
         self.bgcolor = "#00ffffff"
         self.textsize = 20
-	self.olditem = item
-	self.index = 0
+        self.olditem = item
+        self.index = 0
 
 
         # Screen, backgroundlabel and MovingPixmap
         if esHD():
             self.skin = "<screen position=\"0,0\" size=\"" + str(size_w) + "," + str(size_h) + "\" flags=\"wfNoBorder\" title=\"TVweb\">"+BASESKIN+" \
                 <widget name=\"image1\" position=\"744,35\" size=\"119,110\" zPosition=\"4\" transparent=\"1\" alphatest=\"blend\" /> \
-                <ePixmap name=\"linea4\" position=\"87,732\" size=\"615,3\" pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png\" alphatest=\"blend\" /> \
+                <ePixmap name=\"linea4\" position=\"87,712\" size=\"615,3\" pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/linea-fs8.png\" alphatest=\"blend\" /> \
                 <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/marcotvHD-fs8.png\" zPosition=\"5\" position=\"735,24\" size=\"134,126\" alphatest=\"blend\" /> \
-                <widget name=\"thumbnail\" position=\"95,513\" size=\"243,209\" zPosition=\"4\" transparent=\"1\" alphatest=\"blend\" /> \
+                <widget name=\"thumbnail\" position=\"95,513\" size=\"227,195\" zPosition=\"4\" transparent=\"1\" alphatest=\"blend\" /> \
                 <widget name=\"seltitle\" position=\"345,513\" size=\"345,209\" zPosition=\"5\" valign=\"center\" halign=\"left\" backgroundColor=\"#00e0e0e0\" font=\"Regular;19\" transparent=\"1\" foregroundColor=\"#00134270\" /> \
-                <widget name=\"selplot\" position=\"95,744\" size=\"596,215\" zPosition=\"5\" backgroundColor=\"#00e0e0e0\" font=\"Regular;17\" transparent=\"1\" foregroundColor=\"" + self.textcolor + "\" /> \
-                <widget name=\"key_blue\" position=\""+ str(size_w-225+60) +",998\" zPosition=\"3\" size=\"210,36\" font=\"Regular;19\" halign=\"left\" backgroundColor=\"#1f771f\" transparent=\"1\" foregroundColor=\"#00000000\" /> \
-                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blue.png\" zPosition=\"2\" position=\""+ str(size_w-200) +",998\" size=\"210,36\" alphatest=\"blend\" /> \
+                <widget name=\"selplot\" position=\"95,724\" size=\"596,235\" zPosition=\"5\" backgroundColor=\"#00e0e0e0\" font=\"Regular;17\" transparent=\"1\" foregroundColor=\"" + self.textcolor + "\" /> \
+                <widget name=\"key_blue\" position=\""+ str(size_w-315+60) +",998\" zPosition=\"3\" size=\"210,36\" font=\"Regular;19\" halign=\"left\" backgroundColor=\"#1f771f\" transparent=\"1\" foregroundColor=\"#00000000\" /> \
+                <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/blueHD.png\" zPosition=\"2\" position=\""+ str(size_w-300) +",998\" size=\"210,36\" alphatest=\"blend\" /> \
                 <ePixmap pixmap=\"/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/scrollHD-fs8.png\" zPosition=\"3\" position=\"1649,147\" size=\"38,837\" alphatest=\"blend\" /> \
-                <widget name=\"listado\" transparent=\"1\" position=\"863,147\" zPosition=\"2\" size=\"824,837\" scrollbarMode=\"showAlways\" foregroundColor=\"#000000\" backgroundColor=\"#00e0e0e0\" foregroundColorSelected=\"#00dddefa\"/> \
+                <widget name=\"listado\" transparent=\"1\" position=\"863,152\" zPosition=\"2\" size=\"824,805\" scrollbarMode=\"showAlways\" foregroundColor=\"#000000\" backgroundColor=\"#00e0e0e0\" foregroundColorSelected=\"#00dddefa\"/> \
                </screen>"
 
         else:
@@ -1272,7 +1272,7 @@ class TVweb2(Screen):
 	self.img0="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/item.png"
 	if fileExists(self.img0):
 		sc = AVSwitch().getFramebufferScale()
-		self.picload2.setPara((162, 139, sc[0], sc[1], False, 1, "#00e0e0e0"))
+		self.picload2.setPara((fhd(162,1.4), fhd(139,1.4), sc[0], sc[1], False, 1, "#00e0e0e0"))
 		self.picload2.startDecode(self.img0)
 	self.inicio=True
 
@@ -1297,7 +1297,7 @@ class TVweb2(Screen):
 		if fileExists(img1):
 			sc = AVSwitch().getFramebufferScale()
 			# mpiero icono arriba tamano
-			self.picload.setPara((79,73, sc[0], sc[1], 0, 1, "#00e0e0e0"))
+			self.picload.setPara((fhd(79),fhd(73), sc[0], sc[1], 0, 1, "#00e0e0e0"))
 			self.picload.startDecode(img1)
 	self.onShow.append(self.relist)
 	
@@ -1628,7 +1628,7 @@ class TVweb2(Screen):
 	filename = self.thumbnails[index]
 	if fileExists(filename) and not self.inicio:
 		print "[TVweb] DECODING THUMBNAIL file: " +filename
-		self.picload2.setPara((162, 139, sc[0], sc[1], False, 1, "#00e0e0e0"))
+		self.picload2.setPara((fhd(162), fhd(139), sc[0], sc[1], False, 1, "#00e0e0e0"))
 		self.picload2.startDecode(filename)
 	self.inicio=False
 	self["seltitle"].setText(self.itemlist[index][3])
@@ -1839,11 +1839,11 @@ class MovieInfoScreen(Screen):
 		skin = """<screen name="MovieInfoScreen" position="0,0" size="1920,1080" flags="wfNoBorder" title="TVweb" backgroundColor="black">"""+BASESKIN + """
 			<widget name="image1" position="744,35" size="119,110" zPosition="4" transparent="1" alphatest="blend" /> 
 			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/marcotvHD-fs8.png" zPosition="5" position="735,24" size="134,126" alphatest="blend" /> 
-			<widget name="trailerimg" position="881,215" zPosition="3" size="456,308" transparent="1" alphatest="blend" /> 
+			<widget name="trailerimg" position="881,210" zPosition="3" size="456,308" transparent="1" alphatest="blend" /> 
 			<widget source="trailertitle" transparent="1" render="Label" zPosition="2" valign="center" halign="left" position="881,159" size="792,39" font="Regular; 19" backgroundColor="white" foregroundColor="#00134270" noWrap="1" /> 
 			<widget source="message" transparent="1" render="Label" zPosition="2" position="1356,215" size="317,165" font="Regular;18" backgroundColor="white" foregroundColor="#00555555" halign="right" /> 
-			<widget source="urltitle" transparent="1" render="Label" zPosition="2" position="880,876" size="69,30" font="Regular;18" backgroundColor="white" foregroundColor="#00777777" noWrap="1" halign="left" /> 
-			<widget source="url" transparent="1" render="Label" zPosition="2" position="880,906" size="799,64" font="Regular;17" backgroundColor="white" foregroundColor="black" /> 
+			<widget source="urltitle" transparent="1" render="Label" zPosition="2" position="880,873" size="69,30" font="Regular;18" backgroundColor="white" foregroundColor="#00777777" noWrap="1" halign="left" /> 
+			<widget source="url" transparent="1" render="Label" zPosition="2" position="880,903" size="799,75" font="Regular;15" backgroundColor="white" foregroundColor="black" /> 
 			<widget source="trailertext" transparent="1" render="Label" zPosition="2" valign="top" halign="left" position="880,547" size="798,307" font="Regular; 20" backgroundColor="white" foregroundColor="black" /> 
 			<widget name="key_green" position="172,577" zPosition="3" size="417,36" font="Regular; 20" halign="left" backgroundColor="white" transparent="1" foregroundColor="black" valign="center" /> 
 			<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/TVweb/images/greenHD.png" zPosition="2" position="127,577" size="36,36" alphatest="blend" /> 
@@ -1960,7 +1960,7 @@ class MovieInfoScreen(Screen):
 		# Init ePicLoad
 		self.picload = ePicLoad()
 		self.picload.PictureData.get().append(self.showPosterPixmap)
-		self.picload.setPara((310,219, sc[0], sc[1], 0, 1, "#00e0e0e0"))
+		self.picload.setPara((fhd(310),fhd(219), sc[0], sc[1], 0, 1, "#00e0e0e0"))
 
 		self.picload.startDecode(fileimage)
 		#self.onFirstExecBegin.append(self.GetMovieInfo)
@@ -1971,7 +1971,7 @@ class MovieInfoScreen(Screen):
 			if fileExists(img1):
 				sc = AVSwitch().getFramebufferScale()
 			# mpiero icono arriba tamano
-				self.picload2.setPara((79,73, sc[0], sc[1], 0, 1, "#00e0e0e0"))
+				self.picload2.setPara((fhd(79),fhd(73), sc[0], sc[1], 0, 1, "#00e0e0e0"))
 				self.picload2.startDecode(img1)
 
 
