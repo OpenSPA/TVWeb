@@ -30,52 +30,85 @@ def mainlist(item):
     logger.info("[newpct.py] mainlist")
 
     itemlist = []
-    itemlist.append( Item(channel=__channel__, action="submenu" , title="Películas", url="http://www.newpct.com/include.inc/load.ajax/load.topbar.php?userName=", extra="Peliculas" ))
-    itemlist.append( Item(channel=__channel__, action="submenu" , title="Series"   , url="http://www.newpct.com/include.inc/load.ajax/load.topbar.php?userName=", extra="Series" ))
-    #itemlist.append( Item(channel=__channel__, action="search"    , title="Buscar" ))
+    itemlist.append( Item(channel=__channel__, action="submenu" , title="Películas"))
+    itemlist.append( Item(channel=__channel__, action="submenu" , title="Series"))
+    itemlist.append( Item(channel=__channel__, action="listado" , title="Anime"   , url="http://www.newpct.com/anime/" ))
+    itemlist.append( Item(channel=__channel__, action="listado" , title="Documentales"   , url="http://www.newpct.com/documentales/"))
+    itemlist.append( Item(channel=__channel__, action="search"    , title="Buscar" ))
   
     return itemlist
 
 def search(item,texto):
     logger.info("[newpct.py] search")
-    if item.url=="":
-        item.url="http://jkanime.net/buscar/%s/"
     texto = texto.replace(" ","+")
-    item.url = item.url % texto
+    
+    item.url = "http://www.newpct.com/buscar-descargas/%s" % (texto)
     try:
-        return series(item)
-    # Se captura la excepción, para no interrumpir al buscador global si un canal falla
+        return buscador(item)
+    # Se captura la excepciÛn, para no interrumpir al buscador global si un canal falla
     except:
         import sys
         for line in sys.exc_info():
             logger.error( "%s" % line )
         return []
 
+def buscador(item):
+    logger.info("[newpct.py] buscador")
+    itemlist = []
+    
+    # Descarga la página
+    data = scrapertools.cache_page(item.url)
+    data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
+    
+    #<td class="center" style="border-bottom:solid 1px cyan;">14-09-14</td><td style="border-bottom:solid 1px cyan;"><strong><a href="http://www.newpct.com/descargar-pelicula/malefica-3d-sbs/" title="M&aacute;s informaci&oacute;n sobre Malefica 3D SBS [BluRay 1080p][DTS 5.1-AC3 5.1 Castellano DTS 5.1-Ingles+Subs][ES-EN]"> <span class="searchTerm">Malefica</span> 3D SBS [BluRay 1080p][DTS 5.1-AC3 5.1 Castellano DTS 5.1-Ingles+Subs][ES-EN]</a></strong></td><td class="center" style="border-bottom:solid 1px cyan;">10.9 GB</td><td style="border-bottom:solid 1px cyan;"><a href="http://tumejorserie.com/descargar/index.php?link=torrents/059784.torrent" title="Descargar Malefica 3D SBS [BluRay 1080p][DTS 5.1-AC3 5.1 Castellano DTS 5.1-Ingles+Subs][ES-EN]"><img src="http://newpct.com/v2/imagenes//buttons/download.png"
+    
+    patron =  '<td class="center" style="border-bottom:solid 1px cyan;">([^<]+)</td>.*?' #createdate
+    patron += '<td class="center" style="border-bottom:solid 1px cyan;">([^<]+)</td>.*?' #info
+    patron += '<a href="([^"]+)" '                                                       #url
+    patron += 'title="Descargar([^"]+)">'                                                #title
+    patron += '<img src="([^"]+)"'                                                       #thumbnail
+    
+    
+    matches = re.compile(patron,re.DOTALL).findall(data)
+    scrapertools.printMatches(matches)
+    
+    for scrapedcreatedate, scrapedinfo, scrapedurl, scrapedtitle, scrapedthumbnail in matches:
+        scrapedtitle = scrapedtitle + "(Tamaño:" + scrapedinfo + "--" + scrapedcreatedate+")"
+        itemlist.append( Item(channel=__channel__, title=scrapedtitle, url=scrapedurl, action="play", server="torrent", thumbnail=scrapedthumbnail, fulltitle=scrapedtitle, folder=True) )
+    
+    from servers import servertools
+    itemlist.extend(servertools.find_video_items(data=data))
+    for videoitem in itemlist:
+        videoitem.channel=__channel__
+        videoitem.action="play"
+        videoitem.folder=False
+    
+    
+    return itemlist
+
 def submenu(item):
-    logger.info("[newpct.py] peliculas")
+    logger.info("[newpct.py] submenu")
     itemlist=[]
     
-    data = scrapertools.cache_page(item.url)
-    data = scrapertools.get_match(data,'<a href="\#".*?class="dir" title="Descargar '+item.extra+' Gratis">'+item.extra+'(.*?)</ul>')
-    
-    patron = '<li><a href="([^"]+)"[^>]+>([^<]+)</a></li>'
-    matches = re.compile(patron,re.DOTALL).findall(data)    
-
-    for scrapedurl,scrapedtitle in matches:
-        title = scrapedtitle.strip()
-        url = urlparse.urljoin(item.url,scrapedurl)
-        thumbnail = ""
-        plot = ""
-        if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
-
-        itemlist.append( Item(channel=__channel__, action="listado" , title=title , url=url, thumbnail=thumbnail, plot=plot))
-    
+    if item.title == "Películas":
+		itemlist.append( Item(channel=__channel__, action="listado" , title="Peliculas DVDRIP-BRRIP Castellano" , url="http://www.newpct.com/peliculas-castellano/peliculas-rip/"))
+		itemlist.append( Item(channel=__channel__, action="listado" , title="Peliculas Latino" , url="http://www.newpct.com/peliculas-latino/"))
+		itemlist.append( Item(channel=__channel__, action="listado" , title="Estrenos de Cine Castellano" , url="http://www.newpct.com/peliculas-castellano/estrenos-de-cine/"))
+		itemlist.append( Item(channel=__channel__, action="listado" , title="Peliculas Alta Definicion HD" , url="http://www.newpct.com/cine-alta-definicion-hd/"))
+		itemlist.append( Item(channel=__channel__, action="listado" , title="Peliculas en 3D HD" , url="http://www.newpct.com/peliculas-en-3d-hd/"))
+		itemlist.append( Item(channel=__channel__, action="listado" , title="Peliculas DVDFULL" , url="http://www.newpct.com/peliculas-castellano/peliculas-dvd/"))
+		itemlist.append( Item(channel=__channel__, action="listado" , title="Peliculas V.O.Subtituladas" , url="http://www.newpct.com/peliculas-vo/"))
+    else:
+		itemlist.append( Item(channel=__channel__, action="listado" , title="HDTV Castellano" , url="http://www.newpct.com/series/", category="serie"))
+		itemlist.append( Item(channel=__channel__, action="listado" , title="Miniseries Castellano" , url="http://www.newpct.com/miniseries-es/"))
+		itemlist.append( Item(channel=__channel__, action="listado" , title="Series TV - V.O.S.E" , url="http://www.newpct.com/series-vo/", category="serie"))
+		itemlist.append( Item(channel=__channel__, action="listado" , title="Últimos Capítulos HD" , url="http://www.newpct.com/series-alta-definicion-hd/", category="serie"))
+		itemlist.append( Item(channel=__channel__, action="series" , title="Series HD [A-Z]" , url="http://www.newpct.com/index.php?l=torrentListByCategory&subcategory_s=1469&more=listar", category="serie"))
     return itemlist
 
 def listado(item):
     logger.info("[newpct.py] listado")
-    itemlist = []
-    
+    itemlist = []   
     data = scrapertools.cache_page(item.url)
     
     '''
@@ -121,8 +154,10 @@ def listado(item):
         plot = unicode( plot, "iso-8859-1" , errors="replace" ).encode("utf-8")
 
         if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
-
-        itemlist.append( Item(channel=__channel__, action="findvideos" , title=title , url=url, thumbnail=thumbnail, plot=plot, viewmode="movie_with_plot"))
+        if item.category == "serie":
+            itemlist.append( Item(channel=__channel__, action="episodios" , title=title , url=url, thumbnail=thumbnail, plot=plot, viewmode="movie_with_plot"))
+        else:
+            itemlist.append( Item(channel=__channel__, action="findvideos" , title=title , url=url, thumbnail=thumbnail, plot=plot, viewmode="movie_with_plot"))
 
     # Página siguiente
     '''
@@ -205,7 +240,9 @@ def listado(item):
     logger.info("param_leter="+param_leter)
     param_pag=scrapertools.get_match(data,"<a href='javascript:;' onclick=\"orderCategory\('[^']+','[^']*','([^']+)'[^>]+> >> </a>")
     logger.info("param_pag="+param_pag)
-    param_sql=scrapertools.get_match(bloque,'"sql"\s*\:\s*"([^"]+)')
+    param_total=scrapertools.get_match(bloque,'"total"\s*\:\s*\'([^\']+)')
+    logger.info("param_sql="+param_total)
+    param_sql=scrapertools.get_match(bloque,'"sql"\s*\:\s*\'([^\']+)')
     logger.info("param_sql="+param_sql)
     param_tot=scrapertools.get_match(bloque,"\"tot\"\s*\:\s*'([^']*)'")
     logger.info("param_tot="+param_tot)
@@ -214,22 +251,72 @@ def listado(item):
     param_cate=scrapertools.get_match(bloque,"\"cate\"\s*\:\s*'([^']+)'")
     logger.info("param_cate="+param_cate)
     base_url = scrapertools.get_match(bloque,"url\s*\:\s*'([^']+)'")
+    base_url = re.sub("../..", "http://www.newpct.com", base_url, count=1)
     logger.info("base_url="+base_url)
     #http://www.newpct.com/include.inc/ajax.php/orderCategory.php?type=todo&leter=&sql=SELECT+DISTINCT+++%09%09%09%09%09%09torrentID%2C+++%09%09%09%09%09%09torrentCategoryID%2C+++%09%09%09%09%09%09torrentCategoryIDR%2C+++%09%09%09%09%09%09torrentImageID%2C+++%09%09%09%09%09%09torrentName%2C+++%09%09%09%09%09%09guid%2C+++%09%09%09%09%09%09torrentShortName%2C++%09%09%09%09%09%09torrentLanguage%2C++%09%09%09%09%09%09torrentSize%2C++%09%09%09%09%09%09calidad+as+calidad_%2C++%09%09%09%09%09%09torrentDescription%2C++%09%09%09%09%09%09torrentViews%2C++%09%09%09%09%09%09rating%2C++%09%09%09%09%09%09n_votos%2C++%09%09%09%09%09%09vistas_hoy%2C++%09%09%09%09%09%09vistas_ayer%2C++%09%09%09%09%09%09vistas_semana%2C++%09%09%09%09%09%09vistas_mes++%09%09%09%09++FROM+torrentsFiles+as+t+WHERE++(torrentStatus+%3D+1+OR+torrentStatus+%3D+2)++AND+(torrentCategoryID+IN+(1537%2C+758%2C+1105%2C+760%2C+1225))++++ORDER+BY+torrentDateAdded++DESC++LIMIT+0%2C+50&pag=3&tot=&ban=3&cate=1225
-    url_next_page = base_url + "?" + urllib.urlencode( { "type":param_type, "leter":param_leter, "sql":param_sql, "pag":param_pag, "tot":param_tot, "ban":param_ban, "cate":param_cate } )
+    url_next_page = base_url + "?" + urllib.urlencode( {"total": param_total, "type": param_type, "leter": param_leter, "sql": param_sql, "pag": param_pag, "tot": param_tot, "ban": param_ban, "cate": param_cate} )
     logger.info("url_next_page="+url_next_page)
-    itemlist.append( Item(channel=__channel__, action="listado" , title=">> Página siguiente" , url=url_next_page, extra=bloque))
+    if item.category == "serie":
+        itemlist.append( Item(channel=__channel__, action="listado" , title=">> Página siguiente" , url=url_next_page, extra=bloque, category="serie"))
+    else:
+        itemlist.append( Item(channel=__channel__, action="listado" , title=">> Página siguiente" , url=url_next_page, extra=bloque))
 
     return itemlist
+
+	
+def series(item):
+    logger.info("[newpct.py] series")
+    itemlist=[]
+    #Lista menú Series de la A-Z
+    data = scrapertools.cache_page(item.url)
+    patron = '<div id="content-abc">(.*?)<\/div>'
+    data = re.compile(patron,re.DOTALL|re.M).findall(data)
+    patron = 'id="([^"]+)".*?>([^"]+)<\/a>'
+    matches = re.compile(patron,re.DOTALL|re.M).findall(data[0])
+    for id, scrapedtitle in matches:
+        url_base = "http://www.newpct.com/include.inc/ajax.php/orderCategory.php?total=9&type=letter&leter=%s&sql=+%09%09SELECT++t.torrentID%2C++%09%09%09%09t.torrentCategoryID%2C++%09%09%09%09t.torrentCategoryIDR%2C++%09%09%09%09t.torrentImageID%2C++%09%09%09%09t.torrentName%2C++%09%09%09%09t.guid%2C++%09%09%09%09t.torrentShortName%2C+%09%09%09%09t.torrentLanguage%2C+%09%09%09%09t.torrentSize%2C+%09%09%09%09t.calidad+as+calidad_%2C+%09%09%09%09t.torrentDescription%2C+%09%09%09%09t.torrentViews%2C+%09%09%09%09t.rating%2C+%09%09%09%09t.n_votos%2C+%09%09%09%09t.vistas_hoy%2C+%09%09%09%09t.vistas_ayer%2C+%09%09%09%09t.vistas_semana%2C+%09%09%09%09t.vistas_mes%2C+%09%09%09%09t.imagen+FROM+torrentsFiles+as+t++%09%09LEFT+JOIN+torrentsCategories+as+tc+ON+(t.torrentCategoryID+%3D+tc.categoryID)++%09%09INNER+JOIN++%09%09(+%09%09%09SELECT+torrentID+%09%09%09FROM+torrentsFiles++%09%09%09WHERE++torrentCategoryIDR+%3D+1469+%09%09%09ORDER+BY+torrentID+DESC+%09%09)t1+ON+t1.torrentID+%3D+t.torrentID+WHERE+(t.torrentStatus+%3D+1+OR+t.torrentStatus+%3D+2)+AND+t.home_active+%3D+0++AND+tc.categoryIDR+%3D+1469+GROUP+BY+t.torrentCategoryID+ORDER+BY+t.torrentID+DESC+LIMIT+0%2C+50&pag=&tot=&ban=3&cate=1469"
+        scrapedurl = url_base.replace("%s", id)
+        if id!="todo": itemlist.append( Item(channel=__channel__, action="listaseries" , title=scrapedtitle , url=scrapedurl, folder=True))
+
+    return itemlist
+	
+def listaseries(item):
+    logger.info("[newpct.py] listaseries")
+    itemlist=[]
+
+    data = scrapertools.downloadpageGzip(item.url)
+    patron = "<li[^<]+<a href='([^']+)'>.*?<img src='([^']+)'.*?<h3>([^']+)<\/h3>"
+    matches = re.compile(patron,re.DOTALL|re.M).findall(data)
+    for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
+        itemlist.append( Item(channel=__channel__, action="episodios" , title=scrapedtitle , url=scrapedurl, thumbnail=scrapedthumbnail, folder=True))
+    return itemlist
+
+def episodios(item):
+    logger.info("[newpct.py] episodios")
+    itemlist=[]
+	
+    data = scrapertools.cache_page(item.url)
+    patron = "<ul style='display:none;'.*?>(.*?)<\/ul>"
+    data = re.compile(patron,re.DOTALL|re.M).findall(data)
+    patron = "<a href='([^']+)'.*?title='([^']+)'"
+    for index in range(len(data)):
+            matches = re.compile(patron,re.DOTALL|re.M).findall(data[index])
+            for scrapedurl, scrapedtitle in matches:
+                itemlist.append( Item(channel=__channel__, action="findvideos" , title=scrapedtitle , url=scrapedurl, thumbnail=item.thumbnail, folder=True))
+
+    return itemlist
+	
 
 def findvideos(item):
     logger.info("[newpct.py] findvideos")
     itemlist=[]
 
     data = scrapertools.cache_page(item.url)
-    #torrent_id = scrapertools.get_match(data,"'torrentID'\s*\:\s*'(\d+)'")
-    
-    #data = data + scrapertools.cache_page("http://www.newpct.com/include.inc/ajax.php/update.links.php?userID=&torrentID="+torrent_id)
+
+    #<span id='content-torrent'>                    <a href='http://tumejorjuego.com/descargar/index.php?link=descargar/torrent/58591/el-tour-de-los-muppets-bluray-screener-espanol-castellano-line-2014.html' rel='nofollow' id='58591' title='el-tour-de-los-muppets-bluray-screener-espanol-castellano-line-2014' class='external-url' target='_blank'>
+    torrent_url = scrapertools.find_single_match(data,"<span id='content-torrent'[^<]+<a href='([^']+)'")
+    if torrent_url!="":
+        itemlist.append( Item(channel=__channel__, action="play" , title="Torrent" , url=torrent_url, server="torrent"))
 
     from servers import servertools
     itemlist.extend(servertools.find_video_items(data=data))
@@ -237,6 +324,22 @@ def findvideos(item):
         videoitem.channel=__channel__
         videoitem.action="play"
         videoitem.folder=False
-        videoitem.title = item.title + "["+videoitem.server+"]"
+        videoitem.title = "["+videoitem.server+"]"
 
     return itemlist
+
+# Verificación automática de canales: Esta función debe devolver "True" si todo está ok en el canal.
+def test():
+    bien = True
+    
+    # mainlist
+    mainlist_items = mainlist(Item())
+    submenu_items = submenu(mainlist_items[0])
+    listado_items = listado(submenu_items[0])
+    for listado_item in listado_items:
+        play_items = findvideos(listado_item)
+        
+        if len(play_items)>0:
+            return True
+
+    return False
