@@ -230,8 +230,15 @@ def temporadas(item):
 		scrapedtitle = match[1]
 		scrapedthumbnail = item.thumbnail
 		scrapedplot = ""
-		scrapedurl = "http://www.rtve.es/alacarta/interno/contenttable.shtml?ctx="+ctx+"&locale=es&pageSize=20&seasonFilter="+match[0]+"&pbq=1"
-        	itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="episodios" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , extra = item.extra, show=scrapedtitle, category = item.category) )
+		#scrapedurl = "http://www.rtve.es/alacarta/interno/contenttable.shtml?ctx="+ctx+"&locale=es&pageSize=20&seasonFilter="+match[0]+"&pbq=1"
+		scrapedurl = "http://www.rtve.es/alacarta/filterVideoSlide.shtml?ctx="+ctx+"&seasonFilter="+match[0]
+        	itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="episodios2" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , extra = item.extra, show=scrapedtitle, category = item.category) )
+    else:
+	scrapedtitle = "Todos los programas completos"
+	scrapedthumbnail = item.thumbnail
+	scrapedplot = ""
+	scrapedurl = "http://www.rtve.es/alacarta/filterVideoSlide.shtml?ctx="+ctx+"&seasonFilter=-1"
+	itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="episodios2" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , extra = prog, show=scrapedtitle, category = item.category) )
 
     ### <select id="section" name="sectionFilter">
     patron = '<select id="section" name="sectionFilter">(.*?)'
@@ -239,21 +246,98 @@ def temporadas(item):
 
     matches = re.findall(patron,data,re.DOTALL)
     if len(matches)>0:
-    	patron  = '<option value="([^"]+)".*?>([^<]+)</option>'
+	patron  = '<option value="([^"]+)".*?>([^<]+)</option>'
 	matches = re.findall(patron,matches[0],re.DOTALL)
-    	for match in matches:
+	for match in matches:
 		scrapedtitle = match[1]
 		scrapedthumbnail = item.thumbnail
 		scrapedplot = ""
 		scrapedurl = "http://www.rtve.es/alacarta/interno/contenttable.shtml?ctx="+ctx+"&locale=es&pageSize=20&sectionFilter="+match[0]+"&pbq=1"
 		if match[0] != "-1":
-        		itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="episodios" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , extra = item.extra, show=scrapedtitle, category = item.category) )
+       			itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="episodios" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , extra = item.extra, show=scrapedtitle, category = item.category) )
 
     if len(itemlist)==0:
 	item.url = "http://www.rtve.es/alacarta/interno/contenttable.shtml?ctx="+ctx+"&pageSize=20&pbq=1"
 	itemlist = episodios(item)	
 
     return itemlist
+
+def episodios2(item):
+    logger.info("[rtve.py] episodios")
+    data = scrapertools.cachePage(item.url)
+
+    itemlist = []
+
+    '''
+	<div class="basicmod modVideo">
+	    <span class="ico">vídeo</span>
+	    <span class="img">
+			<a title="Águila Roja - Capítulo 103" href="/alacarta/videos/aguila-roja/aguila-roja-capitulo-103/3402624/" id="3402624">
+				<img title="Águila Roja - Capítulo 103" alt="Águila Roja - Capítulo 103" src="http://img.rtve.es/imagenes/aguila-roja-capitulo-103/1450007660942.JPG"/>
+			</a>
+		</span>
+	    <div class="txt">
+			<h4>
+				<span class="titu">
+					<a href="/alacarta/videos/aguila-roja/aguila-roja-capitulo-103/3402624/" title="Águila Roja - Capítulo 103">Águila Roja - Capítulo 103</a>
+				</span>
+			</h4>
+			<p>1:27:31 - 10 dic 2015</p>
+		</div>
+	</div>
+    '''
+
+    # Extrae los vídeos
+    patron  = '<div class="basicmod modVideo">.*?'
+    patron += '<img title="[^"]+".*?src="([^"]+)"/>.*?'
+    patron += '<span class="titu">[^<]+'
+    patron += '<a href="([^"]+)" title="([^"]+)">.*?'
+    patron += '</h4>[^<]+'
+    patron += '<p>([^<]+)</p>'
+
+    matches = re.findall(patron,data,re.DOTALL)
+    if DEBUG: scrapertools.printMatches(matches)
+
+    for match in matches:
+       scrapedtitle = match[2]+" ["+match[3]+"]"
+       scrapedurl = urlparse.urljoin(item.url,match[1])
+       scrapedthumbnail = match[0]
+       scrapedplot = ""
+       scrapedextra = item.extra
+       if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
+       itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="play" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , show=item.show, category = item.category, extra=scrapedextra, folder=False) )
+
+    if len(itemlist) == 0:
+	'''
+	<div class="tooltip">
+		<div class="apiCall mainTiTle">
+			<a href="/alacarta/videos/cantabria/cantabria-lugar-mundo/2815674/" title="Un lugar en el mundo">
+				<span>Un lugar en el mundo</span>
+			</a>
+		</div>
+		<div class="apiCall summary">
+			<p>
+				<span class="time">31:08</span>
+				<span class="date">18 oct 2014</span>
+				La serie ahonda en las huellas de la evolución de la Historia de Cantabria y la de España, tomando como referencia la situación actual. En esta ocasión vloraremos su " Lugar en el mundo".Contenido disponible hasta el 25 de diciembre de 2023.&#160;</p>
+        '''
+	patron = '<div class="tooltip">.*?'
+	patron += '<a href="([^"]+)" title="([^"]+)">.*?'
+	patron += '<span class="date">([^<]+)</span>([^<]+)</p>'
+
+	data1 = scrapertools.cachePage("http://www.rtve.es/alacarta/videos/"+item.extra+"/")
+	matches = re.findall(patron,data1,re.DOTALL)
+	if len(matches)>0:
+	    	for match in matches:
+			scrapedtitle = match[1] + "["+match[2]+"]"
+			scrapedthumbnail = item.thumbnail
+			scrapedplot = match[3]
+			scrapedurl = urlparse.urljoin("http://www.rtve.es/alacarta/videos/",match[0])
+      			itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="play" , url=scrapedurl, thumbnail=scrapedthumbnail, plot=scrapedplot , show=item.show, category = item.category, extra=item.extra, folder=False) )
+
+
+    return itemlist
+
 
 def episodios(item):
     logger.info("[rtve.py] episodios")
