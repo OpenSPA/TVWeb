@@ -17,17 +17,17 @@ from core import logger
 
 # Lista de los servidores que se pueden ver sin cuenta premium de ningún tipo
 FREE_SERVERS = []
-FREE_SERVERS.extend(['directo','allmyvideos','adnstream','bliptv','divxstage','facebook','fourshared', 'hulkshare', 'twitvid'])
+FREE_SERVERS.extend(['directo','allmyvideos','adnstream','divxstage','facebook','fourshared','twitvid'])
 FREE_SERVERS.extend(['googlevideo','mediafire','moevideos','movshare','novamov'])
 FREE_SERVERS.extend(['royalvids','sockshare','stagevu','tutv','userporn','veoh','videobam'])
 FREE_SERVERS.extend(['vidbux','videoweed','vimeo','vk','watchfreeinhd','youtube'])
-FREE_SERVERS.extend(['jumbofiles','nowvideo','streamcloud', 'zinwa', 'dailymotion','justintv', 'vidbull'])
-FREE_SERVERS.extend(['vureel','nosvideo','videopremium','movreel','flashx','upafile'])
-FREE_SERVERS.extend(['fileflyer','playedto','tunepk','powvideo','videomega','mega','vidspot','netutv','rutube'])
-FREE_SERVERS.extend(['videozed','documentary','hugefiles', 'firedrive','videott','tumitv','gamovideo'])
+FREE_SERVERS.extend(['jumbofiles','nowvideo','streamcloud', 'dailymotion', 'vidbull'])
+FREE_SERVERS.extend(['nosvideo','videopremium','flashx','upafile'])
+FREE_SERVERS.extend(['fileflyer','tunepk','powvideo','videomega','mega','vidspot','netutv','rutube'])
+FREE_SERVERS.extend(['videozed','documentary', 'firedrive','videott','gamovideo'])
 FREE_SERVERS.extend(['torrent','video4you','mailru','streaminto','backin','akstream', 'speedvideo', 'junkyvideo', 'rapidvideo', 'realvid', 'cloudzilla', 'fakingstv'])
-FREE_SERVERS.extend(['meuvideos', 'cumlouder','v4y','streamable','videostoring','youwatch'])
-FREE_SERVERS.extend(['vodlocker','thevideome','rocvideo','vidxtreme','vidtome','vidzi','letwatch','sendvid']) #,'vimpleru'])
+FREE_SERVERS.extend(['cumlouder','v4y','streamable','videostoring','youwatch'])
+FREE_SERVERS.extend(['vodlocker','thevideome','rocvideo','vidxtreme','vidtome','vidzi','letwatch','sendvid','vkpass','okru','cnubis','yourupload','mp4upload','turbovideos','vimpleru','spruto','openload'])
 
 # Lista de TODOS los servidores que funcionan con cuenta premium individual
 PREMIUM_SERVERS = ['uploadedto','nowvideo','onefichier']
@@ -38,21 +38,21 @@ FILENIUM_SERVERS = []
 FILENIUM_SERVERS.extend(["nitroflare","lolabits","1fichier","dl","dl","mega","allmyvideos","allmyvideos","cliphunter","dailymotion","divxstage","facebook","filefactory","filepost","filesmonster","firedrive","gigasize","justin","k2s","keep2share","keep2share","letitbit","mediafire","metacafe","mitele","moevideos","netload","nowvideo","nowvideo","nowvideo","oboom","played","pornhub","rapidgator","rg","shareflare","streamcloud","turbobit","uploadable","uploaded","uploaded","ul","userporn","videoweed","vidspot","vimeo","vk","xenubox","youngpornvideos","youtube","zippyshare","lix","safelinking","linkto","2shared","4shared","hugefiles","nowdownload","nowdownload","tusfiles","uploading","uptobox"]);
 
 # Lista de TODOS los servidores soportados por Real-Debrid
-REALDEBRID_SERVERS = ['one80upload','tenupload','onefichier','onehostclick','twoshared','fourfastfile','fourshared','abc','asfile','badongo','bitshare','cbscom','cloudzer','cramit','crocko','cwtv','dailymotion','dateito',
-                    'dengee','diglo','extabit','fiberupload','filedino','filefactory','fileflyer','filekeen','filemade','filemates','fileover','filepost',
+REALDEBRID_SERVERS = ['one80upload','tenupload','onefichier','onehostclick','twoshared','fourfastfile','fourshared','abc','asfile','badongo','bitshare','cbscom','crocko','cwtv','dailymotion','dateito',
+                    'dengee','diglo','extabit','filedino','filefactory','fileflyer','filekeen','filemade','filemates','fileover','filepost',
                    'filesend','filesmonster','filevelocity','freakshare','free','furk','fyels','gigasize','gigaup','glumbouploads','goldfile','hitfile','hipfile','hostingbulk',
-                   'hotfile','hulkshare','hulu','ifile','jakfile','jumbofiles','justintv','letitbit','loadto','mediafire','mega','megashare','megashares','mixturevideo','muchshare','netload',
+                   'hulu','ifile','jakfile','jumbofiles','letitbit','loadto','mediafire','mega','megashare','megashares','mixturevideo','muchshare','netload',
                    'novafile','nowdownload','purevid','putbit','putlocker','redtube','rapidgator','rapidshare','rutube','ryushare','scribd','sendspace','sharebees','shareflare','shragle','slingfile','sockshare',
                    'soundcloud','speedyshare','turbobit','unibytes','uploadc','uploadedto','uploading','uploadspace','uptobox',
-                   'userporn','veevr','vidbux','vidhog','vidxden','vimeo','vipfile','wattv','xfileshare','youporn','youtube','yunfile','zippyshare','justintv','nowvideo','ultramegabit','filesmonster','oboom']
+                   'userporn','veevr','vidbux','vidxden','vimeo','vipfile','wattv','xfileshare','youporn','youtube','yunfile','zippyshare','nowvideo','filesmonster','oboom','hugefiles']
 #wupload,fileserve
 
-ALLDEBRID_SERVERS = ['one80upload','onefichier','twoshared','fourfastfile','fourshared','albafile','bitshare','cloudzer','cramit','crocko','cyberlocker','dailymotion','dengee',
+ALLDEBRID_SERVERS = ['one80upload','onefichier','twoshared','fourfastfile','fourshared','albafile','bitshare','crocko','cyberlocker','dailymotion','dengee',
                    'depfile','dlfree','extabit','extmatrix','filefactory','fileflyer','filegag','filehost','fileover','filepost','filerio','filesabc',
-                   'filesend','filesmonster','filestay','freakshare','gigasize','hotfile','hulkshare','jumbofiles','letitbit','loadto','mediafire','megashares','mixturevideo','netload',
+                   'filesend','filesmonster','filestay','freakshare','gigasize','jumbofiles','letitbit','loadto','mediafire','megashares','mixturevideo','netload',
                    'nitrobits','oteupload','purevid','putlocker','rapidgator','rapidshare','redtube','scribd','secureupload','sharebees','shareflare','slingfile','sockshare',
                    'soundcloud','speedload','speedyshare','turbobit', 'uloadto', 'uploadc','uploadedto','uploading','uptobox',
-                   'userporn','vimeo','vipfile','youporn','youtube','yunfile','zippyshare','lumfile','ultramegabit','filesmonster']
+                   'userporn','vimeo','vipfile','youporn','youtube','yunfile','zippyshare','filesmonster']
     
 # Lista completa de todos los servidores soportados por pelisalacarta, usada para buscar patrones
 #ALL_SERVERS = list( set(FREE_SERVERS) | set(FILENIUM_SERVERS) | set(REALDEBRID_SERVERS) | set(ALLDEBRID_SERVERS) )

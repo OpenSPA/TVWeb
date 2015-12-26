@@ -4,8 +4,9 @@
 # Conector para enlaces a torrent y magnet
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
-from core import logger
+from core import logger, config
 import urllib
+import xbmc
 
 # Returns an array of possible video url's from the page_url
 def get_video_url( page_url , premium = False , user="" , password="" , video_password="" ):
@@ -13,20 +14,28 @@ def get_video_url( page_url , premium = False , user="" , password="" , video_pa
 
     name = page_url[page_url.rfind("/") + 1:page_url.rfind(".")]
 
-    if page_url.startswith('magnet:'):
-        link = page_url
-    else:
-        link = from_torrent_url(page_url)
+    link = urllib.quote_plus(page_url)
 
-    media_url_xbmctorrent = "plugin://plugin.video.xbmctorrent/play/%s" % urllib.quote_plus(link)
-    media_url_pulsar = "plugin://plugin.video.pulsar/play?uri=%s" % urllib.quote_plus(link)
-    media_url_stream = "plugin://plugin.video.stream/play/%s" % urllib.quote_plus(link)
+    video_data = {
+        'xbmctorrent' : {
+            'url' : "plugin://plugin.video.xbmctorrent/play/%s" % link
+        },
+        'pulsar' : {
+            'url' : "plugin://plugin.video.pulsar/play?uri=%s" % link
+        },
+        'stream' : {
+            'url' : "plugin://plugin.video.stream/play/%s" % link
+        },
+        'torrenter' : {
+            'url' : "plugin://plugin.video.torrenter/?action=playSTRM&url=%s" % link
+        }
+    }
 
-    video_urls = [
-         [ "[xbmctorrent] %s" % (name), media_url_xbmctorrent ],
-         [ "[pulsar] %s" % (name), media_url_pulsar ],
-         [ "[stream] %s" % (name), media_url_stream ]
-     ]
+    video_urls = []
+
+    for plugin, data in video_data.items():
+        if  xbmc.getCondVisibility('System.HasAddon("plugin.video.' + plugin + '")'):
+            video_urls.append([ "[" + plugin + "] %s" % (name), data['url']])
 
     return video_urls
 

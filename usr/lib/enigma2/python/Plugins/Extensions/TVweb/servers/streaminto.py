@@ -18,6 +18,8 @@ def test_video_exists( page_url ):
     data = scrapertools.cache_page( url = page_url )
     if "File was deleted" in data:
         return False,"El archivo no existe<br/>en streaminto o ha sido borrado."
+    elif "Video is processing now" in data:
+        return False,"El archivo está siendo procesado<br/>Prueba dentro de un rato."
     else:
         return True,""
 

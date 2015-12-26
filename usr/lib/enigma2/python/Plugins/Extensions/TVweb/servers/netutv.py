@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------
 # pelisalacarta - XBMC Plugin
 # Conector para yaske-netutv, netutv, hqqtv waawtv
@@ -83,8 +83,8 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
         ## Doble decode y escape
         utf8 = double_b64(b64_data)
-
-        match_at = '<input name="at" id="text" value="([^"]+)">'
+        
+        match_at = '<input name="at" type="text" value="([^"]+)">'
         at = scrapertools.get_match(utf8, match_at)
 
         ### b_m3u8 ###
@@ -148,6 +148,7 @@ def find_videos(data):
                 logger.info("  url="+url)
                 devuelve.append( [ titulo , url , 'netutv' ] )
                 encontrados.add(url)
+                break
             else:
                 logger.info("  url duplicada="+url)
 

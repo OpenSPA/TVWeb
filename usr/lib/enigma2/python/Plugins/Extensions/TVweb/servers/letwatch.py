@@ -15,25 +15,27 @@ from core import jsunpack
 
 def test_video_exists( page_url ):
     logger.info("pelisalacarta.servers.letwatch test_video_exists(page_url='%s')" % page_url)
+
+    if not "embed" in page_url:
+        page_url = page_url.replace("http://letwatch.to/","http://letwatch.to/embed-") + ".html"
+    
+    data = scrapertools.cache_page( page_url )
+
+    if "Video is processing now" in data:
+        return False,"El vídeo está siendo procesado todavía"
+
     return True,""
 
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
     logger.info("pelisalacarta.servers.letwatch url="+page_url)
+
     if not "embed" in page_url:
-      page_url = page_url.replace("http://letwatch.to/","http://letwatch.to/embed-") + ".html"
+        page_url = page_url.replace("http://letwatch.to/","http://letwatch.to/embed-") + ".html"
     
     data = scrapertools.cache_page( page_url )
 
-    data = scrapertools.find_single_match(data,"<script type='text/javascript'>(eval\(function\(p,a,c,k,e,d.*?)</script>")
-    logger.info("data="+data)
-    data = jsunpack.unpack(data)
-    logger.info("data="+data)
-
-    # Extrae la URL
-    #{label:"240p",file:"http://188.240.220.186/drjhpzy4lqqwws4phv3twywfxej5nwmi4nhxlriivuopt2pul3o4bkge5hxa/video.mp4"}
     video_urls = []
     media_urls = scrapertools.find_multiple_matches(data,'\{file\:"([^"]+)",label\:"([^"]+)"\}')
-    video_urls = []
     for media_url,label in media_urls:
         video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" ("+label+") [letwatch]",media_url])
 

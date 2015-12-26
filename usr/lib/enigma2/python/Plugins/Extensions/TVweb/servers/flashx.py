@@ -66,10 +66,11 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     # Extrae la URL
     #{file:"http://f11-play.flashx.tv/luq4gfc7gxixexzw6v4lhz4xqslgqmqku7gxjf4bk43u4qvwzsadrjsozxoa/video1.mp4"}
     video_urls = []
-    media_urls = scrapertools.find_multiple_matches(data,'\{file\:"([^"]+)"\}')
-    video_urls = []
+    media_urls = scrapertools.find_multiple_matches(data,'\{file\:"([^"]+)"')
     for media_url in media_urls:
-        video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [flashx]",media_url])
+
+        if not media_url.endswith("png"):
+            video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [flashx]",media_url])
 
     for video_url in video_urls:
         logger.info("pelisalacarta.servers.flashx %s - %s" % (video_url[0],video_url[1]))
@@ -83,7 +84,21 @@ def find_videos(data):
     encontrados = set()
     devuelve = []
 
-    #http://www.flashx.tv/li5ydvxhg514.html
+    #http://www.flashx.tv/embed-li5ydvxhg514.html
+    patronvideos  = 'flashx.tv/embed-([a-z0-9A-Z]+)'
+    logger.info("pelisalacarta.servers.flashx find_videos #"+patronvideos+"#")
+    matches = re.compile(patronvideos,re.DOTALL).findall(data)
+
+    for match in matches:
+        titulo = "[flashx]"
+        url = "http://www.flashx.tv/"+match+".html"
+        if url not in encontrados:
+            logger.info("  url="+url)
+            devuelve.append( [ titulo , url , 'flashx' ] )
+            encontrados.add(url)
+        else:
+            logger.info("  url duplicada="+url)
+
     #http://flashx.tv/z3nnqbspjyne
     patronvideos  = 'flashx.tv/([a-z0-9A-Z]+)'
     logger.info("pelisalacarta.servers.flashx find_videos #"+patronvideos+"#")

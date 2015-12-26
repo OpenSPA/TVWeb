@@ -20,10 +20,10 @@ def test_video_exists( page_url ):
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
     logger.info("pelisalacarta.servers.thevideome url="+page_url)
     if not "embed" in page_url:
-      page_url = page_url.replace("http://vodlocker.com/","http://vodlocker.com/embed-") + ".html"
+        page_url = page_url.replace("http://thevideo.me/","http://thevideo.me/embed-") + ".html"
     
     data = scrapertools.cache_page( page_url )
-    media_urls = scrapertools.find_multiple_matches(data,"'label'\s*\:\s*'([^']+)'\s*\,\s*'file'\s*\:\s*'([^']+)'")
+    media_urls = scrapertools.find_multiple_matches(data,"label\s*\:\s*'([^']+)'\s*\,\s*file\s*\:\s*'([^']+)'")
     video_urls = []
 
     for label,media_url in media_urls:

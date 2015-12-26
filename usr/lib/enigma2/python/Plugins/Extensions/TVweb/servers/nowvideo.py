@@ -88,6 +88,14 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
         data = scrapertools.cache_page( page_url )
         logger.debug("data="+data)
 
+        stepkey = scrapertools.find_single_match( data , '<input type="hidden" name="stepkey" value="([^"]+)"' )
+        if stepkey!="":
+            #stepkey=6cd619a0cea72a1cb45a56167c296716&submit=submit
+            #<form method="post" action="">
+            #<input type="hidden" name="stepkey" value="6cd619a0cea72a1cb45a56167c296716"><Br>
+            #<button type="submit" name="submit" class="btn" value="submit">Continue to the video</button>
+            data = scrapertools.cache_page( page_url , post="stepkey="+stepkey+"&submit=submit" )
+
         flashvar_filekey = scrapertools.get_match(data,'flashvars.filekey=([^;]+);')
         filekey = scrapertools.get_match(data,'var '+flashvar_filekey+'="([^"]+)"')
 

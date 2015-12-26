@@ -23,7 +23,6 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     data = scrapertools.cache_page(page_url)
 
-
     # Extrae la URL
     data = scrapertools.find_single_match(data,'<embed(.*?)</embed>')
     data = scrapertools.find_single_match(data,'setting=(.*?)"')
@@ -49,7 +48,7 @@ def find_videos(data):
     devuelve = []
 
     # http://powvideo.net/embed-sbb9ptsfqca2
-    patronvideos  = 'http://www.streamable.ch/video/([a-z0-9]+)'
+    patronvideos  = 'http://www.streamable.ch/video/([a-zA-Z0-9]+)'
     logger.info("streamable find_videos #"+patronvideos+"#")
     matches = re.compile(patronvideos,re.DOTALL).findall(data)
 

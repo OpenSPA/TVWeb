@@ -29,8 +29,8 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     page_url= page_url.replace("embed","iframe")
     
     data = scrapertools.cache_page( page_url , headers=headers )
-    #logger.info("data="+data)
-    
+    logger.info("data="+data)
+
     #Quitado porque funciona mas rapido asi y no veo necesidad de esto:
     '''
     try:
@@ -58,16 +58,24 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     '''
     # Extrae la URL
     data = scrapertools.find_single_match(data,"<script type='text/javascript'>(.*?)</script>")
+    logger.info("data="+data)
     data = jsunpack.unpack(data)
+    logger.info("data="+data)
 
     data = scrapertools.find_single_match(data,"sources\=\[([^\]]+)\]")
+    logger.info("data="+data)
     data = data.replace("\\","")
+    logger.info("data="+data)
 
     '''
     {image:image,tracks:tracks,file:'rtmp://5.39.70.113:19350/vod/mp4:01/00219/dw5tbqp6dr3i_n?h=m4ohputqpiikkfn2mda7ymaimgo5n34f7uvpizy5vkjn7ifqrv6y2y6n5y',description:'dw5tbqp6dr3i'},
     {image:image,tracks:tracks,file:'http://powvideo.net/m4ohputqpiikkfn2mda7ymaimgo5n34f7uvpizy5vkjn7ifqrv6y2y6n5y.m3u8',description:'dw5tbqp6dr3i'},{image:image,tracks:tracks,file:'http://5.39.70.113:8777/m4ohputqpiikkfn2mda7ymaimgo5n34f7uvpizy5vkjn7ifqrv6y2y6n5y/v.mp4',description:'dw5tbqp6dr3i'}
     '''
-    patron = "file:'([^']+)'"
+    '''
+    {image:image,tracks:tracks,src:'rtmp://37.59.21.34:19350/vod/mp4:01/00255/iw61agv7g8yt_n?h=juohowjvpeikkfn2mds7ypiimi67nuoiof5ajr5w76wdk3c5q2wzhftesq',description:'iw61agv7g8yt'},
+    {image:image,tracks:tracks,src:'http://powvideo.net/juohowjvpeikkfn2mds7ypiimi67nuoiof5ajr5w76wdk3c5q2wzhftesq.m3u8',description:'iw61agv7g8yt'},{image:image,tracks:tracks,src:'http://37.59.21.34:8777/juohowjvpeikkfn2mds7ypiimi67nuoiof5ajr5w76wdk3c5q2wzhftesq/v.mp4',description:'iw61agv7g8yt'}
+    '''
+    patron = "src:'([^']+)'"
     matches = re.compile(patron,re.DOTALL).findall(data)
     video_urls = []
     for match in matches:
