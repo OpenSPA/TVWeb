@@ -25,8 +25,6 @@ import re
 import downloadtools
 import socket
 
-logger.info("[scrapertools.py] init")
-
 # True - Muestra las cabeceras HTTP en el log
 # False - No las muestra
 DEBUG_LEVEL = False
@@ -36,18 +34,17 @@ CACHE_SIEMPRE = "1" # Cachear todo
 CACHE_NUNCA = "2"   # No cachear nada
 
 CACHE_PATH = config.get_setting("cache.dir")
-logger.info("[scrapertools.py] CACHE_PATH="+CACHE_PATH)
 
 DEBUG = False
 
 def cache_page(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; es-ES; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12']],modo_cache=CACHE_ACTIVA, timeout=socket.getdefaulttimeout()):
     return cachePage(url,post,headers,modo_cache,timeout=timeout)
 
-# TODO: (3.1) Quitar el parámetro modoCache (ahora se hace por configuración)
-# TODO: (3.2) Usar notación minusculas_con_underscores para funciones y variables como recomienda Python http://www.python.org/dev/peps/pep-0008/
 def cachePage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; es-ES; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12']],modoCache=CACHE_ACTIVA, timeout=socket.getdefaulttimeout()):
-    logger.info("[scrapertools.py] cachePage url="+url)
-    modoCache = config.get_setting("cache.mode")
+    logger.info("pelisalacarta.core.scrapertools cachePage url="+url)
+
+    # Cache desactivada
+    modoCache = CACHE_NUNCA #config.get_setting("cache.mode")
 
     '''
     if config.get_platform()=="plex":
@@ -68,7 +65,7 @@ def cachePage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; 
     # CACHE_NUNCA: Siempre va a la URL a descargar
     # obligatorio para peticiones POST
     if modoCache == CACHE_NUNCA or post is not None:
-        logger.info("[scrapertools.py] MODO_CACHE=2 (no cachear)")
+        logger.info("pelisalacarta.core.scrapertools MODO_CACHE=2 (no cachear)")
         
         try:
             data = downloadpage(url,post,headers, timeout=timeout)
@@ -77,7 +74,7 @@ def cachePage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; 
     
     # CACHE_SIEMPRE: Siempre descarga de cache, sin comprobar fechas, excepto cuando no está
     elif modoCache == CACHE_SIEMPRE:
-        logger.info("[scrapertools.py] MODO_CACHE=1 (cachear todo)")
+        logger.info("pelisalacarta.core.scrapertools MODO_CACHE=1 (cachear todo)")
         
         # Obtiene los handlers del fichero en la cache
         cachedFile, newFile = getCacheFileNames(url)
@@ -94,16 +91,16 @@ def cachePage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; 
             outfile.write(data)
             outfile.flush()
             outfile.close()
-            logger.info("[scrapertools.py] Grabado a " + newFile)
+            logger.info("pelisalacarta.core.scrapertools Grabado a " + newFile)
         else:
-            logger.info("[scrapertools.py] Leyendo de cache " + cachedFile)
+            logger.info("pelisalacarta.core.scrapertools Leyendo de cache " + cachedFile)
             infile = open( cachedFile )
             data = infile.read()
             infile.close()
     
     # CACHE_ACTIVA: Descarga de la cache si no ha cambiado
     else:
-        logger.info("[scrapertools.py] MODO_CACHE=0 (automática)")
+        logger.info("pelisalacarta.core.scrapertools MODO_CACHE=0 (automática)")
         
         # Datos descargados
         data = ""
@@ -123,15 +120,15 @@ def cachePage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; 
             outfile.write(data)
             outfile.flush()
             outfile.close()
-            logger.info("[scrapertools.py] Grabado a " + newFile)
+            logger.info("pelisalacarta.core.scrapertools Grabado a " + newFile)
     
         # Si sólo hay uno comprueba el timestamp (hace una petición if-modified-since)
         else:
             # Extrae el timestamp antiguo del nombre del fichero
             oldtimestamp = time.mktime( time.strptime(cachedFile[-20:-6], "%Y%m%d%H%M%S") )
     
-            logger.info("[scrapertools.py] oldtimestamp="+cachedFile[-20:-6])
-            logger.info("[scrapertools.py] oldtimestamp="+time.ctime(oldtimestamp))
+            logger.info("pelisalacarta.core.scrapertools oldtimestamp="+cachedFile[-20:-6])
+            logger.info("pelisalacarta.core.scrapertools oldtimestamp="+time.ctime(oldtimestamp))
             
             # Hace la petición
             updated,data = downloadtools.downloadIfNotModifiedSince(url,oldtimestamp)
@@ -147,10 +144,10 @@ def cachePage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; 
                 outfile.write(data)
                 outfile.flush()
                 outfile.close()
-                logger.info("[scrapertools.py] Grabado a " + newFile)
+                logger.info("pelisalacarta.core.scrapertools Grabado a " + newFile)
             # Devuelve el contenido del fichero de la cache
             else:
-                logger.info("[scrapertools.py] Leyendo de cache " + cachedFile)
+                logger.info("pelisalacarta.core.scrapertools Leyendo de cache " + cachedFile)
                 infile = open( cachedFile )
                 data = infile.read()
                 infile.close()
@@ -308,21 +305,21 @@ class NoRedirectHandler(urllib2.HTTPRedirectHandler):
     http_error_307 = http_error_302
 
 def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; es-ES; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12']],follow_redirects=True, timeout=socket.getdefaulttimeout(), header_to_get=None):
-    logger.info("[scrapertools.py] downloadpage")
-    logger.info("[scrapertools.py] url="+url)
+    logger.info("pelisalacarta.core.scrapertools downloadpage")
+    logger.info("pelisalacarta.core.scrapertools url="+url)
     
     if post is not None:
-        logger.info("[scrapertools.py] post="+post)
+        logger.info("pelisalacarta.core.scrapertools post="+post)
     else:
-        logger.info("[scrapertools.py] post=None")
+        logger.info("pelisalacarta.core.scrapertools post=None")
     
     # ---------------------------------
     # Instala las cookies
     # ---------------------------------
 
     #  Inicializa la librería de las cookies
-    ficherocookies = os.path.join( config.get_setting("cookies.dir"), 'cookies.dat' )
-    logger.info("[scrapertools.py] ficherocookies="+ficherocookies)
+    ficherocookies = os.path.join( config.get_data_path(), 'cookies.dat' )
+    logger.info("pelisalacarta.core.scrapertools ficherocookies="+ficherocookies)
 
     cj = None
     ClientCookie = None
@@ -330,34 +327,34 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
 
     # Let's see if cookielib is available
     try:
-        logger.info("[scrapertools.py] Importando cookielib")
+        logger.info("pelisalacarta.core.scrapertools Importando cookielib")
         import cookielib
     except ImportError:
-        logger.info("[scrapertools.py] cookielib no disponible")
+        logger.info("pelisalacarta.core.scrapertools cookielib no disponible")
         # If importing cookielib fails
         # let's try ClientCookie
         try:
-            logger.info("[scrapertools.py] Importando ClientCookie")
+            logger.info("pelisalacarta.core.scrapertools Importando ClientCookie")
             import ClientCookie
         except ImportError:
-            logger.info("[scrapertools.py] ClientCookie no disponible")
+            logger.info("pelisalacarta.core.scrapertools ClientCookie no disponible")
             # ClientCookie isn't available either
             urlopen = urllib2.urlopen
             Request = urllib2.Request
         else:
-            logger.info("[scrapertools.py] ClientCookie disponible")
+            logger.info("pelisalacarta.core.scrapertools ClientCookie disponible")
             # imported ClientCookie
             urlopen = ClientCookie.urlopen
             Request = ClientCookie.Request
             cj = ClientCookie.MozillaCookieJar()
 
     else:
-        logger.info("[scrapertools.py] cookielib disponible")
+        logger.info("pelisalacarta.core.scrapertools cookielib disponible")
         # importing cookielib worked
         urlopen = urllib2.urlopen
         Request = urllib2.Request
 
-        logger.info("[scrapertools.py] cambio en politicas")
+        logger.info("pelisalacarta.core.scrapertools cambio en politicas")
 
         #cj = cookielib.LWPCookieJar(ficherocookies,policy=MyCookiePolicy())
         #cj = cookielib.MozillaCookieJar(ficherocookies,policy=MyCookiePolicy)
@@ -371,23 +368,23 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
     if cj is not None:
     # we successfully imported
     # one of the two cookie handling modules
-        logger.info("[scrapertools.py] Hay cookies")
+        logger.info("pelisalacarta.core.scrapertools Hay cookies")
 
         if os.path.isfile(ficherocookies):
-            logger.info("[scrapertools.py] Leyendo fichero cookies")
+            logger.info("pelisalacarta.core.scrapertools Leyendo fichero cookies")
             # if we have a cookie file already saved
             # then load the cookies into the Cookie Jar
             try:
                 cj.load(ficherocookies,ignore_discard=True)
             except:
-                logger.info("[scrapertools.py] El fichero de cookies existe pero es ilegible, se borra")
+                logger.info("pelisalacarta.core.scrapertools El fichero de cookies existe pero es ilegible, se borra")
                 os.remove(ficherocookies)
 
         # Now we need to get our Cookie Jar
         # installed in the opener;
         # for fetching URLs
         if cookielib is not None:
-            logger.info("[scrapertools.py] opener usando urllib2 (cookielib)")
+            logger.info("pelisalacarta.core.scrapertools opener usando urllib2 (cookielib)")
             # if we use cookielib
             # then we get the HTTPCookieProcessor
             # and install the opener in urllib2
@@ -398,7 +395,7 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
             urllib2.install_opener(opener)
 
         else:
-            logger.info("[scrapertools.py] opener usando ClientCookie")
+            logger.info("pelisalacarta.core.scrapertools opener usando ClientCookie")
             # if we use ClientCookie
             # then we get the HTTPCookieProcessor
             # and install the opener in ClientCookie
@@ -417,40 +414,40 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
 
     # Construye el request
     if post is None:
-        logger.info("[scrapertools.py] petición GET")
+        logger.info("pelisalacarta.core.scrapertools petición GET")
     else:
-        logger.info("[scrapertools.py] petición POST")
+        logger.info("pelisalacarta.core.scrapertools petición POST")
     
     # Añade las cabeceras
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
     for header in headers:
-        logger.info("[scrapertools.py] header %s=%s" % (str(header[0]),str(header[1])) )
+        logger.info("pelisalacarta.core.scrapertools header %s=%s" % (str(header[0]),str(header[1])) )
         txheaders[header[0]]=header[1]
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
 
     req = Request(url, post, txheaders)
 
     try:
         if timeout is None:
-            logger.info("[scrapertools.py] Peticion sin timeout")
+            logger.info("pelisalacarta.core.scrapertools Peticion sin timeout")
             handle=urlopen(req)
         else:        
-            logger.info("[scrapertools.py] Peticion con timeout")
+            logger.info("pelisalacarta.core.scrapertools Peticion con timeout")
             #Para todas las versiones:
             deftimeout = socket.getdefaulttimeout()
             socket.setdefaulttimeout(timeout)
             handle=urlopen(req)            
             socket.setdefaulttimeout(deftimeout)
-        logger.info("[scrapertools.py] ...hecha")
+        logger.info("pelisalacarta.core.scrapertools ...hecha")
         
         # Actualiza el almacén de cookies
-        logger.info("[scrapertools.py] Grabando cookies...")
+        logger.info("pelisalacarta.core.scrapertools Grabando cookies...")
         cj.save(ficherocookies,ignore_discard=True) #  ,ignore_expires=True
-        logger.info("[scrapertools.py] ...hecho")
+        logger.info("pelisalacarta.core.scrapertools ...hecho")
 
         # Lee los datos y cierra
         if handle.info().get('Content-Encoding') == 'gzip':
-            logger.info("[scrapertools.py] gzipped")
+            logger.info("pelisalacarta.core.scrapertools gzipped")
             fin = inicio
             import StringIO
             data=handle.read()
@@ -461,7 +458,7 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
             gzipper.close()
             fin = time.clock()
         else:
-            logger.info("[scrapertools.py] normal")
+            logger.info("pelisalacarta.core.scrapertools normal")
             data = handle.read()
     except urllib2.HTTPError,e:
         import traceback
@@ -471,10 +468,10 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
         return data
 
     info = handle.info()
-    logger.info("[scrapertools.py] Respuesta")
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools Respuesta")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
     for header in info:
-        logger.info("[scrapertools.py] "+header+"="+info[header])
+        logger.info("pelisalacarta.core.scrapertools "+header+"="+info[header])
 
         # Truco para devolver el valor de un header en lugar del cuerpo entero
         if header_to_get is not None:
@@ -482,7 +479,7 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
                 data=info[header]
 
     handle.close()
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
 
     '''
     # Lanza la petición
@@ -501,7 +498,7 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
     
     # Tiempo transcurrido
     fin = time.clock()
-    logger.info("[scrapertools.py] Descargado en %d segundos " % (fin-inicio+1))
+    logger.info("pelisalacarta.core.scrapertools Descargado en %d segundos " % (fin-inicio+1))
 
     return data
 
@@ -541,7 +538,7 @@ def downloadpagewithcookies(url):
 
     #  Inicializa la librería de las cookies
     ficherocookies = os.path.join( config.get_data_path(), 'cookies.dat' )
-    logger.info("[scrapertools.py] Cookiefile="+ficherocookies)
+    logger.info("pelisalacarta.core.scrapertools Cookiefile="+ficherocookies)
 
     cj = None
     ClientCookie = None
@@ -583,7 +580,7 @@ def downloadpagewithcookies(url):
             try:
                 cj.load(ficherocookies)
             except:
-                logger.info("[scrapertools.py] El fichero de cookies existe pero es ilegible, se borra")
+                logger.info("pelisalacarta.core.scrapertools El fichero de cookies existe pero es ilegible, se borra")
                 os.remove(ficherocookies)
 
         # Now we need to get our Cookie Jar
@@ -631,7 +628,7 @@ def downloadpagewithcookies(url):
     return data
     
 def downloadpageWithoutCookies(url):
-    logger.info("[scrapertools.py] Descargando " + url)
+    logger.info("pelisalacarta.core.scrapertools Descargando " + url)
     inicio = time.clock()
     req = urllib2.Request(url)
     req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 6.0; es-ES; rv:1.9.0.14) Gecko/2009082707 Firefox/3.0.14')
@@ -646,7 +643,7 @@ def downloadpageWithoutCookies(url):
     data=response.read()
     response.close()
     fin = time.clock()
-    logger.info("[scrapertools.py] Descargado en %d segundos " % (fin-inicio+1))
+    logger.info("pelisalacarta.core.scrapertools Descargado en %d segundos " % (fin-inicio+1))
     return data
     
 
@@ -701,7 +698,7 @@ def downloadpageGzip(url):
             try:
                 cj.load(ficherocookies)
             except:
-                logger.info("[scrapertools.py] El fichero de cookies existe pero es ilegible, se borra")
+                logger.info("pelisalacarta.core.scrapertools El fichero de cookies existe pero es ilegible, se borra")
                 os.remove(ficherocookies)
 
         # Now we need to get our Cookie Jar
@@ -754,7 +751,7 @@ def downloadpageGzip(url):
     handle.close()
     
     fin = time.clock()
-    logger.info("[scrapertools.py] Descargado 'Gzipped data' en %d segundos " % (fin-inicio+1))
+    logger.info("pelisalacarta.core.scrapertools Descargado 'Gzipped data' en %d segundos " % (fin-inicio+1))
         
     # Descomprime el archivo de datos Gzip
     try:
@@ -766,7 +763,7 @@ def downloadpageGzip(url):
         data1 = gzipper.read()
         gzipper.close()
         fin = time.clock()
-        logger.info("[scrapertools.py] 'Gzipped data' descomprimido en %d segundos " % (fin-inicio+1))
+        logger.info("pelisalacarta.core.scrapertools 'Gzipped data' descomprimido en %d segundos " % (fin-inicio+1))
         return data1
     except:
         return data
@@ -774,7 +771,7 @@ def downloadpageGzip(url):
 def printMatches(matches):
     i = 0
     for match in matches:
-        logger.info("[scrapertools.py] %d %s" % (i , match))
+        logger.info("pelisalacarta.core.scrapertools %d %s" % (i , match))
         i = i + 1
         
 def get_match(data,patron,index=0):
@@ -787,6 +784,10 @@ def find_single_match(data,patron,index=0):
         return matches[index]
     except:
         return ""
+
+# Parse string and extracts multiple matches using regular expressions
+def find_multiple_matches(text,pattern):
+    return re.findall(pattern,text,re.DOTALL)
 
 def entityunescape(cadena):
     return unescape(cadena)
@@ -877,6 +878,8 @@ def entitiesfix(string):
 
 
 def htmlclean(cadena):
+    cadena = re.compile("<!--.*?-->",re.DOTALL).sub("",cadena)
+
     cadena = cadena.replace("<center>","")
     cadena = cadena.replace("</center>","")
     cadena = cadena.replace("<cite>","")
@@ -1035,6 +1038,8 @@ def slugify(title):
 
     return title
 
+def remove_htmltags(string):
+    return re.sub('<[^<]+?>', '', string)
 
 def remove_show_from_title(title,show):
     #print slugify(title)+" == "+slugify(show)
@@ -1066,16 +1071,16 @@ def getLocationHeaderFromResponse(url):
 
 def get_header_from_response(url,header_to_get="",post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; es-ES; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12']]):
     header_to_get = header_to_get.lower()
-    logger.info("[scrapertools.py] get_header_from_response url="+url+", header_to_get="+header_to_get)
+    logger.info("pelisalacarta.core.scrapertools get_header_from_response url="+url+", header_to_get="+header_to_get)
 
     if post is not None:
-        logger.info("[scrapertools.py] post="+post)
+        logger.info("pelisalacarta.core.scrapertools post="+post)
     else:
-        logger.info("[scrapertools.py] post=None")
+        logger.info("pelisalacarta.core.scrapertools post=None")
     
     #  Inicializa la librería de las cookies
-    ficherocookies = os.path.join( config.get_setting("cookies.dir"), 'cookies.dat' )
-    logger.info("[scrapertools.py] ficherocookies="+ficherocookies)
+    ficherocookies = os.path.join( config.get_data_path(), 'cookies.dat' )
+    logger.info("pelisalacarta.core.scrapertools ficherocookies="+ficherocookies)
 
     cj = None
     ClientCookie = None
@@ -1090,13 +1095,13 @@ def get_header_from_response(url,header_to_get="",post=None,headers=[['User-Agen
     # that has useful load and save methods
 
     if os.path.isfile(ficherocookies):
-        logger.info("[scrapertools.py] Leyendo fichero cookies")
+        logger.info("pelisalacarta.core.scrapertools Leyendo fichero cookies")
         # if we have a cookie file already saved
         # then load the cookies into the Cookie Jar
         try:
             cj.load(ficherocookies)
         except:
-            logger.info("[scrapertools.py] El fichero de cookies existe pero es ilegible, se borra")
+            logger.info("pelisalacarta.core.scrapertools El fichero de cookies existe pero es ilegible, se borra")
             os.remove(ficherocookies)
 
     if header_to_get=="location":
@@ -1114,9 +1119,9 @@ def get_header_from_response(url,header_to_get="",post=None,headers=[['User-Agen
 
     # Traza la peticion
     if post is None:
-        logger.info("[scrapertools.py] petición GET")
+        logger.info("pelisalacarta.core.scrapertools petición GET")
     else:
-        logger.info("[scrapertools.py] petición POST")
+        logger.info("pelisalacarta.core.scrapertools petición POST")
     
     # Login y password Filenium
     # http://abcd%40gmail.com:mipass@filenium.com/get/Oi8vd3d3/LmZpbGVz/ZXJ2ZS5j/b20vZmls/ZS9kTnBL/dm11/b0/?.zip
@@ -1126,11 +1131,11 @@ def get_header_from_response(url,header_to_get="",post=None,headers=[['User-Agen
         headers.append( [ "Authorization",authorization_header ] )
     
     # Array de cabeceras
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
     for header in headers:
-        logger.info("[scrapertools.py] header=%s" % str(header[0]))
+        logger.info("pelisalacarta.core.scrapertools header=%s" % str(header[0]))
         txheaders[header[0]]=header[1]
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
 
     # Construye el request
     req = Request(url, post, txheaders)
@@ -1142,34 +1147,34 @@ def get_header_from_response(url,header_to_get="",post=None,headers=[['User-Agen
     # Lee los datos y cierra
     #data=handle.read()
     info = handle.info()
-    logger.info("[scrapertools.py] Respuesta")
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools Respuesta")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
     location_header=""
     for header in info:
-        logger.info("[scrapertools.py] "+header+"="+info[header])
+        logger.info("pelisalacarta.core.scrapertools "+header+"="+info[header])
         if header==header_to_get:
             location_header=info[header]
     handle.close()
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
 
     # Tiempo transcurrido
     fin = time.clock()
-    logger.info("[scrapertools.py] Descargado en %d segundos " % (fin-inicio+1))
+    logger.info("pelisalacarta.core.scrapertools Descargado en %d segundos " % (fin-inicio+1))
 
     return location_header
 
 def get_headers_from_response(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; es-ES; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12']]):
     return_headers = []
-    logger.info("[scrapertools.py] get_headers_from_response url="+url)
+    logger.info("pelisalacarta.core.scrapertools get_headers_from_response url="+url)
 
     if post is not None:
-        logger.info("[scrapertools.py] post="+post)
+        logger.info("pelisalacarta.core.scrapertools post="+post)
     else:
-        logger.info("[scrapertools.py] post=None")
+        logger.info("pelisalacarta.core.scrapertools post=None")
     
     #  Inicializa la librería de las cookies
-    ficherocookies = os.path.join( config.get_setting("cookies.dir"), 'cookies.dat' )
-    logger.info("[scrapertools.py] ficherocookies="+ficherocookies)
+    ficherocookies = os.path.join( config.get_data_path(), 'cookies.dat' )
+    logger.info("pelisalacarta.core.scrapertools ficherocookies="+ficherocookies)
 
     cj = None
     ClientCookie = None
@@ -1184,13 +1189,13 @@ def get_headers_from_response(url,post=None,headers=[['User-Agent', 'Mozilla/5.0
     # that has useful load and save methods
 
     if os.path.isfile(ficherocookies):
-        logger.info("[scrapertools.py] Leyendo fichero cookies")
+        logger.info("pelisalacarta.core.scrapertools Leyendo fichero cookies")
         # if we have a cookie file already saved
         # then load the cookies into the Cookie Jar
         try:
             cj.load(ficherocookies)
         except:
-            logger.info("[scrapertools.py] El fichero de cookies existe pero es ilegible, se borra")
+            logger.info("pelisalacarta.core.scrapertools El fichero de cookies existe pero es ilegible, se borra")
             os.remove(ficherocookies)
 
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj),NoRedirectHandler())
@@ -1204,16 +1209,16 @@ def get_headers_from_response(url,post=None,headers=[['User-Agent', 'Mozilla/5.0
 
     # Traza la peticion
     if post is None:
-        logger.info("[scrapertools.py] petición GET")
+        logger.info("pelisalacarta.core.scrapertools petición GET")
     else:
-        logger.info("[scrapertools.py] petición POST")
+        logger.info("pelisalacarta.core.scrapertools petición POST")
     
     # Array de cabeceras
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
     for header in headers:
-        logger.info("[scrapertools.py] header=%s" % str(header[0]))
+        logger.info("pelisalacarta.core.scrapertools header=%s" % str(header[0]))
         txheaders[header[0]]=header[1]
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
 
     # Construye el request
     req = Request(url, post, txheaders)
@@ -1225,18 +1230,18 @@ def get_headers_from_response(url,post=None,headers=[['User-Agent', 'Mozilla/5.0
     # Lee los datos y cierra
     #data=handle.read()
     info = handle.info()
-    logger.info("[scrapertools.py] Respuesta")
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools Respuesta")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
     location_header=""
     for header in info:
-        logger.info("[scrapertools.py] "+header+"="+info[header])
+        logger.info("pelisalacarta.core.scrapertools "+header+"="+info[header])
         return_headers.append( [header,info[header]] )
     handle.close()
-    logger.info("[scrapertools.py] ---------------------------")
+    logger.info("pelisalacarta.core.scrapertools ---------------------------")
 
     # Tiempo transcurrido
     fin = time.clock()
-    logger.info("[scrapertools.py] Descargado en %d segundos " % (fin-inicio+1))
+    logger.info("pelisalacarta.core.scrapertools Descargado en %d segundos " % (fin-inicio+1))
 
     return return_headers
 
@@ -1268,6 +1273,9 @@ def get_filename_from_url(url):
             filename = parsed_url[2]
         else:
             filename = ""
+
+    if "/" in filename:
+        filename = filename.split("/")[-1]
 
     return filename
 
