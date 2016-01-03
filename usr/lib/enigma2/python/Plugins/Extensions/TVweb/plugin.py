@@ -48,7 +48,17 @@ from core.item import Item
 
 import xml.etree.cElementTree
 
-from Plugins.Extensions.spazeMenu.plugin import esHD, fhd
+def esHD():
+	if getDesktop(0).size().width() > 1400:
+		return True
+	else:
+		return False
+		
+def fhd(num, factor=1.5):
+	if esHD():
+		prod=num*factor
+	else: prod=num
+	return int(round(prod))
 
 try:
     from Plugins.Extensions.VlcPlayer.VlcPlayer import VlcPlayer
