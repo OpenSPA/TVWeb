@@ -543,7 +543,7 @@ class TVweb(Screen):
             absX = self.spaceLeft + self.spaceX + (posX*(self.spaceX + self.picX))
             absY = self.spaceTop + self.spaceY + (posY*(self.spaceY + self.picY))
             self.positionlist.append((absX, absY))
-            skincontent += "<widget source=\"label" + str(x) + "\" render=\"Label\" position=\"" + str(absX+2) + "," + str(absY+self.picY-self.textsize-10 ) + "\" size=\"" + str(self.picX - 10) + ","  + str((self.textsize)+7) + "\" halign=\"center\" font=\"Regular;" + str(self.textsize) + "\" zPosition=\"5\" transparent=\"1\" backgroundColor=\"#00ffffff\" foregroundColor=\"" + self.textcolor + "\" />"
+            skincontent += "<widget source=\"label" + str(x) + "\" render=\"Label\" position=\"" + str(absX+2) + "," + str(absY+self.picY-self.textsize-10 ) + "\" size=\"" + str(self.picX - 10) + ","  + str((self.textsize)+fhd(7)) + "\" halign=\"center\" font=\"Regular;" + str(self.textsize) + "\" zPosition=\"5\" transparent=\"1\" backgroundColor=\"#00ffffff\" foregroundColor=\"" + self.textcolor + "\" />"
             skincontent += "<widget name=\"thumb" + str(x) + "\" position=\"" + str(absX)+ "," + str(absY+5) + "\" size=\"" + str(self.picX -5) + "," + str(self.picY - (self.textsize*2)) + "\" zPosition=\"4\" transparent=\"1\" alphatest=\"blend\" />"
 
         # Screen, backgroundlabel and MovingPixmap
