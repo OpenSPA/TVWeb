@@ -67,7 +67,7 @@ def fontHD(nombre):
 		fuente = nombre
 	return fuente
 
-PLUGIN_PATH = '/usr/lib/enigma2/python/Plugins/Extensions/TvWeb'
+PLUGIN_PATH = '/usr/lib/enigma2/python/Plugins/Extensions/TVweb'
 from enigma import addFont
 try:
 	addFont('%s/OpenSans-Regular.ttf' % PLUGIN_PATH, 'RegularHD', 145, 1)
